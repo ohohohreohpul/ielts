@@ -357,7 +357,470 @@ export default function App() {
     )
   }
 
-  // Continue with lesson runner...
-  // (Due to length, splitting into next section)
-  return <div className="min-h-screen bg-gray-100 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8" /></div>
+  // Lesson Runner
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+        <Loader2 className="animate-spin h-8 w-8 text-green-500" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-2xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <Button variant="ghost" size="sm" onClick={() => setStage('sectionSelect')}>
+              <X className="w-5 h-5" />
+            </Button>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <Flame className="w-5 h-5 text-orange-500" />
+                <span className="font-bold text-orange-500">{streak}</span>
+              </div>
+              
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Heart key={i} className={`w-5 h-5 ${i < hearts ? 'fill-red-500 text-red-500' : 'text-gray-300'}`} />
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <Progress value={progress} className="h-3" />
+        </div>
+      </div>
+
+      {/* Question Content */}
+      <div className="max-w-2xl mx-auto px-4 py-8 pb-32">
+        <AnimatePresence mode="wait">
+          <motion.div key={currentQuestionIndex} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }}>
+            
+            {/* Reading with Multiple Choice */}
+            {currentQuestion.type === 'reading' && (
+              <div className="space-y-6">
+                {currentQuestion.passage && (
+                  <Card className="bg-white shadow-lg">
+                    <CardContent className="p-6">
+                      <p className="text-gray-700 leading-relaxed">{currentQuestion.passage}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{currentQuestion.question}</h2>
+
+                <div className="space-y-3">
+                  {currentQuestion.options?.map((option, index) => (
+                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
+                      <CardContent className="p-6 flex items-center">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-green-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
+                          {String.fromCharCode(65 + index)}
+                        </div>
+                        <span className="text-lg">{option.text}</span>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Listening with Audio Player */}
+            {currentQuestion.type === 'listening' && (
+              <div className="space-y-6">
+                {currentQuestion.audioText && <AudioPlayer text={currentQuestion.audioText} />}
+                
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{currentQuestion.question}</h2>
+
+                <div className="space-y-3">
+                  {currentQuestion.options?.map((option, index) => (
+                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
+                      <CardContent className="p-6 flex items-center">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-green-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
+                          {String.fromCharCode(65 + index)}
+                        </div>
+                        <span className="text-lg">{option.text}</span>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Fill in the Blank */}
+            {currentQuestion.type === 'fill-in-blank' && (
+              <div className="space-y-6">
+                {currentQuestion.passage && (
+                  <Card className="bg-white shadow-lg">
+                    <CardContent className="p-6">
+                      <p className="text-gray-700 leading-relaxed">{currentQuestion.passage}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{currentQuestion.question || 'Complete the sentence'}</h2>
+                
+                <Card className="bg-blue-50 border-blue-200">
+                  <CardContent className="p-6">
+                    <p className="text-lg text-gray-800 mb-4">{currentQuestion.sentence}</p>
+                  </CardContent>
+                </Card>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">คำตอบของคุณ:</label>
+                  <Input 
+                    value={textAnswer} 
+                    onChange={(e) => setTextAnswer(e.target.value)} 
+                    placeholder="พิมพ์คำตอบที่นี่..." 
+                    className="text-lg p-4"
+                    disabled={showFeedback}
+                  />
+                  {currentQuestion.wordLimit && (
+                    <p className="text-sm text-gray-500 mt-2">ไม่เกิน {currentQuestion.wordLimit} คำ</p>
+                  )}
+                </div>
+
+                {showFeedback && (
+                  <Card className={`${isCorrect ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+                    <CardContent className="p-4">
+                      <p className="font-medium text-gray-700">คำตอบที่ถูกต้อง:</p>
+                      <p className="text-lg font-semibold">{currentQuestion.correctAnswer}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+
+            {/* True/False/Not Given */}
+            {currentQuestion.type === 'true-false-notgiven' && (
+              <div className="space-y-6">
+                {currentQuestion.passage && (
+                  <Card className="bg-white shadow-lg">
+                    <CardContent className="p-6">
+                      <p className="text-gray-700 leading-relaxed">{currentQuestion.passage}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">ข้อความนี้ถูกต้องหรือไม่?</h2>
+                
+                <Card className="bg-purple-50 border-purple-200">
+                  <CardContent className="p-6">
+                    <p className="text-lg text-gray-800">{currentQuestion.statement}</p>
+                  </CardContent>
+                </Card>
+
+                <div className="space-y-3">
+                  {['TRUE', 'FALSE', 'NOT GIVEN'].map((option) => (
+                    <Card key={option} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option === currentQuestion.correctAnswer ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option && option !== currentQuestion.correctAnswer ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option)}>
+                      <CardContent className="p-6 text-center">
+                        <span className="text-lg font-semibold">{option}</span>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Short Answer */}
+            {currentQuestion.type === 'short-answer' && (
+              <div className="space-y-6">
+                {currentQuestion.passage && (
+                  <Card className="bg-white shadow-lg">
+                    <CardContent className="p-6">
+                      <p className="text-gray-700 leading-relaxed">{currentQuestion.passage}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{currentQuestion.question}</h2>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">คำตอบของคุณ:</label>
+                  <Input 
+                    value={textAnswer} 
+                    onChange={(e) => setTextAnswer(e.target.value)} 
+                    placeholder="พิมพ์คำตอบสั้นๆ..." 
+                    className="text-lg p-4"
+                    disabled={showFeedback}
+                  />
+                  {currentQuestion.wordLimit && (
+                    <p className="text-sm text-gray-500 mt-2">ตอบไม่เกิน {currentQuestion.wordLimit} คำ</p>
+                  )}
+                </div>
+
+                {showFeedback && (
+                  <Card className={`${isCorrect ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+                    <CardContent className="p-4">
+                      <p className="font-medium text-gray-700">คำตอบที่ถูกต้อง:</p>
+                      <p className="text-lg font-semibold">{currentQuestion.correctAnswer}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+
+            {/* Writing */}
+            {currentQuestion.type === 'writing' && (
+              <div className="space-y-6">
+                <Card className="bg-green-50 border-green-200">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <PenTool className="w-5 h-5 text-green-600" />
+                      <span className="font-semibold text-green-900">{currentQuestion.task || 'Writing Task'}</span>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">{currentQuestion.prompt}</p>
+                    {currentQuestion.wordLimit && (
+                      <p className="text-sm text-gray-600 mt-3">จำนวนคำ: ขั้นต่ำ {currentQuestion.wordLimit} คำ</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">คำตอบของคุณ:</label>
+                  <Textarea 
+                    value={writingAnswer} 
+                    onChange={(e) => setWritingAnswer(e.target.value)} 
+                    placeholder="เริ่มเขียนที่นี่..." 
+                    className="min-h-[300px] text-base"
+                    disabled={showFeedback}
+                  />
+                  <p className="text-sm text-gray-500 mt-2">
+                    จำนวนคำ: {writingAnswer.split(/\\s+/).filter(w => w).length}
+                  </p>
+                </div>
+
+                {showFeedback && aiScore && (
+                  <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-gray-900">คะแนน AI</h3>
+                        <div className="text-4xl font-bold text-blue-600">{aiScore.score}</div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">Feedback:</h4>
+                          <p className="text-gray-700">{aiScore.feedback}</p>
+                        </div>
+                        
+                        {aiScore.strengths && aiScore.strengths.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-green-700 mb-2">จุดแข็ง:</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {aiScore.strengths.map((s, i) => (
+                                <li key={i} className="text-gray-700">{s}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        {aiScore.improvements && aiScore.improvements.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {aiScore.improvements.map((imp, i) => (
+                                <li key={i} className="text-gray-700">{imp}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+
+            {/* Speaking */}
+            {currentQuestion.type === 'speaking' && (
+              <div className="space-y-6">
+                <Card className="bg-orange-50 border-orange-200">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Mic className="w-5 h-5 text-orange-600" />
+                      <span className="font-semibold text-orange-900">{currentQuestion.part || 'Speaking Part'}</span>
+                    </div>
+                    <p className="text-lg text-gray-800 mb-4">{currentQuestion.question}</p>
+                    {currentQuestion.preparationTime && (
+                      <p className="text-sm text-gray-600">
+                        เวลาเตรียม: {currentQuestion.preparationTime} วินาที | เวลาพูด: {currentQuestion.speakingTime} วินาที
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <VoiceRecorder onRecordingComplete={(blob) => setRecordedAudio(blob)} />
+
+                {showFeedback && aiScore && (
+                  <Card className="bg-gradient-to-br from-orange-50 to-pink-50 border-orange-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-gray-900">คะแนน AI</h3>
+                        <div className="text-4xl font-bold text-orange-600">{aiScore.score}</div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">Feedback:</h4>
+                          <p className="text-gray-700">{aiScore.feedback}</p>
+                        </div>
+                        
+                        {aiScore.strengths && aiScore.strengths.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-green-700 mb-2">จุดแข็ง:</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {aiScore.strengths.map((s, i) => (
+                                <li key={i} className="text-gray-700">{s}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        {aiScore.improvements && aiScore.improvements.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {aiScore.improvements.map((imp, i) => (
+                                <li key={i} className="text-gray-700">{imp}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Bottom Action Button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div className="max-w-2xl mx-auto">
+          {!showFeedback ? (
+            <Button 
+              onClick={checkAnswer} 
+              disabled={
+                scoring ||
+                (currentQuestion.type === 'multiple-choice' && !selectedAnswer) ||
+                (currentQuestion.type === 'reading' && !selectedAnswer) ||
+                (currentQuestion.type === 'listening' && !selectedAnswer) ||
+                (currentQuestion.type === 'fill-in-blank' && !textAnswer.trim()) ||
+                (currentQuestion.type === 'true-false-notgiven' && !selectedAnswer) ||
+                (currentQuestion.type === 'short-answer' && !textAnswer.trim()) ||
+                (currentQuestion.type === 'writing' && writingAnswer.split(/\\s+/).filter(w => w).length < 50) ||
+                (currentQuestion.type === 'speaking' && !recordedAudio)
+              }
+              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50" 
+              size="lg"
+            >
+              {scoring ? (
+                <>
+                  <Loader2 className="animate-spin w-5 h-5 mr-2" />
+                  กำลังให้คะแนนด้วย AI...
+                </>
+              ) : (
+                'ตรวจคำตอบ'
+              )}
+            </Button>
+          ) : (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              {!aiScore && (
+                <Card className={`mb-4 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center">
+                      {isCorrect ? (
+                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                          <Check className="w-6 h-6 text-white" />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mr-4">
+                          <X className="w-6 h-6 text-white" />
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="font-bold text-lg">{isCorrect ? 'ยอดเยี่ยม!' : 'เรียนรู้ต่อไป!'}</h3>
+                        <p className="text-sm text-gray-600">{isCorrect ? 'คุณตอบถูกต้อง!' : 'ทบทวนและลองใหม่'}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+              <Button onClick={nextQuestion} className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700" size="lg">
+                ดำเนินการต่อ
+              </Button>
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* Paywall Modal */}
+      <Dialog open={showPaywall} onOpenChange={setShowPaywall}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                <Crown className="w-10 h-10 text-white" />
+              </div>
+            </div>
+            <DialogTitle className="text-center text-2xl">อัพเกรดเป็น Mydemy Plus</DialogTitle>
+            <DialogDescription className="text-center">หัวใจของคุณหมดแล้ว! อัพเกรดเพื่อฝึกได้ไม่จำกัด</DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3 my-6">
+            <Card className="border-2 border-purple-300 bg-purple-50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="font-bold text-lg">รายเดือน</h4>
+                    <p className="text-sm text-gray-600">$9.99/เดือน</p>
+                  </div>
+                  <Zap className="w-6 h-6 text-purple-600" />
+                </div>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />หัวใจไม่จำกัด</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />คะแนนการพูดโดย AI</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />บทเรียนส่วนตัว</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-yellow-300 bg-yellow-50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="font-bold text-lg">รายปี</h4>
+                    <p className="text-sm text-gray-600">$79.99/ปี</p>
+                    <span className="text-xs font-semibold text-green-600">ประหยัด 33%!</span>
+                  </div>
+                  <Crown className="w-6 h-6 text-yellow-600" />
+                </div>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />ทุกฟีเจอร์รายเดือน</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />การสนับสนุนพิเศษ</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />เข้าถึงฟีเจอร์ใหม่ก่อนใคร</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          <DialogFooter className="flex-col gap-2">
+            <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700" onClick={() => alert('ระบบชำระเงินกำลังจะมาเร็วๆ นี้!')}>
+              เริ่มทดลองใช้ฟรี
+            </Button>
+            <Button variant="outline" className="w-full" onClick={() => { setShowPaywall(false); setHearts(5); }}>
+              ภายหลัง
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
 }
