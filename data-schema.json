@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mydemy Question Schema",
+  "description": "Data structure for Mydemy exam questions",
+  "definitions": {
+    "multipleChoiceQuestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique question identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["multiple-choice"],
+          "description": "Question type"
+        },
+        "question": {
+          "type": "string",
+          "description": "The question prompt"
+        },
+        "text": {
+          "type": "string",
+          "description": "The sentence or context for the question"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Option identifier (a, b, c, d)"
+              },
+              "text": {
+                "type": "string",
+                "description": "Option text"
+              },
+              "correct": {
+                "type": "boolean",
+                "description": "Whether this option is correct"
+              }
+            },
+            "required": ["id", "text", "correct"]
+          },
+          "minItems": 2,
+          "maxItems": 6
+        }
+      },
+      "required": ["id", "type", "question", "text", "options"]
+    },
+    "reorderQuestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique question identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["reorder"],
+          "description": "Question type"
+        },
+        "question": {
+          "type": "string",
+          "description": "The question prompt"
+        },
+        "words": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Word identifier (w1, w2, ...)"
+              },
+              "text": {
+                "type": "string",
+                "description": "The word or phrase"
+              },
+              "order": {
+                "type": "integer",
+                "description": "Original order position (for reference)"
+              }
+            },
+            "required": ["id", "text", "order"]
+          },
+          "minItems": 3
+        },
+        "correctOrder": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of word IDs in correct order"
+        }
+      },
+      "required": ["id", "type", "question", "words", "correctOrder"]
+    },
+    "readingComprehensionQuestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique question identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["reading"],
+          "description": "Question type"
+        },
+        "passage": {
+          "type": "string",
+          "description": "The reading passage"
+        },
+        "question": {
+          "type": "string",
+          "description": "The question about the passage"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Option identifier (a, b, c, d)"
+              },
+              "text": {
+                "type": "string",
+                "description": "Option text"
+              },
+              "correct": {
+                "type": "boolean",
+                "description": "Whether this option is correct"
+              }
+            },
+            "required": ["id", "text", "correct"]
+          },
+          "minItems": 2,
+          "maxItems": 6
+        }
+      },
+      "required": ["id", "type", "passage", "question", "options"]
+    },
+    "lesson": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique lesson identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Lesson title"
+        },
+        "examType": {
+          "type": "string",
+          "enum": ["TOEIC", "IELTS", "CU-TEP"],
+          "description": "Type of exam"
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["beginner", "intermediate", "advanced"],
+          "description": "Difficulty level"
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/multipleChoiceQuestion" },
+              { "$ref": "#/definitions/reorderQuestion" },
+              { "$ref": "#/definitions/readingComprehensionQuestion" }
+            ]
+          },
+          "minItems": 1
+        },
+        "estimatedTime": {
+          "type": "integer",
+          "description": "Estimated completion time in minutes"
+        },
+        "xpReward": {
+          "type": "integer",
+          "description": "XP points awarded upon completion"
+        }
+      },
+      "required": ["id", "title", "examType", "questions"]
+    }
+  },
+  "examples": [
+    {
+      "multipleChoiceExample": {
+        "id": "q1",
+        "type": "multiple-choice",
+        "question": "Choose the correct word to complete the sentence:",
+        "text": "The company ____ to expand its operations next year.",
+        "options": [
+          { "id": "a", "text": "plan", "correct": false },
+          { "id": "b", "text": "plans", "correct": true },
+          { "id": "c", "text": "planning", "correct": false },
+          { "id": "d", "text": "planned", "correct": false }
+        ]
+      },
+      "reorderExample": {
+        "id": "q2",
+        "type": "reorder",
+        "question": "Arrange the words to form a correct sentence:",
+        "words": [
+          { "id": "w1", "text": "meeting", "order": 3 },
+          { "id": "w2", "text": "The", "order": 1 },
+          { "id": "w3", "text": "has been", "order": 4 },
+          { "id": "w4", "text": "postponed", "order": 5 },
+          { "id": "w5", "text": "scheduled", "order": 2 }
+        ],
+        "correctOrder": ["w2", "w5", "w1", "w3", "w4"]
+      },
+      "readingExample": {
+        "id": "q3",
+        "type": "reading",
+        "passage": "The Riverside Hotel is pleased to announce the opening of our new conference center. The facility features five meeting rooms equipped with the latest technology, including wireless internet and video conferencing capabilities. Booking is now available for corporate events.",
+        "question": "What is the main purpose of this announcement?",
+        "options": [
+          { "id": "a", "text": "To advertise hotel rooms", "correct": false },
+          { "id": "b", "text": "To announce a new conference center", "correct": true },
+          { "id": "c", "text": "To describe internet services", "correct": false },
+          { "id": "d", "text": "To promote video conferencing", "correct": false }
+        ]
+      },
+      "lessonExample": {
+        "id": "lesson-1",
+        "title": "TOEIC Grammar Basics",
+        "examType": "TOEIC",
+        "difficulty": "beginner",
+        "estimatedTime": 10,
+        "xpReward": 50,
+        "questions": [
+          "... (questions array as shown above)"
+        ]
+      }
+    }
+  ]
+}
