@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { BookOpen, Headphones, PenTool, Mic, Sparkles, Zap, Target, Clock, CheckCircle } from 'lucide-react'
 
@@ -10,6 +10,13 @@ const SECTION_TIPS = {
     icon: BookOpen,
     color: 'blue',
     title: 'เคล็ดลับการอ่าน',
+    bgClass: 'bg-gradient-to-br from-blue-50 via-blue-100 to-blue-50',
+    iconBgClass: 'bg-gradient-to-br from-blue-400 to-blue-600',
+    badgeBgClass: 'bg-blue-100',
+    badgeTextClass: 'text-blue-600',
+    progressClass: 'bg-gradient-to-r from-blue-500 to-blue-600',
+    dotActiveClass: 'bg-blue-600',
+    dotPassedClass: 'bg-blue-400',
     tips: [
       'อ่านคำถามก่อนอ่านบทความ - จะช่วยให้คุณรู้ว่าต้องมองหาข้อมูลอะไร',
       'ใช้เทคนิค Skimming และ Scanning เพื่อหาข้อมูลสำคัญอย่างรวดเร็ว',
@@ -21,6 +28,13 @@ const SECTION_TIPS = {
     icon: Headphones,
     color: 'purple',
     title: 'เคล็ดลับการฟัง',
+    bgClass: 'bg-gradient-to-br from-purple-50 via-purple-100 to-purple-50',
+    iconBgClass: 'bg-gradient-to-br from-purple-400 to-purple-600',
+    badgeBgClass: 'bg-purple-100',
+    badgeTextClass: 'text-purple-600',
+    progressClass: 'bg-gradient-to-r from-purple-500 to-purple-600',
+    dotActiveClass: 'bg-purple-600',
+    dotPassedClass: 'bg-purple-400',
     tips: [
       'อ่านคำถามให้ทันก่อนเสียงเริ่มเล่น - คุณจะได้รู้ว่าต้องฟังหาอะไร',
       'จดบันทึกคำสำคัญขณะฟัง - ชื่อ, เลข, สถานที่, เวลา',
@@ -32,6 +46,13 @@ const SECTION_TIPS = {
     icon: PenTool,
     color: 'green',
     title: 'เคล็ดลับการเขียน',
+    bgClass: 'bg-gradient-to-br from-green-50 via-green-100 to-green-50',
+    iconBgClass: 'bg-gradient-to-br from-green-400 to-green-600',
+    badgeBgClass: 'bg-green-100',
+    badgeTextClass: 'text-green-600',
+    progressClass: 'bg-gradient-to-r from-green-500 to-green-600',
+    dotActiveClass: 'bg-green-600',
+    dotPassedClass: 'bg-green-400',
     tips: [
       'วางแผนโครงร่างก่อนเขียนจริง - Introduction, Body, Conclusion',
       'ใช้เวลา 5 นาทีวางแผน, 30 นาทีเขียน, 5 นาทีตรวจทาน',
@@ -43,6 +64,13 @@ const SECTION_TIPS = {
     icon: Mic,
     color: 'orange',
     title: 'เคล็ดลับการพูด',
+    bgClass: 'bg-gradient-to-br from-orange-50 via-orange-100 to-orange-50',
+    iconBgClass: 'bg-gradient-to-br from-orange-400 to-orange-600',
+    badgeBgClass: 'bg-orange-100',
+    badgeTextClass: 'text-orange-600',
+    progressClass: 'bg-gradient-to-r from-orange-500 to-orange-600',
+    dotActiveClass: 'bg-orange-600',
+    dotPassedClass: 'bg-orange-400',
     tips: [
       'ใช้เวลาเตรียมอย่างเต็มที่ - จดโน้ตคำสำคัญที่จะพูด',
       'พูดชัดเจนและช้าพอที่จะเข้าใจง่าย - ไม่ต้องเร็วเกินไป',
@@ -60,26 +88,33 @@ export default function PreloaderScreen({ section, examType, onComplete }) {
   const tips = sectionInfo.tips
 
   useEffect(() => {
+    let tipInterval
+    let progressInterval
+    let completed = false
+
     // Animate through tips
-    const tipInterval = setInterval(() => {
+    tipInterval = setInterval(() => {
       setCurrentTip((prev) => {
         if (prev < tips.length - 1) {
           return prev + 1
         }
         return prev
       })
-    }, 2000)
+    }, 1500)
 
-    // Progress bar
-    const progressInterval = setInterval(() => {
+    // Progress bar - faster to 100%
+    progressInterval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        if (prev >= 100 && !completed) {
+          completed = true
           clearInterval(progressInterval)
           clearInterval(tipInterval)
-          setTimeout(onComplete, 300)
+          setTimeout(() => {
+            if (onComplete) onComplete()
+          }, 300)
           return 100
         }
-        return prev + 2
+        return prev + 4 // Faster: 0 to 100 in 2.5 seconds
       })
     }, 100)
 
@@ -87,17 +122,17 @@ export default function PreloaderScreen({ section, examType, onComplete }) {
       clearInterval(tipInterval)
       clearInterval(progressInterval)
     }
-  }, [tips.length, onComplete])
+  }, [onComplete])
 
   return (
-    <div className={`fixed inset-0 z-50 bg-gradient-to-br from-${sectionInfo.color}-50 via-${sectionInfo.color}-100 to-${sectionInfo.color}-50 flex items-center justify-center`}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${sectionInfo.bgClass}`}>
       <div className="w-full max-w-2xl px-4">
         {/* Icon */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', duration: 0.6 }}
-          className={`mx-auto w-24 h-24 bg-gradient-to-br from-${sectionInfo.color}-400 to-${sectionInfo.color}-600 rounded-3xl flex items-center justify-center mb-8 shadow-2xl`}
+          className={`mx-auto w-24 h-24 ${sectionInfo.iconBgClass} rounded-3xl flex items-center justify-center mb-8 shadow-2xl`}
         >
           <sectionInfo.icon className="w-12 h-12 text-white" />
         </motion.div>
@@ -125,8 +160,8 @@ export default function PreloaderScreen({ section, examType, onComplete }) {
         <Card className="bg-white/90 backdrop-blur-sm shadow-2xl mb-8">
           <CardContent className="p-8">
             <div className="flex items-start gap-4">
-              <div className={`mt-1 w-10 h-10 rounded-full bg-${sectionInfo.color}-100 flex items-center justify-center flex-shrink-0`}>
-                <Zap className={`w-5 h-5 text-${sectionInfo.color}-600`} />
+              <div className={`mt-1 w-10 h-10 rounded-full ${sectionInfo.badgeBgClass} flex items-center justify-center flex-shrink-0`}>
+                <Zap className={`w-5 h-5 ${sectionInfo.badgeTextClass}`} />
               </div>
               
               <div className="flex-1">
@@ -139,8 +174,8 @@ export default function PreloaderScreen({ section, examType, onComplete }) {
                     transition={{ duration: 0.3 }}
                   >
                     <h3 className="font-semibold text-lg text-gray-900 mb-2 flex items-center gap-2">
-                      <span className={`text-${sectionInfo.color}-600`}>เคล็ดลับที่ {currentTip + 1}</span>
-                      <CheckCircle className={`w-5 h-5 text-${sectionInfo.color}-600`} />
+                      <span className={sectionInfo.badgeTextClass}>เคล็ดลับที่ {currentTip + 1}</span>
+                      <CheckCircle className={`w-5 h-5 ${sectionInfo.badgeTextClass}`} />
                     </h3>
                     <p className="text-gray-700 leading-relaxed">
                       {tips[currentTip]}
@@ -157,9 +192,9 @@ export default function PreloaderScreen({ section, examType, onComplete }) {
                   key={index}
                   className={`h-2 rounded-full transition-all duration-300 ${
                     index === currentTip 
-                      ? `w-8 bg-${sectionInfo.color}-600` 
+                      ? `w-8 ${sectionInfo.dotActiveClass}` 
                       : index < currentTip
-                      ? `w-2 bg-${sectionInfo.color}-400`
+                      ? `w-2 ${sectionInfo.dotPassedClass}`
                       : `w-2 bg-gray-300`
                   }`}
                 />
@@ -174,7 +209,7 @@ export default function PreloaderScreen({ section, examType, onComplete }) {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              className={`h-full bg-gradient-to-r from-${sectionInfo.color}-500 to-${sectionInfo.color}-600`}
+              className={`h-full ${sectionInfo.progressClass}`}
             />
           </div>
           <div className="flex items-center justify-center gap-2 mt-3">
