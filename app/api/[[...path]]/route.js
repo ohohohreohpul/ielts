@@ -28,124 +28,196 @@ function handleCORS(response) {
 function buildExamPrompt(examType, section, count) {
   const prompts = {
     'TOEIC': {
-      'reading': `Generate ${count} TOEIC Reading questions in English with mixed types. Return ONLY valid JSON array:
-[
-  {
-    "id": "q1",
-    "type": "reading",
-    "passage": "Business passage 50-80 words",
-    "question": "comprehension question",
-    "options": [
-      {"id": "a", "text": "option A", "correct": false},
-      {"id": "b", "text": "option B", "correct": true},
-      {"id": "c", "text": "option C", "correct": false},
-      {"id": "d", "text": "option D", "correct": false}
-    ]
-  },
-  {
-    "id": "q2",
-    "type": "fill-in-blank",
-    "sentence": "The company ____ a new policy next month.",
-    "correctAnswer": "will implement",
-    "question": "Fill in the blank with the correct form"
-  }
-]`,
-      'listening': `Generate ${count} TOEIC Listening scenarios in English. Return JSON:
-[{
+      'reading': `Generate ${count} TOEIC Reading questions in MIXED TYPES (Part 5, Part 7). Return ONLY valid JSON array:
+
+Part 5 - Incomplete Sentences (grammar/vocabulary, 4 choices):
+{
   "id": "q1",
-  "type": "listening",
-  "audioText": "Dialogue or announcement (30-50 words)",
-  "question": "What is the main purpose?",
+  "type": "multiple-choice",
+  "sentence": "The company ____ to expand its operations next year.",
+  "question": "Choose the best option to complete the sentence:",
+  "options": [
+    {"id": "a", "text": "plan", "correct": false},
+    {"id": "b", "text": "plans", "correct": true},
+    {"id": "c", "text": "planning", "correct": false},
+    {"id": "d", "text": "planned", "correct": false}
+  ]
+}
+
+Part 7 - Reading Comprehension (business passages, 2-4 questions):
+{
+  "id": "q2",
+  "type": "reading",
+  "passage": "50-100 word business email, memo, or article",
+  "question": "What is the main purpose of this message?",
   "options": [
     {"id": "a", "text": "option A", "correct": false},
     {"id": "b", "text": "option B", "correct": true},
     {"id": "c", "text": "option C", "correct": false},
     {"id": "d", "text": "option D", "correct": false}
   ]
-}]`
+}
+
+Mix both types in the array.`,
+      'listening': `Generate ${count} TOEIC Listening questions in MIXED TYPES. Return JSON:
+
+Part 2 - Question-Response (3 response choices):
+{
+  "id": "q1",
+  "type": "listening",
+  "audioText": "When is the meeting scheduled?",
+  "question": "Choose the best response:",
+  "options": [
+    {"id": "a", "text": "At 3 PM tomorrow.", "correct": true},
+    {"id": "b", "text": "In the conference room.", "correct": false},
+    {"id": "c", "text": "Yes, I'll attend.", "correct": false}
+  ]
+}
+
+Part 3 - Conversations (short dialogue, 3 questions):
+{
+  "id": "q2",
+  "type": "listening",
+  "audioText": "A: Did you finish the report? B: Yes, I sent it this morning. A: Great, thanks!",
+  "question": "What did the man do this morning?",
+  "options": [
+    {"id": "a", "text": "Wrote a report", "correct": false},
+    {"id": "b", "text": "Sent a report", "correct": true},
+    {"id": "c", "text": "Received a report", "correct": false},
+    {"id": "d", "text": "Read a report", "correct": false}
+  ]
+}`
     },
     'IELTS': {
-      'reading': `Generate ${count} IELTS Academic Reading questions with MIXED TYPES. Return JSON array:
-[
-  {
-    "id": "q1",
-    "type": "reading",
-    "passage": "Academic passage 150-200 words",
-    "question": "comprehension question",
-    "options": [
-      {"id": "a", "text": "option A", "correct": true},
-      {"id": "b", "text": "option B", "correct": false},
-      {"id": "c", "text": "option C", "correct": false},
-      {"id": "d", "text": "option D", "correct": false}
-    ]
-  },
-  {
-    "id": "q2",
-    "type": "true-false-notgiven",
-    "passage": "Short passage about a topic",
-    "statement": "Statement to verify",
-    "correctAnswer": "TRUE"
-  },
-  {
-    "id": "q3",
-    "type": "fill-in-blank",
-    "passage": "Context passage",
-    "sentence": "The study found that ____ was the primary cause.",
-    "correctAnswer": "climate change",
-    "question": "Complete the sentence with NO MORE THAN TWO WORDS"
-  },
-  {
-    "id": "q4",
-    "type": "short-answer",
-    "passage": "Passage with specific information",
-    "question": "What year was the study conducted?",
-    "correctAnswer": "2023",
-    "wordLimit": 3
-  }
-]`,
-      'listening': `Generate ${count} IELTS Listening questions with MIXED TYPES. Return JSON:
-[
-  {
-    "id": "q1",
-    "type": "listening",
-    "audioText": "Conversation or monologue (40-60 words)",
-    "question": "comprehension question",
-    "options": [
-      {"id": "a", "text": "option A", "correct": false},
-      {"id": "b", "text": "option B", "correct": true},
-      {"id": "c", "text": "option C", "correct": false},
-      {"id": "d", "text": "option D", "correct": false}
-    ]
-  },
-  {
-    "id": "q2",
-    "type": "fill-in-blank",
-    "audioText": "Audio with specific information",
-    "sentence": "The meeting is scheduled for ____.",
-    "correctAnswer": "3 PM",
-    "question": "Complete with NO MORE THAN TWO WORDS"
-  }
-]`,
-      'writing': `Generate ${count} IELTS Writing Task prompts. Return JSON:
-[{
+      'reading': `Generate ${count} IELTS Academic Reading questions with OFFICIAL TYPES. Return JSON array:
+
+1. TRUE/FALSE/NOT GIVEN (most common):
+{
+  "id": "q1",
+  "type": "true-false-notgiven",
+  "passage": "150-250 word academic passage",
+  "statement": "The study found that climate change affects migration patterns.",
+  "correctAnswer": "TRUE"
+}
+
+2. Multiple Choice:
+{
+  "id": "q2",
+  "type": "reading",
+  "passage": "Academic text about science/history/society",
+  "question": "According to the passage, what is the main cause?",
+  "options": [
+    {"id": "a", "text": "option A", "correct": true},
+    {"id": "b", "text": "option B", "correct": false},
+    {"id": "c", "text": "option C", "correct": false},
+    {"id": "d", "text": "option D", "correct": false}
+  ]
+}
+
+3. Sentence/Summary/Note Completion (NO MORE THAN TWO WORDS):
+{
+  "id": "q3",
+  "type": "completion",
+  "passage": "Context passage with specific information",
+  "sentence": "The research was conducted in ____ and lasted three years.",
+  "correctAnswer": "Southeast Asia",
+  "question": "Complete with NO MORE THAN TWO WORDS from the passage",
+  "wordLimit": 2
+}
+
+4. Short Answer Questions:
+{
+  "id": "q4",
+  "type": "short-answer",
+  "passage": "Passage with factual details",
+  "question": "In what year was the theory proposed?",
+  "correctAnswer": "1998",
+  "wordLimit": 1
+}
+
+Mix all 4 types.`,
+      'listening': `Generate ${count} IELTS Listening questions with OFFICIAL TYPES. Return JSON:
+
+1. Multiple Choice:
+{
+  "id": "q1",
+  "type": "listening",
+  "audioText": "Conversation or monologue 40-60 words",
+  "question": "What is the speaker's main point?",
+  "options": [
+    {"id": "a", "text": "option A", "correct": false},
+    {"id": "b", "text": "option B", "correct": true},
+    {"id": "c", "text": "option C", "correct": false}
+  ]
+}
+
+2. Form/Note Completion (specific information):
+{
+  "id": "q2",
+  "type": "completion",
+  "audioText": "Conversation with specific details (names, dates, places)",
+  "sentence": "The appointment is scheduled for ____.",
+  "correctAnswer": "next Tuesday",
+  "question": "Complete with NO MORE THAN TWO WORDS",
+  "wordLimit": 2
+}`,
+      'writing': `Generate ${count} IELTS Writing prompts. Return JSON:
+
+Task 1 (describe visual data):
+{
   "id": "q1",
   "type": "writing",
-  "task": "Task 1" or "Task 2",
-  "prompt": "Detailed writing prompt with clear instructions",
+  "task": "Task 1",
+  "prompt": "The graph shows the percentage of internet users in five countries from 2010 to 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+  "wordLimit": 150,
+  "timeLimit": 20,
+  "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+}
+
+Task 2 (argumentative essay):
+{
+  "id": "q2",
+  "type": "writing",
+  "task": "Task 2",
+  "prompt": "Some people believe that technology has made our lives more complicated. Others think it has made things easier. Discuss both views and give your own opinion.",
   "wordLimit": 250,
   "timeLimit": 40,
-  "rubric": "Criteria: Task Response, Coherence, Vocabulary, Grammar"
-}]`,
-      'speaking': `Generate ${count} IELTS Speaking questions. Return JSON:
-[{
+  "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+}`,
+      'speaking': `Generate ${count} IELTS Speaking questions across 3 parts. Return JSON:
+
+Part 1 (4-5 minutes, personal questions):
+{
   "id": "q1",
   "type": "speaking",
-  "part": "Part 1" or "Part 2" or "Part 3",
-  "question": "The speaking question or topic",
+  "part": "Part 1",
+  "question": "Do you enjoy reading books? Why or why not?",
+  "preparationTime": 0,
+  "speakingTime": 20,
+  "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+}
+
+Part 2 (2-minute monologue with cue card):
+{
+  "id": "q2",
+  "type": "speaking",
+  "part": "Part 2",
+  "question": "Describe a place you visited that left a strong impression on you. You should say: where it was, when you went there, what you did there, and explain why it was memorable.",
   "preparationTime": 60,
   "speakingTime": 120,
-  "rubric": "Criteria: Fluency, Vocabulary, Grammar, Pronunciation"
-}]`
+  "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+}
+
+Part 3 (4-5 minutes, abstract discussion):
+{
+  "id": "q3",
+  "type": "speaking",
+  "part": "Part 3",
+  "question": "How has tourism changed in your country over the past 20 years?",
+  "preparationTime": 0,
+  "speakingTime": 40,
+  "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+}`
     }
   }
 

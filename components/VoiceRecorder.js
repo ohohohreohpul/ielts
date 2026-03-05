@@ -3,11 +3,12 @@
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Mic, MicOff, Circle } from 'lucide-react'
+import { Mic, Circle, Check } from 'lucide-react'
 
-export default function VoiceRecorder({ onRecordingComplete }) {
+export default function VoiceRecorder({ onRecordingComplete, hasRecording }) {
   const [recording, setRecording] = useState(false)
   const [duration, setDuration] = useState(0)
+  const [justRecorded, setJustRecorded] = useState(false)
   const mediaRecorderRef = useRef(null)
   const chunksRef = useRef([])
   const timerRef = useRef(null)
@@ -25,12 +26,14 @@ export default function VoiceRecorder({ onRecordingComplete }) {
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
         onRecordingComplete?.(blob)
+        setJustRecorded(true)
         stream.getTracks().forEach(track => track.stop())
       }
 
       mediaRecorderRef.current.start()
       setRecording(true)
       setDuration(0)
+      setJustRecorded(false)
 
       timerRef.current = setInterval(() => {
         setDuration(d => d + 1)
@@ -64,22 +67,26 @@ export default function VoiceRecorder({ onRecordingComplete }) {
             className={`w-20 h-20 rounded-full mb-4 ${
               recording 
                 ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                : justRecorded || hasRecording
+                ? 'bg-green-500 hover:bg-green-600'
                 : 'bg-orange-500 hover:bg-orange-600'
             }`}
           >
             {recording ? (
               <Circle className="w-8 h-8 fill-current" />
+            ) : justRecorded || hasRecording ? (
+              <Check className="w-8 h-8" />
             ) : (
               <Mic className="w-8 h-8" />
             )}
           </Button>
           
           <div className="font-semibold text-lg text-orange-900 mb-1">
-            {recording ? formatDuration(duration) : 'พร้อมบันทึก'}
+            {recording ? formatDuration(duration) : justRecorded || hasRecording ? 'บันทึกเสร็จแล้ว' : 'พร้อมบันทึก'}
           </div>
           
           <p className="text-sm text-orange-700">
-            {recording ? 'กดเพื่อหยุดบันทึก' : 'กดไมโครโฟนเพื่อเริ่มพูด'}
+            {recording ? 'กดเพื่อหยุดบันทึก' : justRecorded || hasRecording ? 'กดอีกครั้งเพื่อบันทึกใหม่' : 'กดไมโครโฟนเพื่อเริ่มพูด'}
           </p>
         </div>
       </CardContent>

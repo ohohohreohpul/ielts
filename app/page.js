@@ -107,8 +107,12 @@ export default function App() {
         }
       }
       setShowFeedback(true)
-    } else if (qType === 'fill-in-blank') {
-      const correct = textAnswer.trim().toLowerCase() === currentQuestion.correctAnswer.toLowerCase()
+    } else if (qType === 'completion' || qType === 'fill-in-blank') {
+      // IELTS completion or TOEIC sentence completion
+      const userAns = textAnswer.trim().toLowerCase()
+      const correctAns = currentQuestion.correctAnswer.toLowerCase()
+      // Check if answer matches (flexible matching for word limit)
+      const correct = userAns === correctAns || userAns.includes(correctAns) || correctAns.includes(userAns)
       setIsCorrect(correct)
       if (!correct) {
         const newHearts = hearts - 1
@@ -486,8 +490,8 @@ export default function App() {
               </div>
             )}
 
-            {/* Fill in the Blank */}
-            {currentQuestion.type === 'fill-in-blank' && (
+            {/* Completion / Fill-in-Blank (IELTS Completion or TOEIC Part 5) */}
+            {(currentQuestion.type === 'completion' || currentQuestion.type === 'fill-in-blank') && (
               <div className="space-y-6">
                 {currentQuestion.passage && (
                   <Card className="bg-white shadow-lg">
@@ -497,11 +501,13 @@ export default function App() {
                   </Card>
                 )}
                 
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">{currentQuestion.question || 'Complete the sentence'}</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  {currentQuestion.question || 'Complete the sentence'}
+                </h2>
                 
                 <Card className="bg-blue-50 border-blue-200">
                   <CardContent className="p-6">
-                    <p className="text-lg text-gray-800 mb-4">{currentQuestion.sentence}</p>
+                    <p className="text-lg text-gray-800 mb-4 whitespace-pre-wrap">{currentQuestion.sentence}</p>
                   </CardContent>
                 </Card>
 
@@ -510,12 +516,14 @@ export default function App() {
                   <Input 
                     value={textAnswer} 
                     onChange={(e) => setTextAnswer(e.target.value)} 
-                    placeholder="พิมพ์คำตอบที่นี่..." 
+                    placeholder={currentQuestion.wordLimit ? `ไม่เกิน ${currentQuestion.wordLimit} คำ` : "พิมพ์คำตอบที่นี่..."} 
                     className="text-lg p-4"
                     disabled={showFeedback}
                   />
                   {currentQuestion.wordLimit && (
-                    <p className="text-sm text-gray-500 mt-2">ไม่เกิน {currentQuestion.wordLimit} คำ</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      ตอบด้วย NO MORE THAN {currentQuestion.wordLimit === 1 ? 'ONE WORD' : `${currentQuestion.wordLimit} WORDS`}
+                    </p>
                   )}
                 </div>
 
@@ -689,7 +697,10 @@ export default function App() {
                   </CardContent>
                 </Card>
 
-                <VoiceRecorder onRecordingComplete={(blob) => setRecordedAudio(blob)} />
+                <VoiceRecorder 
+                  onRecordingComplete={(blob) => setRecordedAudio(blob)} 
+                  hasRecording={!!recordedAudio}
+                />
 
                 {showFeedback && aiScore && (
                   <Card className="bg-gradient-to-br from-orange-50 to-pink-50 border-orange-200">
@@ -748,7 +759,7 @@ export default function App() {
                 (currentQuestion.type === 'multiple-choice' && !selectedAnswer) ||
                 (currentQuestion.type === 'reading' && !selectedAnswer) ||
                 (currentQuestion.type === 'listening' && !selectedAnswer) ||
-                (currentQuestion.type === 'fill-in-blank' && !textAnswer.trim()) ||
+                ((currentQuestion.type === 'fill-in-blank' || currentQuestion.type === 'completion') && !textAnswer.trim()) ||
                 (currentQuestion.type === 'true-false-notgiven' && !selectedAnswer) ||
                 (currentQuestion.type === 'short-answer' && !textAnswer.trim()) ||
                 (currentQuestion.type === 'writing' && writingAnswer.split(/\\s+/).filter(w => w).length < 50) ||
