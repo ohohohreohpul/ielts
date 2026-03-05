@@ -371,7 +371,7 @@ async function handleRoute(request, { params }) {
         const prompt = buildExamPrompt(examType, section, count)
         
         const geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${config.geminiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${config.geminiKey}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
