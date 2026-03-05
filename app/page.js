@@ -11,7 +11,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader2 } from 'lucide-react'
 import AudioPlayer from '@/components/AudioPlayer'
 import VoiceRecorder from '@/components/VoiceRecorder'
-import PreloaderScreen from '@/components/PreloaderScreen'
 
 const GOALS = [
   { id: 'toeic', icon: Target, title: 'TOEIC 700+', description: 'การฟังและการอ่านภาษาอังกฤษธุรกิจ', sections: ['reading', 'listening'] },
@@ -42,8 +41,8 @@ export default function App() {
   const [showPaywall, setShowPaywall] = useState(false)
   const [completedQuestions, setCompletedQuestions] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [loadingTip, setLoadingTip] = useState(0)
   const [scoring, setScoring] = useState(false)
-  const [showPreloader, setShowPreloader] = useState(false)
   const [recordedAudio, setRecordedAudio] = useState(null)
 
   const currentQuestion = questions[currentQuestionIndex]
@@ -55,12 +54,13 @@ export default function App() {
 
   const startLesson = async (section) => {
     setSelectedSection(section)
-    setShowPreloader(true)
-  }
-
-  const handlePreloaderComplete = async () => {
-    setShowPreloader(false)
     setLoading(true)
+    setLoadingTip(0)
+    
+    // Animate tips while loading
+    const tipInterval = setInterval(() => {
+      setLoadingTip(prev => (prev + 1) % 4)
+    }, 2000)
     
     try {
       const response = await fetch('/api/ai/generate-questions', {
@@ -68,7 +68,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           examType: selectedGoal === 'toeic' ? 'TOEIC' : 'IELTS',
-          section: selectedSection,
+          section: section,
           count: 5
         })
       })
@@ -79,11 +79,12 @@ export default function App() {
       }
 
       const data = await response.json()
+      clearInterval(tipInterval)
       setQuestions(data.questions || [])
       setStage('lesson')
     } catch (error) {
+      clearInterval(tipInterval)
       alert(`เกิดข้อผิดพลาด: ${error.message}\n\nกรุณาตั้งค่า Gemini API Key ที่หน้า Admin`)
-      setStage('sectionSelect')
     } finally {
       setLoading(false)
     }
@@ -279,6 +280,13 @@ export default function App() {
   if (stage === 'sectionSelect') {
     const selectedGoalData = GOALS.find(g => g.id === selectedGoal)
     
+    const tips = {
+      reading: ['อ่านคำถามก่อนอ่านบทความ', 'ใช้เทคนิค Skimming และ Scanning', 'จับใจความสำคัญของแต่ละย่อหน้า', 'อย่าติดอยู่กับคำที่ไม่รู้จัก'],
+      listening: ['อ่านคำถามให้ทันก่อนเสียงเริ่ม', 'จดบันทึกคำสำคัญขณะฟัง', 'ระวังคำพ้อง (synonyms)', 'อย่าหยุดคิดนาน - ไปข้อต่อไปเลย'],
+      writing: ['วางแผนโครงร่างก่อนเขียน', 'ใช้เวลาวางแผน เขียน และตรวจ', 'ใช้ linking words เชื่อมประโยค', 'เขียนให้ครบตามจำนวนคำ'],
+      speaking: ['ใช้เวลาเตรียมอย่างเต็มที่', 'พูดชัดเจนและช้าพอ', 'ขยายความคำตอบ', 'อย่ากลัวพูดผิด']
+    }
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
@@ -289,41 +297,70 @@ export default function App() {
             <p className="text-gray-600">เลือกส่วนที่ต้องการฝึก</p>
           </div>
 
-          <div className="space-y-4">
-            {selectedGoalData.sections.map((section, index) => {
-              const sectionInfo = SECTION_INFO[section]
-              return (
-                <motion.div key={section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
-                  <Card className="cursor-pointer transition-all hover:shadow-lg hover:border-gray-200 border-2 border-transparent" onClick={() => !loading && startLesson(section)}>
-                    <CardContent className="flex items-center p-6">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center bg-${sectionInfo.color}-100`}>
-                        <sectionInfo.icon className={`w-7 h-7 text-${sectionInfo.color}-600`} />
-                      </div>
-                      <div className="ml-4 flex-1">
-                        <h3 className="font-semibold text-lg text-gray-900">{sectionInfo.label}</h3>
-                        <p className="text-sm text-gray-600">5 คำถามจาก AI</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )
-            })}
-          </div>
+          {!loading && (
+            <div className="space-y-4">
+              {selectedGoalData.sections.map((section, index) => {
+                const sectionInfo = SECTION_INFO[section]
+                return (
+                  <motion.div key={section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
+                    <Card className="cursor-pointer transition-all hover:shadow-lg hover:border-gray-200 border-2 border-transparent" onClick={() => startLesson(section)}>
+                      <CardContent className="flex items-center p-6">
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center bg-${sectionInfo.color}-100`}>
+                          <sectionInfo.icon className={`w-7 h-7 text-${sectionInfo.color}-600`} />
+                        </div>
+                        <div className="ml-4 flex-1">
+                          <h3 className="font-semibold text-lg text-gray-900">{sectionInfo.label}</h3>
+                          <p className="text-sm text-gray-600">5 คำถามจาก AI</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
 
           {loading && (
-            <div className="text-center mt-8">
-              <Loader2 className="inline-block animate-spin h-8 w-8 text-green-500" />
-              <p className="mt-2 text-gray-600">กำลังโหลด...</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center"
+            >
+              <div className="mb-8">
+                <Loader2 className="inline-block animate-spin h-16 w-16 text-green-500 mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">กำลังสร้างคำถามด้วย AI</h2>
+                <p className="text-gray-600">กรุณารอสักครู่...</p>
+              </div>
+
+              <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <h3 className="font-semibold text-gray-900 mb-2">เคล็ดลับ:</h3>
+                      <AnimatePresence mode="wait">
+                        <motion.p
+                          key={loadingTip}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.3 }}
+                          className="text-gray-700"
+                        >
+                          {tips[selectedSection]?.[loadingTip] || 'กำลังเตรียมข้อสอบ...'}
+                        </motion.p>
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
         </motion.div>
       </div>
     )
-  }
-
-  // Preloader
-  if (showPreloader) {
-    return <PreloaderScreen section={selectedSection} examType={selectedGoal} onComplete={handlePreloaderComplete} />
   }
 
   // Complete
