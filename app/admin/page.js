@@ -12,12 +12,16 @@ import { Settings, Key, Save, CheckCircle, AlertCircle, Eye, EyeOff } from 'luci
 export default function AdminPage() {
   const [geminiKey, setGeminiKey] = useState('')
   const [googleTTSKey, setGoogleTTSKey] = useState('')
+  const [elevenLabsKey, setElevenLabsKey] = useState('')
+  const [openAIKey, setOpenAIKey] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [showGeminiKey, setShowGeminiKey] = useState(false)
   const [showTTSKey, setShowTTSKey] = useState(false)
-  const [currentKeys, setCurrentKeys] = useState({ gemini: false, googleTTS: false })
+  const [showElevenLabsKey, setShowElevenLabsKey] = useState(false)
+  const [showOpenAIKey, setShowOpenAIKey] = useState(false)
+  const [currentKeys, setCurrentKeys] = useState({ gemini: false, googleTTS: false, elevenLabs: false, openAI: false })
 
   useEffect(() => {
     loadCurrentKeys()
@@ -46,7 +50,9 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           geminiKey: geminiKey || undefined,
-          googleTTSKey: googleTTSKey || undefined
+          googleTTSKey: googleTTSKey || undefined,
+          elevenLabsKey: elevenLabsKey || undefined,
+          openAIKey: openAIKey || undefined
         })
       })
 
@@ -217,6 +223,90 @@ export default function AdminPage() {
                   className="text-sm text-blue-600 hover:underline inline-block"
                 >
                   Get Google Cloud API key →
+                </a>
+              </div>
+
+              {/* ElevenLabs API Key */}
+              <div className="space-y-2">
+                <Label htmlFor="elevenlabs-key" className="text-base font-semibold">
+                  ElevenLabs API Key (แนะนำ)
+                  {currentKeys.elevenLabs && (
+                    <span className="ml-2 text-xs font-normal text-green-600 bg-green-50 px-2 py-1 rounded">
+                      ✓ Configured
+                    </span>
+                  )}
+                </Label>
+                <p className="text-sm text-gray-600 mb-2">
+                  เสียงธรรมชาติสำหรับ Listening questions (Free: 10k chars/month)
+                </p>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="elevenlabs-key"
+                      type={showElevenLabsKey ? 'text' : 'password'}
+                      value={elevenLabsKey}
+                      onChange={(e) => setElevenLabsKey(e.target.value)}
+                      placeholder="sk_..."
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowElevenLabsKey(!showElevenLabsKey)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showElevenLabsKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <a
+                  href="https://elevenlabs.io/app/settings/api-keys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-600 hover:underline inline-block"
+                >
+                  Get ElevenLabs API key →
+                </a>
+              </div>
+
+              {/* OpenAI API Key */}
+              <div className="space-y-2">
+                <Label htmlFor="openai-key" className="text-base font-semibold">
+                  OpenAI API Key (แนะนำ)
+                  {currentKeys.openAI && (
+                    <span className="ml-2 text-xs font-normal text-green-600 bg-green-50 px-2 py-1 rounded">
+                      ✓ Configured
+                    </span>
+                  )}
+                </Label>
+                <p className="text-sm text-gray-600 mb-2">
+                  Whisper STT สำหรับ Speaking assessment ($0.006/minute)
+                </p>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="openai-key"
+                      type={showOpenAIKey ? 'text' : 'password'}
+                      value={openAIKey}
+                      onChange={(e) => setOpenAIKey(e.target.value)}
+                      placeholder="sk-..."
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowOpenAIKey(!showOpenAIKey)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showOpenAIKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <a
+                  href="https://platform.openai.com/api-keys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-600 hover:underline inline-block"
+                >
+                  Get OpenAI API key →
                 </a>
               </div>
 
