@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb'
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
+import crypto from 'crypto'
 
 // MongoDB connection
 let client
@@ -13,6 +14,16 @@ async function connectToMongo() {
     db = client.db(process.env.DB_NAME)
   }
   return db
+}
+
+// Helper function to hash password
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex')
+}
+
+// Helper function to create JWT-like token
+function createToken(userId) {
+  return crypto.randomBytes(32).toString('hex')
 }
 
 // Helper function to handle CORS
@@ -300,9 +311,159 @@ async function handleRoute(request, { params }) {
           '/generate-exam',
           '/lessons',
           '/progress',
-          '/user'
+          '/user',
+          '/auth/signup',
+          '/auth/login'
         ]
       }))
+    }
+
+    // Auth: Signup
+    if (route === '/auth/signup' && method === 'POST') {
+      const body = await request.json()
+      const { name, email, password } = body
+
+      if (!name || !email || !password) {
+        return handleCORS(NextResponse.json(
+          { error: "Name, email and password are required" },
+          { status: 400 }
+        ))
+      }
+
+      // Check if user exists
+      const existingUser = await db.collection('users').findOne({ email })
+      if (existingUser) {
+        return handleCORS(NextResponse.json(
+          { error: "อีเมลนี้ถูกใช้งานแล้ว" },
+          { status: 400 }
+        ))
+      }
+
+      // Create new user
+      const userId = uuidv4()
+      const user = {
+        id: userId,
+        name,
+        email,
+        password: hashPassword(password),
+        streak: 0,
+        hearts: 5,
+        totalXP: 0,
+        createdAt: new Date(),
+        lastLoginAt: new Date()
+      }
+
+      await db.collection('users').insertOne(user)
+
+      // Create token
+      const token = createToken(userId)
+      await db.collection('sessions').insertOne({
+        id: uuidv4(),
+        userId,
+        token,
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+      })
+
+      // Return user (without password)
+      const { password: _, _id, ...userResponse } = user
+      return handleCORS(NextResponse.json({
+        user: userResponse,
+        token
+      }))
+    }
+
+    // Auth: Login
+    if (route === '/auth/login' && method === 'POST') {
+      const body = await request.json()
+      const { email, password } = body
+
+      if (!email || !password) {
+        return handleCORS(NextResponse.json(
+          { error: "Email and password are required" },
+          { status: 400 }
+        ))
+      }
+
+      // Find user
+      const user = await db.collection('users').findOne({ email })
+      if (!user || user.password !== hashPassword(password)) {
+        return handleCORS(NextResponse.json(
+          { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" },
+          { status: 401 }
+        ))
+      }
+
+      // Update last login
+      await db.collection('users').updateOne(
+        { id: user.id },
+        { $set: { lastLoginAt: new Date() } }
+      )
+
+      // Create token
+      const token = createToken(user.id)
+      await db.collection('sessions').insertOne({
+        id: uuidv4(),
+        userId: user.id,
+        token,
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+      })
+
+      // Return user (without password)
+      const { password: _, _id, ...userResponse } = user
+      return handleCORS(NextResponse.json({
+        user: userResponse,
+        token
+      }))
+    }
+
+    // Auth: Logout
+    if (route === '/auth/logout' && method === 'POST') {
+      const authHeader = request.headers.get('Authorization')
+      const token = authHeader?.replace('Bearer ', '')
+
+      if (token) {
+        await db.collection('sessions').deleteMany({ token })
+      }
+
+      return handleCORS(NextResponse.json({ success: true }))
+    }
+
+    // Auth: Get Session
+    if (route === '/auth/session' && method === 'GET') {
+      const authHeader = request.headers.get('Authorization')
+      const token = authHeader?.replace('Bearer ', '')
+
+      if (!token) {
+        return handleCORS(NextResponse.json(
+          { error: "Not authenticated" },
+          { status: 401 }
+        ))
+      }
+
+      const session = await db.collection('sessions').findOne({
+        token,
+        expiresAt: { $gt: new Date() }
+      })
+
+      if (!session) {
+        return handleCORS(NextResponse.json(
+          { error: "Invalid or expired session" },
+          { status: 401 }
+        ))
+      }
+
+      const user = await db.collection('users').findOne({ id: session.userId })
+      if (!user) {
+        return handleCORS(NextResponse.json(
+          { error: "User not found" },
+          { status: 404 }
+        ))
+      }
+
+      const { password: _, _id, ...userResponse } = user
+      return handleCORS(NextResponse.json({ user: userResponse }))
     }
 
     // Generate AI Mock Exam (simulated with delay)
