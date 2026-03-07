@@ -256,8 +256,8 @@ export default function DashboardPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="bg-white rounded-t-3xl w-full max-w-md overflow-hidden"
-              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
+              className="bg-white rounded-t-3xl w-full max-w-md overflow-y-auto"
+              style={{ maxHeight: '85vh', paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
               onClick={e => e.stopPropagation()}
             >
               {/* Modal Header */}
