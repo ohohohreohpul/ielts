@@ -755,6 +755,12 @@ async function handleRoute(request, { params }) {
       const body = await request.json()
       const { examType, section, count = 5 } = body
 
+      // Debug logging
+      console.log('=== AI Generate Questions ===')
+      console.log('examType:', examType)
+      console.log('section:', section)
+      console.log('count:', count)
+
       // Get API key: use admin-configured key first, fallback to Emergent key
       const config = await db.collection('config').findOne({ type: 'api_keys' })
       const apiKey = config?.geminiKey || process.env.EMERGENT_LLM_KEY
