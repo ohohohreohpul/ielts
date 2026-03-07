@@ -3,8 +3,27 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Star, Trophy, BookOpen, Headphones, PenTool, Mic, CheckCircle2, XCircle, ChevronDown, ChevronUp, Filter } from 'lucide-react'
+import { Trophy, BookOpen, Headphones, PenTool, Mic, CheckCircle2, XCircle, ChevronDown, ChevronUp, Filter, TrendingUp } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
+
+const EXAM_META = {
+  'TOEIC':   { emoji: '📘', name: 'TOEIC' },
+  'toeic':   { emoji: '📘', name: 'TOEIC' },
+  'Grammar': { emoji: '📝', name: 'Grammar' },
+  'grammar': { emoji: '📝', name: 'Grammar' },
+  'IELTS':   { emoji: '🇬🇧', name: 'IELTS' },
+  'ielts':   { emoji: '🇬🇧', name: 'IELTS' },
+  'TOEFL':   { emoji: '🇺🇸', name: 'TOEFL' },
+  'toefl':   { emoji: '🇺🇸', name: 'TOEFL' },
+  'CU-TEP':  { emoji: '🏛️', name: 'CU-TEP' },
+  'cutep':   { emoji: '🏛️', name: 'CU-TEP' },
+  'TU-GET':  { emoji: '🎓', name: 'TU-GET' },
+  'tuget':   { emoji: '🎓', name: 'TU-GET' },
+  'O-NET':   { emoji: '📖', name: 'O-NET' },
+  'onet':    { emoji: '📖', name: 'O-NET' },
+  'OCSC':    { emoji: '🏢', name: 'กพ.' },
+  'ocsc':    { emoji: '🏢', name: 'กพ.' },
+}
 
 const SECTION_ICONS = {
   reading: BookOpen,
@@ -19,6 +38,18 @@ const SECTION_LABELS = {
   writing: 'Writing',
   speaking: 'Speaking',
 }
+
+const EXAM_FILTERS = [
+  { key: 'all', label: 'ทั้งหมด' },
+  { key: 'TOEIC', label: 'TOEIC', emoji: '📘' },
+  { key: 'Grammar', label: 'Grammar', emoji: '📝' },
+  { key: 'IELTS', label: 'IELTS', emoji: '🇬🇧' },
+  { key: 'TOEFL', label: 'TOEFL', emoji: '🇺🇸' },
+  { key: 'CU-TEP', label: 'CU-TEP', emoji: '🏛️' },
+  { key: 'TU-GET', label: 'TU-GET', emoji: '🎓' },
+  { key: 'O-NET', label: 'O-NET', emoji: '📖' },
+  { key: 'OCSC', label: 'กพ.', emoji: '🏢' },
+]
 
 export default function ProgressPage() {
   const router = useRouter()
@@ -68,8 +99,8 @@ export default function ProgressPage() {
     }
   }
 
-  const scoreColor = (s) => s >= 80 ? 'text-green-500' : s >= 60 ? 'text-yellow-500' : 'text-red-500'
-  const scoreBg = (s) => s >= 80 ? 'bg-green-50 border-green-100' : s >= 60 ? 'bg-yellow-50 border-yellow-100' : 'bg-red-50 border-red-100'
+  const scoreColor = (s) => s >= 80 ? 'text-green-600' : s >= 60 ? 'text-yellow-600' : 'text-red-500'
+  const scoreBg = (s) => s >= 80 ? 'bg-green-50' : s >= 60 ? 'bg-yellow-50' : 'bg-red-50'
 
   const formatDate = (dateStr) => {
     const d = new Date(dateStr)
@@ -86,10 +117,13 @@ export default function ProgressPage() {
     return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })
   }
 
-  // Stats from history
+  const getExamMeta = (examType) => EXAM_META[examType] || { emoji: '📝', name: examType }
+
+  // Stats
   const totalExams = history.length
   const avgScore = totalExams > 0 ? Math.round(history.reduce((s, h) => s + h.score, 0) / totalExams) : 0
   const totalCorrect = history.reduce((s, h) => s + (h.correctCount || 0), 0)
+  const totalQuestions = history.reduce((s, h) => s + (h.totalQuestions || 0), 0)
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
@@ -101,78 +135,88 @@ export default function ProgressPage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-14 pb-6 px-5">
+      <div className="bg-orange-500 pt-12 pb-5 px-5">
         <h1 className="text-2xl font-black text-white">ความก้าวหน้า</h1>
         <p className="text-white/70 text-sm font-medium mt-1">ประวัติการฝึกสอบทั้งหมด</p>
       </div>
 
       <div className="px-4 pt-5 space-y-4">
 
-        {/* Top Stats */}
+        {/* Stats Cards */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="grid grid-cols-3 divide-x divide-gray-100">
-              {[
-                { icon: Trophy, val: totalExams, label: 'ข้อสอบ', color: 'text-orange-500' },
-                { icon: Star, val: `${avgScore}%`, label: 'คะแนนเฉลี่ย', color: 'text-yellow-500' },
-                { icon: CheckCircle2, val: totalCorrect, label: 'ข้อถูก', color: 'text-green-500' },
-              ].map(({ icon: Icon, val, label, color }, i) => (
-                <div key={i} className="py-5 text-center">
-                  <Icon className={`w-5 h-5 ${color} mx-auto mb-1`} />
-                  <p className="text-xl font-black text-gray-900">{val}</p>
-                  <p className="text-xs text-gray-400 font-semibold">{label}</p>
-                </div>
-              ))}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Trophy className="w-5 h-5 text-orange-500" />
+                <span className="text-xs font-bold text-gray-400">ทำข้อสอบ</span>
+              </div>
+              <p className="text-3xl font-black text-gray-900">{totalExams}</p>
+              <p className="text-xs text-gray-400 mt-0.5">ชุดข้อสอบ</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5 text-green-500" />
+                <span className="text-xs font-bold text-gray-400">คะแนนเฉลี่ย</span>
+              </div>
+              <p className={`text-3xl font-black ${avgScore > 0 ? scoreColor(avgScore) : 'text-gray-300'}`}>{avgScore > 0 ? `${avgScore}%` : '-'}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{totalCorrect}/{totalQuestions} ข้อถูก</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Filters */}
+        {/* Exam Type Filters */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             <Filter className="w-4 h-4 text-gray-400" />
-            <p className="font-bold text-gray-500 text-sm">กรองผลลัพธ์</p>
+            <p className="font-bold text-gray-500 text-xs">ข้อสอบ</p>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {/* Exam type filters */}
-            {['all', 'TOEIC', 'IELTS'].map(exam => (
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {EXAM_FILTERS.map(f => (
               <button
-                key={exam}
-                onClick={() => applyFilter(exam, filterSection)}
-                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
-                  filterExam === exam
+                key={f.key}
+                onClick={() => applyFilter(f.key, filterSection)}
+                className={`px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-colors flex-shrink-0 ${
+                  filterExam === f.key
                     ? 'bg-orange-500 text-white'
                     : 'bg-white text-gray-600 border border-gray-200'
                 }`}
               >
-                {exam === 'all' ? 'ทั้งหมด' : exam}
+                {f.emoji && <span>{f.emoji}</span>}
+                {f.label}
               </button>
             ))}
-            <div className="w-px bg-gray-200 mx-1" />
-            {/* Section filters */}
-            {['all', 'reading', 'listening', 'writing', 'speaking'].map(sec => {
-              const Icon = SECTION_ICONS[sec]
-              return (
-                <button
-                  key={sec}
-                  onClick={() => applyFilter(filterExam, sec)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
-                    filterSection === sec
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-white text-gray-600 border border-gray-200'
-                  }`}
-                >
-                  {Icon && <Icon className="w-3.5 h-3.5" />}
-                  {sec === 'all' ? 'ทุก Section' : SECTION_LABELS[sec]}
-                </button>
-              )
-            })}
+          </div>
+        </motion.div>
+
+        {/* Section Filters */}
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {[
+              { key: 'all', label: 'ทุก Section' },
+              { key: 'reading', icon: BookOpen, label: 'Reading' },
+              { key: 'listening', icon: Headphones, label: 'Listening' },
+              { key: 'writing', icon: PenTool, label: 'Writing' },
+              { key: 'speaking', icon: Mic, label: 'Speaking' },
+            ].map(sec => (
+              <button
+                key={sec.key}
+                onClick={() => applyFilter(filterExam, sec.key)}
+                className={`px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-colors flex-shrink-0 ${
+                  filterSection === sec.key
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-white text-gray-600 border border-gray-200'
+                }`}
+              >
+                {sec.icon && <sec.icon className="w-3.5 h-3.5" />}
+                {sec.label}
+              </button>
+            ))}
           </div>
         </motion.div>
 
         {/* History List */}
         <div>
-          <p className="font-black text-gray-900 mb-3">📋 ประวัติการฝึก ({history.length})</p>
+          <p className="font-black text-gray-900 mb-3">📋 ประวัติ ({history.length})</p>
           
           {history.length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
@@ -181,7 +225,7 @@ export default function ProgressPage() {
               <p className="text-sm text-gray-400 mb-4">เริ่มฝึกสอบเพื่อดูประวัติที่นี่</p>
               <button
                 onClick={() => router.push('/practice')}
-                className="bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm"
+                className="bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm active:opacity-80"
               >
                 เริ่มฝึกสอบ
               </button>
@@ -190,6 +234,7 @@ export default function ProgressPage() {
             <div className="space-y-3">
               {history.map((item, i) => {
                 const SectionIcon = SECTION_ICONS[item.section] || BookOpen
+                const examMeta = getExamMeta(item.examType)
                 const isExpanded = expandedId === item.id
 
                 return (
@@ -202,18 +247,18 @@ export default function ProgressPage() {
                     {/* Summary Row */}
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                      className={`w-full bg-white rounded-2xl border shadow-sm p-4 text-left transition-colors ${isExpanded ? 'border-orange-200' : 'border-gray-100'}`}
+                      className={`w-full bg-white rounded-2xl border-2 shadow-sm p-4 text-left transition-colors ${isExpanded ? 'border-orange-200' : 'border-gray-100'}`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${scoreBg(item.score)}`}>
-                          <SectionIcon className={`w-5 h-5 ${scoreColor(item.score)}`} />
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${scoreBg(item.score)}`}>
+                          <span className="text-xl">{examMeta.emoji}</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-0.5 rounded">{item.examType}</span>
-                            <span className="text-xs font-medium text-gray-400">{SECTION_LABELS[item.section] || item.section}</span>
+                            <span className="font-bold text-gray-900 text-sm">{examMeta.name}</span>
+                            <span className="text-xs text-gray-400">· {SECTION_LABELS[item.section] || item.section}</span>
                           </div>
-                          <p className="text-xs text-gray-400 mt-1">{formatDate(item.completedAt)} · {item.correctCount}/{item.totalQuestions} ข้อถูก</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{formatDate(item.completedAt)} · {item.correctCount}/{item.totalQuestions} ข้อถูก</p>
                         </div>
                         <div className="text-right flex-shrink-0 flex items-center gap-2">
                           <p className={`text-xl font-black ${scoreColor(item.score)}`}>{item.score}%</p>
@@ -232,7 +277,7 @@ export default function ProgressPage() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <div className="bg-white border border-t-0 border-gray-100 rounded-b-2xl px-4 pb-4 space-y-3 -mt-2 pt-4">
+                          <div className="bg-white border-2 border-t-0 border-gray-100 rounded-b-2xl px-4 pb-4 space-y-3 -mt-2 pt-4">
                             {item.questions.map((q, qi) => (
                               <div key={qi} className={`rounded-xl p-3 ${q.isCorrect ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'}`}>
                                 <div className="flex items-start gap-2 mb-2">
@@ -240,26 +285,26 @@ export default function ProgressPage() {
                                     ? <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                                     : <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                                   }
-                                  <p className="text-sm font-medium text-gray-800 line-clamp-2">{q.question || `ข้อ ${qi + 1}`}</p>
+                                  <p className="text-sm font-medium text-gray-800 line-clamp-2">{q.question || q.sentence || `ข้อ ${qi + 1}`}</p>
                                 </div>
                                 
                                 <div className="ml-6 space-y-1">
                                   <div className="flex gap-2 text-xs">
-                                    <span className="text-gray-500 font-medium">คำตอบของคุณ:</span>
+                                    <span className="text-gray-500 font-medium">คำตอบ:</span>
                                     <span className={`font-bold ${q.isCorrect ? 'text-green-700' : 'text-red-700'} line-clamp-1`}>
                                       {q.type === 'writing' ? `${(q.userAnswer || '').split(/\s+/).filter(w=>w).length} คำ` : (q.userAnswer || '-')}
                                     </span>
                                   </div>
                                   {!q.isCorrect && q.correctAnswer && q.correctAnswer !== '-' && (
                                     <div className="flex gap-2 text-xs">
-                                      <span className="text-gray-500 font-medium">คำตอบที่ถูก:</span>
+                                      <span className="text-gray-500 font-medium">เฉลย:</span>
                                       <span className="font-bold text-green-700">{q.correctAnswer}</span>
                                     </div>
                                   )}
                                   {q.aiScore && (
                                     <div className="mt-2 bg-white rounded-lg p-2.5 border border-gray-100">
                                       <div className="flex items-center justify-between mb-1">
-                                        <span className="text-xs font-bold text-gray-600">คะแนน AI</span>
+                                        <span className="text-xs font-bold text-gray-600">AI Score</span>
                                         <span className="text-lg font-black text-orange-500">{q.aiScore.score}</span>
                                       </div>
                                       {q.aiScore.feedback && (
@@ -286,6 +331,14 @@ export default function ProgressPage() {
                                 </div>
                               </div>
                             ))}
+
+                            {/* Retry Button */}
+                            <button
+                              onClick={() => router.push(`/?exam=${item.examType.toLowerCase()}&section=${item.section}`)}
+                              className="w-full bg-orange-50 text-orange-600 font-bold py-3 rounded-xl text-sm active:opacity-70"
+                            >
+                              🔄 ฝึกอีกครั้ง
+                            </button>
                           </div>
                         </motion.div>
                       )}
@@ -296,8 +349,8 @@ export default function ProgressPage() {
             </div>
           )}
         </div>
-
       </div>
+
       <BottomNav />
     </div>
   )
