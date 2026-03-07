@@ -1,67 +1,39 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-import { useRouter } from 'next/navigation'
-import { Home, BookOpen, BarChart3, User } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { usePathname, useRouter } from 'next/navigation'
+import { Home, BookOpen, BarChart2, User } from 'lucide-react'
 
-const NAV_ITEMS = [
-  { id: 'home', label: 'หน้าหลัก', icon: Home, href: '/dashboard' },
-  { id: 'practice', label: 'ฝึกสอบ', icon: BookOpen, href: '/practice' },
-  { id: 'progress', label: 'ความก้าวหน้า', icon: BarChart3, href: '/progress' },
-  { id: 'profile', label: 'โปรไฟล์', icon: User, href: '/profile' }
+const TABS = [
+  { href: '/dashboard', icon: Home, label: 'หน้าหลัก' },
+  { href: '/practice', icon: BookOpen, label: 'ฝึกสอบ' },
+  { href: '/progress', icon: BarChart2, label: 'ความก้าวหน้า' },
+  { href: '/profile', icon: User, label: 'โปรไฟล์' },
 ]
 
 export default function BottomNav() {
   const pathname = usePathname()
   const router = useRouter()
 
-  // Don't show on lesson pages or auth pages
-  if (pathname?.includes('/lesson') || 
-      pathname?.includes('/welcome') || 
-      pathname?.includes('/login') || 
-      pathname?.includes('/signup') ||
-      pathname?.includes('/admin')) {
-    return null
-  }
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-bottom z-50">
-      <div className="max-w-2xl mx-auto">
-        <nav className="flex items-center justify-around h-16">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <button
-                key={item.id}
-                onClick={() => router.push(item.href)}
-                className="flex flex-col items-center justify-center flex-1 h-full relative"
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-green-50"
-                    transition={{ type: 'spring', duration: 0.5 }}
-                  />
-                )}
-                <div className="relative z-10 flex flex-col items-center gap-1">
-                  <item.icon
-                    className={`w-6 h-6 transition-colors ${
-                      isActive ? 'text-green-600' : 'text-gray-400'
-                    }`}
-                  />
-                  <span
-                    className={`text-xs font-medium transition-colors ${
-                      isActive ? 'text-green-600' : 'text-gray-600'
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                </div>
-              </button>
-            )
-          })}
-        </nav>
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-gray-100 safe-area-bottom">
+      <div className="max-w-md mx-auto flex">
+        {TABS.map(({ href, icon: Icon, label }) => {
+          const active = pathname === href
+          return (
+            <button
+              key={href}
+              onClick={() => router.push(href)}
+              className="flex-1 flex flex-col items-center py-3 gap-1 active:opacity-60 transition-opacity"
+            >
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${active ? 'bg-orange-500' : 'bg-transparent'}`}>
+                <Icon className={`w-5 h-5 ${active ? 'text-white' : 'text-gray-400'}`} />
+              </div>
+              <span className={`text-xs font-semibold ${active ? 'text-orange-500' : 'text-gray-400'}`}>
+                {label}
+              </span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )

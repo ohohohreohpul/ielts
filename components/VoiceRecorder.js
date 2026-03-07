@@ -68,7 +68,7 @@ export default function VoiceRecorder({ onRecordingComplete, hasRecording }) {
               recording 
                 ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
                 : justRecorded || hasRecording
-                ? 'bg-green-500 hover:bg-green-600'
+                ? 'bg-orange-500 hover:bg-orange-600'
                 : 'bg-orange-500 hover:bg-orange-600'
             }`}
           >

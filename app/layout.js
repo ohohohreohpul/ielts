@@ -6,7 +6,7 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#10b981',
+  themeColor: '#FF6500',
 }
 
 export const metadata = {
@@ -34,7 +34,7 @@ export const metadata = {
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
     'apple-mobile-web-app-title': 'Mydemy',
-    'msapplication-TileColor': '#10b981',
+    'msapplication-TileColor': '#FF6500',
     'msapplication-TileImage': '/icons/icon-144.png',
   },
 }

@@ -1,114 +1,93 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Sparkles, Target, Trophy, Zap } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Sparkles, Trophy, Flame, BookOpen, Headphones, PenTool, Mic } from 'lucide-react'
 
 export default function WelcomePage() {
   const router = useRouter()
 
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) router.replace('/dashboard')
+  }, [])
+
+  const features = [
+    { icon: Sparkles, text: 'คำถามสร้างจาก AI ใหม่ทุกครั้ง', sub: 'ไม่ซ้ำเดิม ไม่น่าเบื่อ' },
+    { icon: Trophy, text: 'TOEIC & IELTS ครบทุกพาร์ท', sub: 'Reading, Listening, Writing, Speaking' },
+    { icon: Flame, text: 'ระบบ Streak กระตุ้นทุกวัน', sub: 'ฝึกทีละ 10 นาที ก็พัฒนาได้' },
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo & Branding */}
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Top section - Orange */}
+      <div className="bg-orange-500 pt-16 pb-24 px-6 flex flex-col items-center text-white">
         <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', duration: 1, delay: 0.2 }}
-          className="text-center mb-8"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', duration: 0.6 }}
+          className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-2xl"
         >
-          <div className="inline-flex items-center justify-center w-32 h-32 bg-white rounded-[2.5rem] shadow-2xl mb-6">
-            <Sparkles className="w-16 h-16 text-green-500" />
-          </div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-5xl font-bold text-white mb-3"
-          >
-            Mydemy
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="text-xl text-white/90"
-          >
-            ฝึกสอบให้เชี่ยวชาญ ทีละข้อ
-          </motion.p>
+          <span className="text-5xl font-black text-orange-500">M</span>
         </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+          <h1 className="text-4xl font-black text-center mb-2 tracking-tight">Mydemy</h1>
+          <p className="text-white/80 text-center text-base font-medium">ฝึกสอบให้เชี่ยวชาญ ทีละข้อ</p>
+        </motion.div>
+      </div>
 
-        {/* Features */}
+      {/* White card overlapping */}
+      <div className="flex-1 bg-white rounded-t-3xl -mt-8 px-6 pt-8 pb-10 flex flex-col">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          className="space-y-4 mb-8"
+          transition={{ delay: 0.4 }}
+          className="flex-1"
         >
-          <div className="flex items-center gap-4 text-white">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <Target className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">AI-Powered Questions</h3>
-              <p className="text-sm text-white/80">คำถามสร้างจาก AI ใหม่ทุกครั้ง</p>
-            </div>
-          </div>
+          <h2 className="text-2xl font-black text-black mb-6">เริ่มต้นฝึกสอบวันนี้</h2>
 
-          <div className="flex items-center gap-4 text-white">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <Zap className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Instant Feedback</h3>
-              <p className="text-sm text-white/80">รับ feedback ทันทีพร้อมคำอธิบาย</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 text-white">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <Trophy className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Track Progress</h3>
-              <p className="text-sm text-white/80">ติดตามความก้าวหน้าและคะแนน</p>
-            </div>
+          <div className="space-y-4 mb-8">
+            {features.map((f, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + i * 0.1 }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <f.icon className="w-6 h-6 text-orange-500" />
+                </div>
+                <div>
+                  <p className="font-bold text-black">{f.text}</p>
+                  <p className="text-sm text-gray-500">{f.sub}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 
-        {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1 }}
+          transition={{ delay: 0.8 }}
           className="space-y-3"
         >
-          <Button
+          <button
             onClick={() => router.push('/signup')}
-            className="w-full h-14 text-lg font-semibold bg-white text-green-600 hover:bg-gray-50"
-            size="lg"
+            className="w-full h-14 bg-orange-500 text-white text-lg font-bold rounded-2xl shadow-lg shadow-orange-200 active:opacity-80 transition-opacity"
           >
             เริ่มต้นใช้งานฟรี
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() => router.push('/login')}
-            variant="outline"
-            className="w-full h-14 text-lg font-semibold bg-transparent text-white border-2 border-white hover:bg-white/10"
-            size="lg"
+            className="w-full h-14 bg-white text-black text-lg font-bold rounded-2xl border-2 border-gray-200 active:opacity-80 transition-opacity"
           >
             เข้าสู่ระบบ
-          </Button>
+          </button>
         </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.3 }}
-          className="text-center text-white/70 text-sm mt-6"
-        >
-          พร้อมสำหรับ TOEIC, IELTS และ CU-TEP
-        </motion.p>
       </div>
     </div>
   )

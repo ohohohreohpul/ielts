@@ -24,7 +24,7 @@ export default function ProgressPage() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500" />
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500" />
     </div>
   )
 
@@ -35,7 +35,7 @@ export default function ProgressPage() {
   const skills = [
     { icon: BookOpen, label: 'การอ่าน', sublabel: 'Reading', color: '#3b82f6', progress: 72, xp: 180, sessions: 8 },
     { icon: Headphones, label: 'การฟัง', sublabel: 'Listening', color: '#8b5cf6', progress: 58, xp: 145, sessions: 6 },
-    { icon: PenTool, label: 'การเขียน', sublabel: 'Writing', color: '#10b981', progress: 45, xp: 112, sessions: 4 },
+    { icon: PenTool, label: 'การเขียน', sublabel: 'Writing', color: '#FF6500', progress: 45, xp: 112, sessions: 4 },
     { icon: Mic, label: 'การพูด', sublabel: 'Speaking', color: '#f59e0b', progress: 30, xp: 75, sessions: 2 },
   ]
 
@@ -49,7 +49,7 @@ export default function ProgressPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
       {/* Header */}
-      <div className="bg-gradient-to-br from-violet-600 to-blue-600 pt-16 pb-8 px-5 text-white">
+      <div className="from-violet-600 pt-16 pb-8 px-5 text-white">
         <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }}>
           <p className="text-white/70 text-sm font-medium mb-1">สถิติของคุณ</p>
           <h1 className="text-2xl font-bold">ความก้าวหน้า</h1>
@@ -64,7 +64,7 @@ export default function ProgressPage() {
             {[
               { icon: Flame, label: 'วัน Streak', value: '7', color: '#f97316', bg: 'bg-orange-50' },
               { icon: Star, label: 'XP รวม', value: '350', color: '#eab308', bg: 'bg-yellow-50' },
-              { icon: Trophy, label: 'บทเรียน', value: '12', color: '#7c3aed', bg: 'bg-violet-50' },
+              { icon: Trophy, label: 'บทเรียน', value: '12', color: '#7c3aed', bg: 'bg-orange-500' },
             ].map((stat, i) => (
               <Card key={i} className="border-0 shadow-sm rounded-2xl overflow-hidden">
                 <CardContent className={`p-4 text-center ${stat.bg}`}>
@@ -86,8 +86,8 @@ export default function ProgressPage() {
                   <h3 className="font-bold text-gray-900">กิจกรรมสัปดาห์นี้</h3>
                   <p className="text-xs text-gray-400 mt-0.5">ทำไปแล้ว 21 ข้อ</p>
                 </div>
-                <div className="bg-green-100 px-3 py-1 rounded-full">
-                  <span className="text-green-700 text-xs font-bold">+21 ข้อ</span>
+                <div className="bg-orange-100 px-3 py-1 rounded-full">
+                  <span className="text-orange-700 text-xs font-bold">+21 ข้อ</span>
                 </div>
               </div>
               <div className="flex items-end justify-between gap-2" style={{ height: 80 }}>
@@ -100,10 +100,10 @@ export default function ProgressPage() {
                         <motion.div
                           initial={{ height: 0 }} animate={{ height: barH }}
                           transition={{ delay: 0.3 + i * 0.06, duration: 0.5, ease: 'easeOut' }}
-                          className={`w-full rounded-t-xl ${isToday ? 'bg-green-500 shadow-lg shadow-green-200' : weekActivity[i] > 0 ? 'bg-violet-300' : 'bg-gray-100'}`}
+                          className={`w-full rounded-t-xl ${isToday ? 'bg-orange-500 shadow-lg shadow-orange-200' : weekActivity[i] > 0 ? 'bg-orange-500' : 'bg-gray-100'}`}
                         />
                       </div>
-                      <span className={`text-xs font-semibold ${isToday ? 'text-green-600' : 'text-gray-400'}`}>{day}</span>
+                      <span className={`text-xs font-semibold ${isToday ? 'text-orange-600' : 'text-gray-400'}`}>{day}</span>
                     </div>
                   )
                 })}
@@ -165,8 +165,8 @@ export default function ProgressPage() {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.score >= 80 ? 'bg-green-100' : item.score >= 60 ? 'bg-yellow-100' : 'bg-red-100'}`}>
-                          <CheckCircle2 className={`w-5 h-5 ${item.score >= 80 ? 'text-green-500' : item.score >= 60 ? 'text-yellow-500' : 'text-red-400'}`} />
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.score >= 80 ? 'bg-orange-100' : item.score >= 60 ? 'bg-yellow-100' : 'bg-red-100'}`}>
+                          <CheckCircle2 className={`w-5 h-5 ${item.score >= 80 ? 'text-orange-500' : item.score >= 60 ? 'text-yellow-500' : 'text-red-400'}`} />
                         </div>
                         <div>
                           <div className="font-semibold text-gray-900 text-sm">{item.exam}</div>
@@ -174,7 +174,7 @@ export default function ProgressPage() {
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <div className={`text-lg font-bold ${item.score >= 80 ? 'text-green-600' : item.score >= 60 ? 'text-yellow-600' : 'text-red-500'}`}>
+                        <div className={`text-lg font-bold ${item.score >= 80 ? 'text-orange-600' : item.score >= 60 ? 'text-yellow-600' : 'text-red-500'}`}>
                           {item.score}%
                         </div>
                         <div className="text-xs text-gray-400">+{item.xp} XP</div>

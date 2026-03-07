@@ -56,8 +56,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
       </div>
     )
   }
@@ -70,9 +70,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-20">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-500 to-green-600 pt-12 pb-8 px-4">
+      <div className="pt-12 pb-8 px-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -135,8 +135,8 @@ export default function DashboardPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Target className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
+                    <Target className="w-6 h-6 text-orange-500" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">TOEIC Reading</h3>
@@ -195,8 +195,8 @@ export default function DashboardPage() {
               onClick={() => router.push('/practice?exam=toeic')}
             >
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Target className="w-6 h-6 text-orange-500" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-1">TOEIC</h3>
                 <p className="text-xs text-gray-600">Reading & Listening</p>
@@ -208,8 +208,8 @@ export default function DashboardPage() {
               onClick={() => router.push('/practice?exam=ielts')}
             >
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Trophy className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Trophy className="w-6 h-6 text-gray-700" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-1">IELTS</h3>
                 <p className="text-xs text-gray-600">4 Skills</p>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 from-yellow-400 rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Award className="w-8 h-8 text-white" />
                 </div>
                 <div className="flex-1">

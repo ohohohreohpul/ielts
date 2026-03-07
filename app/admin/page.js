@@ -75,7 +75,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen ">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
@@ -84,7 +84,7 @@ export default function AdminPage() {
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
               <Settings className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -101,9 +101,9 @@ export default function AdminPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-6"
           >
-            <Alert className="border-green-200 bg-green-50">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
+            <Alert className="border-orange-200 bg-orange-50">
+              <CheckCircle className="h-4 w-4 text-orange-600" />
+              <AlertDescription className="text-orange-800">
                 API keys saved successfully!
               </AlertDescription>
             </Alert>
@@ -147,7 +147,7 @@ export default function AdminPage() {
                 <Label htmlFor="gemini-key" className="text-base font-semibold">
                   Google Gemini API Key
                   {currentKeys.gemini && (
-                    <span className="ml-2 text-xs font-normal text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
                       ✓ Configured
                     </span>
                   )}
@@ -178,7 +178,7 @@ export default function AdminPage() {
                   href="https://aistudio.google.com/apikey"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:underline inline-block"
+                  className="text-sm text-orange-500 hover:underline inline-block"
                 >
                   Get your Gemini API key →
                 </a>
@@ -189,7 +189,7 @@ export default function AdminPage() {
                 <Label htmlFor="google-tts-key" className="text-base font-semibold">
                   Google Cloud API Key (Optional)
                   {currentKeys.googleTTS && (
-                    <span className="ml-2 text-xs font-normal text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
                       ✓ Configured
                     </span>
                   )}
@@ -220,7 +220,7 @@ export default function AdminPage() {
                   href="https://console.cloud.google.com/apis/credentials"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:underline inline-block"
+                  className="text-sm text-orange-500 hover:underline inline-block"
                 >
                   Get Google Cloud API key →
                 </a>
@@ -231,7 +231,7 @@ export default function AdminPage() {
                 <Label htmlFor="elevenlabs-key" className="text-base font-semibold">
                   ElevenLabs API Key (แนะนำ)
                   {currentKeys.elevenLabs && (
-                    <span className="ml-2 text-xs font-normal text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
                       ✓ Configured
                     </span>
                   )}
@@ -262,7 +262,7 @@ export default function AdminPage() {
                   href="https://elevenlabs.io/app/settings/api-keys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:underline inline-block"
+                  className="text-sm text-orange-500 hover:underline inline-block"
                 >
                   Get ElevenLabs API key →
                 </a>
@@ -273,7 +273,7 @@ export default function AdminPage() {
                 <Label htmlFor="openai-key" className="text-base font-semibold">
                   OpenAI API Key (แนะนำ)
                   {currentKeys.openAI && (
-                    <span className="ml-2 text-xs font-normal text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
                       ✓ Configured
                     </span>
                   )}
@@ -304,7 +304,7 @@ export default function AdminPage() {
                   href="https://platform.openai.com/api-keys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:underline inline-block"
+                  className="text-sm text-orange-500 hover:underline inline-block"
                 >
                   Get OpenAI API key →
                 </a>
@@ -315,7 +315,7 @@ export default function AdminPage() {
                 <Button
                   onClick={handleSaveKeys}
                   disabled={loading || (!geminiKey && !googleTTSKey)}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+                  className="w-full hover:hover:"
                   size="lg"
                 >
                   <Save className="w-4 h-4 mr-2" />
@@ -333,10 +333,10 @@ export default function AdminPage() {
           transition={{ delay: 0.2 }}
           className="mt-6"
         >
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-orange-500 border-orange-200">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-blue-900 mb-2">ℹ️ Important Notes</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
+              <h3 className="font-semibold text-orange-500 mb-2">ℹ️ Important Notes</h3>
+              <ul className="text-sm text-orange-500 space-y-1">
                 <li>• API keys are stored securely in the database</li>
                 <li>• Gemini API key is required for AI question generation</li>
                 <li>• Google Cloud key is optional (for audio features)</li>

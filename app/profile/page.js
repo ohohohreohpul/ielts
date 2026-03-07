@@ -32,8 +32,8 @@ export default function ProfilePage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500" />
+    <div className="min-h-screen flex items-center justify-center ">
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500" />
     </div>
   )
 
@@ -60,7 +60,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
       {/* Hero Header */}
-      <div className="bg-gradient-to-br from-green-500 via-teal-500 to-blue-600 pt-16 pb-28 px-6 text-white text-center relative overflow-hidden">
+      <div className="pt-16 pb-28 px-6 text-white text-center relative overflow-hidden">
         {/* decorative circles */}
         {[...Array(6)].map((_, i) => (
           <div key={i} className="absolute rounded-full bg-white/10" style={{
@@ -105,8 +105,8 @@ export default function ProfilePage() {
                 </div>
                 <div className="p-5 text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <BookOpen className="w-5 h-5 text-blue-500" />
-                    <span className="text-2xl font-bold text-blue-600">12</span>
+                    <BookOpen className="w-5 h-5 text-orange-500" />
+                    <span className="text-2xl font-bold text-orange-500">12</span>
                   </div>
                   <div className="text-xs text-gray-400 font-medium">บทเรียน</div>
                 </div>
@@ -122,7 +122,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-4 gap-3">
           {badges.map((badge, i) => (
             <motion.div key={i} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 + i * 0.04 }}>
-              <Card className={`border ${badge.unlocked ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}>
+              <Card className={`border ${badge.unlocked ? 'from-yellow-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}>
                 <CardContent className="p-3 text-center">
                   <div className={`text-2xl mb-1 ${!badge.unlocked ? 'grayscale opacity-30' : ''}`}>{badge.emoji}</div>
                   <div className="text-xs font-medium text-gray-500 truncate">{badge.label}</div>
@@ -142,9 +142,9 @@ export default function ProfilePage() {
               key={i}
               initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.05 }}
               onClick={item.action}
-              className={`w-full flex items-center gap-4 p-4 active:opacity-70 transition-opacity ${i < menuItems.length - 1 ? 'border-b border-gray-100' : ''} ${item.highlight ? 'bg-gradient-to-r from-amber-50 to-orange-50' : 'bg-white'}`}
+              className={`w-full flex items-center gap-4 p-4 active:opacity-70 transition-opacity ${i < menuItems.length - 1 ? 'border-b border-gray-100' : ''} ${item.highlight ? 'from-amber-50 ' : 'bg-white'}`}
             >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.highlight ? 'bg-gradient-to-br from-yellow-400 to-orange-500' : 'bg-gray-100'}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.highlight ? 'from-yellow-400 ' : 'bg-gray-100'}`}>
                 <item.icon className={`w-5 h-5 ${item.highlight ? 'text-white' : 'text-gray-600'}`} />
               </div>
               <div className="flex-1 text-left">

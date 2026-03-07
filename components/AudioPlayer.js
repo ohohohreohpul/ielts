@@ -25,23 +25,23 @@ export default function AudioPlayer({ text }) {
   }
 
   return (
-    <Card className="bg-purple-50 border-purple-200">
+    <Card className="bg-orange-500 border-gray-200">
       <CardContent className="p-6">
         <div className="flex items-center gap-4">
           <Button
             onClick={togglePlay}
             className={`w-14 h-14 rounded-full ${ 
-              playing ? 'bg-purple-600 hover:bg-purple-700' : 'bg-purple-500 hover:bg-purple-600'
+              playing ? 'bg-orange-500 hover:bg-orange-500' : 'bg-orange-500 hover:bg-orange-500'
             }`}
           >
             {playing ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
           </Button>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <Volume2 className="w-5 h-5 text-purple-600" />
-              <span className="font-semibold text-purple-900">กดเพื่อฟัง</span>
+              <Volume2 className="w-5 h-5 text-gray-700" />
+              <span className="font-semibold text-gray-700">กดเพื่อฟัง</span>
             </div>
-            <p className="text-sm text-purple-700">คลิกปุ่มเล่นเพื่อฟังข้อความ</p>
+            <p className="text-sm text-gray-700">คลิกปุ่มเล่นเพื่อฟังข้อความ</p>
           </div>
         </div>
       </CardContent>

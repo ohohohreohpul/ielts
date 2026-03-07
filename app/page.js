@@ -21,7 +21,7 @@ const GOALS = [
 const SECTION_INFO = {
   reading: { icon: BookOpen, label: 'การอ่าน', color: 'blue' },
   listening: { icon: Headphones, label: 'การฟัง', color: 'purple' },
-  writing: { icon: PenTool, label: 'การเขียน', color: 'green' },
+  writing: { icon: PenTool, label: 'การเขียน', color: 'orange' },
   speaking: { icon: Mic, label: 'การพูด', color: 'orange' }
 }
 
@@ -235,8 +235,8 @@ function AppInner() {
   // Init / Loading state
   if (stage === 'init') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
-        <Loader2 className="animate-spin h-10 w-10 text-green-500" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="animate-spin h-10 w-10 text-orange-500" />
       </div>
     )
   }
@@ -251,25 +251,25 @@ function AppInner() {
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-md text-center"
         >
           <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mb-6 shadow-xl">
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 shadow-xl">
               <Sparkles className="w-12 h-12 text-white animate-pulse" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">กำลังสร้างคำถามด้วย AI</h2>
             <p className="text-gray-600">กรุณารอสักครู่...</p>
           </div>
 
-          <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+          <Card className="border-orange-200">
             <CardContent className="p-6">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 text-orange-600" />
                 </div>
                 <div className="flex-1 text-left">
                   <h3 className="font-semibold text-gray-900 mb-2">💡 เคล็ดลับ:</h3>
@@ -297,12 +297,12 @@ function AppInner() {
   // Error state
   if (stage === 'error') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen from-red-50 flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md text-center">
           <div className="text-6xl mb-6">⚠️</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">เกิดข้อผิดพลาด</h1>
           <p className="text-gray-600 mb-8">ไม่สามารถสร้างคำถามได้ กรุณาลองใหม่อีกครั้ง</p>
-          <Button onClick={() => router.push('/practice')} className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" size="lg">
+          <Button onClick={() => router.push('/practice')} className="w-full h-12 hover:hover:" size="lg">
             กลับไปเลือกข้อสอบ
           </Button>
         </motion.div>
@@ -313,9 +313,9 @@ function AppInner() {
   // Complete
   if (stage === 'complete') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen from-yellow-50 flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.8, delay: 0.2 }} className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-6 shadow-2xl">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.8, delay: 0.2 }} className="inline-flex items-center justify-center w-32 h-32 from-yellow-400 rounded-full mb-6 shadow-2xl">
             <Trophy className="w-16 h-16 text-white" />
           </motion.div>
           
@@ -325,7 +325,7 @@ function AppInner() {
           <Card className="bg-white rounded-2xl p-6 shadow-lg mb-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600 mb-1">{completedQuestions}</div>
+                <div className="text-3xl font-bold text-orange-600 mb-1">{completedQuestions}</div>
                 <div className="text-sm text-gray-600">ข้อที่ทำ</div>
               </div>
               <div className="text-center">
@@ -335,7 +335,7 @@ function AppInner() {
             </div>
           </Card>
 
-          <Button onClick={restartLesson} className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" size="lg">ฝึกอีกครั้ง</Button>
+          <Button onClick={restartLesson} className="w-full h-14 text-lg font-semibold hover:hover:" size="lg">ฝึกอีกครั้ง</Button>
         </motion.div>
       </div>
     )
@@ -344,14 +344,14 @@ function AppInner() {
   // Lesson Runner
   if (!currentQuestion) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-        <Loader2 className="animate-spin h-8 w-8 text-green-500" />
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <Loader2 className="animate-spin h-8 w-8 text-orange-500" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen ">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto px-4 py-4">
@@ -398,9 +398,9 @@ function AppInner() {
 
                 <div className="space-y-3">
                   {currentQuestion.options?.map((option, index) => (
-                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
+                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-orange-200 bg-orange-500' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-orange-500 bg-orange-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
                       <CardContent className="p-6 flex items-center">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-green-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-orange-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
                         <span className="text-lg">{option.text}</span>
@@ -423,7 +423,7 @@ function AppInner() {
                 )}
                 
                 {currentQuestion.sentence && (
-                  <Card className="bg-blue-50 border-blue-200">
+                  <Card className="bg-orange-500 border-orange-200">
                     <CardContent className="p-6">
                       <p className="text-lg text-gray-800">{currentQuestion.sentence}</p>
                     </CardContent>
@@ -436,9 +436,9 @@ function AppInner() {
 
                 <div className="space-y-3">
                   {currentQuestion.options?.map((option, index) => (
-                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
+                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-orange-200 bg-orange-500' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-orange-500 bg-orange-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
                       <CardContent className="p-6 flex items-center">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-green-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-orange-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
                         <span className="text-lg">{option.text}</span>
@@ -458,9 +458,9 @@ function AppInner() {
 
                 <div className="space-y-3">
                   {currentQuestion.options?.map((option, index) => (
-                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
+                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-orange-200 bg-orange-500' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-orange-500 bg-orange-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
                       <CardContent className="p-6 flex items-center">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-green-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-orange-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
                         <span className="text-lg">{option.text}</span>
@@ -500,7 +500,7 @@ function AppInner() {
                 </h2>
                 
                 {currentQuestion.sentence && (
-                  <Card className="bg-blue-50 border-blue-200">
+                  <Card className="bg-orange-500 border-orange-200">
                     <CardContent className="p-6">
                       <p className="text-lg text-gray-800 mb-4 whitespace-pre-wrap">{currentQuestion.sentence}</p>
                     </CardContent>
@@ -524,7 +524,7 @@ function AppInner() {
                 </div>
 
                 {showFeedback && (
-                  <Card className={`${isCorrect ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+                  <Card className={`${isCorrect ? 'bg-orange-50 border-orange-200' : 'bg-yellow-50 border-yellow-200'}`}>
                     <CardContent className="p-4">
                       <p className="font-medium text-gray-700">คำตอบที่ถูกต้อง:</p>
                       <p className="text-lg font-semibold">{currentQuestion.correctAnswer}</p>
@@ -547,7 +547,7 @@ function AppInner() {
                 
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">ข้อความนี้ถูกต้องหรือไม่?</h2>
                 
-                <Card className="bg-purple-50 border-purple-200">
+                <Card className="bg-orange-500 border-gray-200">
                   <CardContent className="p-6">
                     <p className="text-lg text-gray-800">{currentQuestion.statement}</p>
                   </CardContent>
@@ -555,7 +555,7 @@ function AppInner() {
 
                 <div className="space-y-3">
                   {['TRUE', 'FALSE', 'NOT GIVEN'].map((option) => (
-                    <Card key={option} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option === currentQuestion.correctAnswer ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option && option !== currentQuestion.correctAnswer ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option)}>
+                    <Card key={option} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option ? 'border-2 border-orange-200 bg-orange-500' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option === currentQuestion.correctAnswer ? 'border-orange-500 bg-orange-50' : showFeedback && selectedAnswer === option && option !== currentQuestion.correctAnswer ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option)}>
                       <CardContent className="p-6 text-center">
                         <span className="text-lg font-semibold">{option}</span>
                       </CardContent>
@@ -593,7 +593,7 @@ function AppInner() {
                 </div>
 
                 {showFeedback && (
-                  <Card className={`${isCorrect ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+                  <Card className={`${isCorrect ? 'bg-orange-50 border-orange-200' : 'bg-yellow-50 border-yellow-200'}`}>
                     <CardContent className="p-4">
                       <p className="font-medium text-gray-700">คำตอบที่ถูกต้อง:</p>
                       <p className="text-lg font-semibold">{currentQuestion.correctAnswer}</p>
@@ -606,11 +606,11 @@ function AppInner() {
             {/* Writing */}
             {currentQuestion.type === 'writing' && (
               <div className="space-y-6">
-                <Card className="bg-green-50 border-green-200">
+                <Card className="bg-orange-50 border-orange-200">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-3">
-                      <PenTool className="w-5 h-5 text-green-600" />
-                      <span className="font-semibold text-green-900">{currentQuestion.task || 'Writing Task'}</span>
+                      <PenTool className="w-5 h-5 text-orange-600" />
+                      <span className="font-semibold text-orange-900">{currentQuestion.task || 'Writing Task'}</span>
                     </div>
                     <p className="text-gray-700 leading-relaxed">{currentQuestion.prompt}</p>
                     {currentQuestion.wordLimit && (
@@ -634,11 +634,11 @@ function AppInner() {
                 </div>
 
                 {showFeedback && aiScore && (
-                  <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+                  <Card className="border-orange-200">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-xl font-bold text-gray-900">คะแนน AI</h3>
-                        <div className="text-4xl font-bold text-blue-600">{aiScore.score}</div>
+                        <div className="text-4xl font-bold text-orange-500">{aiScore.score}</div>
                       </div>
                       <div className="space-y-4">
                         <div>
@@ -647,7 +647,7 @@ function AppInner() {
                         </div>
                         {aiScore.strengths?.length > 0 && (
                           <div>
-                            <h4 className="font-semibold text-green-700 mb-2">จุดแข็ง:</h4>
+                            <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
                             </ul>
@@ -692,7 +692,7 @@ function AppInner() {
                 />
 
                 {showFeedback && aiScore && (
-                  <Card className="bg-gradient-to-br from-orange-50 to-pink-50 border-orange-200">
+                  <Card className="border-orange-200">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-xl font-bold text-gray-900">คะแนน AI</h3>
@@ -705,7 +705,7 @@ function AppInner() {
                         </div>
                         {aiScore.strengths?.length > 0 && (
                           <div>
-                            <h4 className="font-semibold text-green-700 mb-2">จุดแข็ง:</h4>
+                            <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
                             </ul>
@@ -747,7 +747,7 @@ function AppInner() {
                 (currentQuestion.type === 'writing' && writingAnswer.split(/\s+/).filter(w => w).length < 50) ||
                 (currentQuestion.type === 'speaking' && !recordedAudio)
               }
-              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50" 
+              className="w-full h-14 text-lg font-semibold hover:hover:disabled:opacity-50" 
               size="lg"
             >
               {scoring ? (
@@ -762,11 +762,11 @@ function AppInner() {
           ) : (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               {!aiScore && (
-                <Card className={`mb-4 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                <Card className={`mb-4 ${isCorrect ? 'bg-orange-50 border-orange-200' : 'bg-red-50 border-red-200'}`}>
                   <CardContent className="p-4">
                     <div className="flex items-center">
                       {isCorrect ? (
-                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
                           <Check className="w-6 h-6 text-white" />
                         </div>
                       ) : (
@@ -783,7 +783,7 @@ function AppInner() {
                 </Card>
               )}
               
-              <Button onClick={nextQuestion} className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700" size="lg">
+              <Button onClick={nextQuestion} className="w-full h-14 text-lg font-semibold hover:hover:" size="lg">
                 ดำเนินการต่อ
               </Button>
             </motion.div>
@@ -796,7 +796,7 @@ function AppInner() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+              <div className="w-20 h-20 from-yellow-400 rounded-full flex items-center justify-center">
                 <Crown className="w-10 h-10 text-white" />
               </div>
             </div>
@@ -805,19 +805,19 @@ function AppInner() {
           </DialogHeader>
           
           <div className="space-y-3 my-6">
-            <Card className="border-2 border-purple-300 bg-purple-50">
+            <Card className="border-2 border-gray-200 bg-orange-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h4 className="font-bold text-lg">รายเดือน</h4>
                     <p className="text-sm text-gray-600">$9.99/เดือน</p>
                   </div>
-                  <Zap className="w-6 h-6 text-purple-600" />
+                  <Zap className="w-6 h-6 text-gray-700" />
                 </div>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />หัวใจไม่จำกัด</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />คะแนนการพูดโดย AI</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />บทเรียนส่วนตัว</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />หัวใจไม่จำกัด</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />คะแนนการพูดโดย AI</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />บทเรียนส่วนตัว</li>
                 </ul>
               </CardContent>
             </Card>
@@ -828,21 +828,21 @@ function AppInner() {
                   <div>
                     <h4 className="font-bold text-lg">รายปี</h4>
                     <p className="text-sm text-gray-600">$79.99/ปี</p>
-                    <span className="text-xs font-semibold text-green-600">ประหยัด 33%!</span>
+                    <span className="text-xs font-semibold text-orange-600">ประหยัด 33%!</span>
                   </div>
                   <Crown className="w-6 h-6 text-yellow-600" />
                 </div>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />ทุกฟีเจอร์รายเดือน</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />การสนับสนุนพิเศษ</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-600 mr-2" />เข้าถึงฟีเจอร์ใหม่ก่อนใคร</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />ทุกฟีเจอร์รายเดือน</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />การสนับสนุนพิเศษ</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />เข้าถึงฟีเจอร์ใหม่ก่อนใคร</li>
                 </ul>
               </CardContent>
             </Card>
           </div>
 
           <DialogFooter className="flex-col gap-2">
-            <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700" onClick={() => alert('ระบบชำระเงินกำลังจะมาเร็วๆ นี้!')}>
+            <Button className="w-full hover:hover:" onClick={() => alert('ระบบชำระเงินกำลังจะมาเร็วๆ นี้!')}>
               เริ่มทดลองใช้ฟรี
             </Button>
             <Button variant="outline" className="w-full" onClick={() => { setShowPaywall(false); setHearts(5); }}>
@@ -858,8 +858,8 @@ function AppInner() {
 export default function App() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
-        <Loader2 className="animate-spin h-10 w-10 text-green-500" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="animate-spin h-10 w-10 text-orange-500" />
       </div>
     }>
       <AppInner />

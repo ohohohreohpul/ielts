@@ -28,7 +28,7 @@ const EXAMS = [
     sections: [
       { id: 'listening', icon: Headphones, label: 'การฟัง', color: 'purple' },
       { id: 'reading', icon: BookOpen, label: 'การอ่าน', color: 'blue' },
-      { id: 'writing', icon: PenTool, label: 'การเขียน', color: 'green' },
+      { id: 'writing', icon: PenTool, label: 'การเขียน', color: 'orange' },
       { id: 'speaking', icon: Mic, label: 'การพูด', color: 'orange' }
     ]
   }
@@ -56,8 +56,8 @@ export default function PracticePage() {
     const exam = EXAMS.find(e => e.id === selectedExam)
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-20">
-        <div className="bg-gradient-to-r from-green-500 to-green-600 pt-12 pb-8 px-4">
+      <div className="min-h-screen bg-gray-50 pb-20">
+        <div className="pt-12 pb-8 px-4">
           <div className="max-w-2xl mx-auto">
             <button 
               onClick={() => setSelectedExam(null)}
@@ -108,8 +108,8 @@ export default function PracticePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 pb-20">
-      <div className="bg-gradient-to-r from-green-500 to-green-600 pt-12 pb-8 px-4">
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <div className="pt-12 pb-8 px-4">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold text-white mb-2">ฝึกสอบ</h1>
           <p className="text-white/90">เลือกข้อสอบที่ต้องการฝึก</p>
