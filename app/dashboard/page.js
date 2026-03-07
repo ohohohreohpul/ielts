@@ -3,247 +3,136 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Flame, Heart, Trophy, Target, Zap, ArrowRight, Award } from 'lucide-react'
+import { Flame, Heart, Star, BookOpen, Headphones, PenTool, Mic, ArrowRight, Crown, ChevronRight } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 export default function DashboardPage() {
   const router = useRouter()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({
-    completedLessons: 0,
-    totalXP: 0,
-    averageScore: 0,
-    weeklyGoal: 20,
-    weeklyProgress: 12
-  })
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
+  useEffect(() => { checkAuth() }, [])
 
   const checkAuth = async () => {
     const token = localStorage.getItem('token')
     const userData = localStorage.getItem('user')
-
-    if (!token || !userData) {
-      router.push('/welcome')
-      return
-    }
-
-    try {
-      const response = await fetch('/api/auth/session', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-
-      if (!response.ok) {
-        throw new Error('Session expired')
-      }
-
-      const data = await response.json()
-      setUser(data.user)
-    } catch (error) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      router.push('/welcome')
-    } finally {
-      setLoading(false)
-    }
+    if (!token || !userData) { router.push('/welcome'); return }
+    // Load immediately from localStorage - no waiting
+    try { setUser(JSON.parse(userData)) } catch {}
+    setLoading(false)
+    // Verify in background silently
+    fetch('/api/auth/session', { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(data => { setUser(data.user); localStorage.setItem('user', JSON.stringify(data.user)) })
+      .catch(() => { localStorage.removeItem('token'); router.push('/welcome') })
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
-    )
-  }
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'อรุณสวัสดิ์ ☀️' : hour < 18 ? 'สวัสดีตอนบ่าย 🌤' : 'สวัสดีตอนเย็น 🌙'
 
-  const getGreeting = () => {
-    const hour = new Date().getHours()
-    if (hour < 12) return 'สวัสดีตอนเช้า'
-    if (hour < 18) return 'สวัสดีตอนบ่าย'
-    return 'สวัสดีตอนเย็น'
-  }
+  const quickStart = [
+    { exam: 'toeic', section: 'reading',   icon: BookOpen,   label: 'TOEIC Reading',   sub: 'Part 5–7' },
+    { exam: 'toeic', section: 'listening', icon: Headphones, label: 'TOEIC Listening',  sub: 'Part 1–4' },
+    { exam: 'ielts', section: 'reading',   icon: BookOpen,   label: 'IELTS Reading',    sub: 'Academic' },
+    { exam: 'ielts', section: 'writing',   icon: PenTool,    label: 'IELTS Writing',    sub: 'Task 1 & 2' },
+    { exam: 'ielts', section: 'speaking',  icon: Mic,        label: 'IELTS Speaking',   sub: 'Part 1–3' },
+    { exam: 'ielts', section: 'listening', icon: Headphones, label: 'IELTS Listening',  sub: 'Monologue' },
+  ]
+
+  if (loading) return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <div className="pt-12 pb-8 px-4">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto"
-        >
-          <h1 className="text-2xl font-bold text-white mb-1">
-            {getGreeting()}, {user?.name?.split(' ')[0] || 'User'}!
-          </h1>
-          <p className="text-white/90">พร้อมฝึกสอบวันนี้หรือยัง?</p>
+    <div className="min-h-screen bg-gray-50 pb-28">
+
+      {/* Orange Header */}
+      <div className="bg-orange-500 pt-14 pb-16 px-5">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+          <p className="text-white/80 text-sm font-medium mb-1">{greeting}</p>
+          <h1 className="text-2xl font-black text-white">{user?.name?.split(' ')[0] || 'นักเรียน'}</h1>
         </motion.div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 -mt-6">
+      <div className="px-4 -mt-8 space-y-4">
+
         {/* Stats Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="bg-white shadow-lg mb-6">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-2">
-                    <Flame className="w-5 h-5 text-orange-500" />
-                    <span className="text-2xl font-bold text-orange-500">{user?.streak || 0}</span>
-                  </div>
-                  <p className="text-xs text-gray-600">วันติดต่อกัน</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="grid grid-cols-3 divide-x divide-gray-100">
+              {[
+                { icon: Flame,  val: user?.streak || 7,  label: 'Streak',  iconColor: 'text-orange-500' },
+                { icon: Heart,  val: user?.hearts || 5,  label: 'หัวใจ',   iconColor: 'text-red-500'    },
+                { icon: Star,   val: user?.totalXP || 350, label: 'XP',    iconColor: 'text-yellow-500' },
+              ].map(({ icon: Icon, val, label, iconColor }, i) => (
+                <div key={i} className="py-5 text-center">
+                  <Icon className={`w-5 h-5 ${iconColor} mx-auto mb-1`} />
+                  <p className="text-2xl font-black text-gray-900">{val}</p>
+                  <p className="text-xs text-gray-400 font-semibold">{label}</p>
                 </div>
-
-                <div className="text-center border-x border-gray-200">
-                  <div className="flex items-center justify-center gap-1 mb-2">
-                    <Heart className="w-5 h-5 text-red-500 fill-red-500" />
-                    <span className="text-2xl font-bold text-red-500">{user?.hearts || 5}</span>
-                  </div>
-                  <p className="text-xs text-gray-600">หัวใจ</p>
-                </div>
-
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-2">
-                    <Trophy className="w-5 h-5 text-yellow-500" />
-                    <span className="text-2xl font-bold text-yellow-500">{user?.totalXP || 0}</span>
-                  </div>
-                  <p className="text-xs text-gray-600">XP</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Continue Learning */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-6"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4">เรียนต่อจากที่ค้างไว้</h2>
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => router.push('/practice')}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
-                    <Target className="w-6 h-6 text-orange-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">TOEIC Reading</h3>
-                    <p className="text-sm text-gray-600">Part 5 - Grammar</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-gray-400" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">ความคืบหน้า</span>
-                  <span className="font-semibold text-gray-900">3/10 ข้อ</span>
-                </div>
-                <Progress value={30} className="h-2" />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Weekly Goal */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-6"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4">เป้าหมายรายสัปดาห์</h2>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
-                  <span className="font-semibold text-gray-900">ทำแบบฝึกหัด</span>
-                </div>
-                <span className="text-sm font-semibold text-gray-900">
-                  {stats.weeklyProgress}/{stats.weeklyGoal} ข้อ
-                </span>
-              </div>
-              <Progress value={(stats.weeklyProgress / stats.weeklyGoal) * 100} className="h-3 mb-2" />
-              <p className="text-sm text-gray-600">อีก {stats.weeklyGoal - stats.weeklyProgress} ข้อเพื่อบรรลุเป้าหมาย!</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-6"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4">ฝึกสอบด่วน</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => router.push('/practice?exam=toeic')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-6 h-6 text-orange-500" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">TOEIC</h3>
-                <p className="text-xs text-gray-600">Reading & Listening</p>
-              </CardContent>
-            </Card>
-
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => router.push('/practice?exam=ielts')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Trophy className="w-6 h-6 text-gray-700" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">IELTS</h3>
-                <p className="text-xs text-gray-600">4 Skills</p>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
           </div>
         </motion.div>
 
-        {/* Achievements */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-6"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4">ความสำเร็จล่าสุด</h2>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 from-yellow-400 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Award className="w-8 h-8 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">First Steps</h3>
-                  <p className="text-sm text-gray-600">ทำแบบทดสอบครบ 1 ชุด</p>
-                  <div className="flex items-center gap-1 mt-2">
-                    <Trophy className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm font-semibold text-yellow-600">+50 XP</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Weekly Goal */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="flex justify-between items-center mb-3">
+              <p className="font-bold text-gray-900">🎯 เป้าหมายวันนี้</p>
+              <span className="text-orange-500 font-bold text-sm">3/5 ข้อ</span>
+            </div>
+            <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-orange-500 rounded-full" style={{ width: '60%' }} />
+            </div>
+            <p className="text-xs text-gray-400 mt-2 font-medium">อีก 2 ข้อถึงเป้าหมายวันนี้!</p>
+          </div>
         </motion.div>
+
+        {/* Quick Start */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="flex justify-between items-center mb-3">
+            <p className="font-black text-gray-900 text-lg">เริ่มฝึกเลย</p>
+            <button onClick={() => router.push('/practice')} className="text-orange-500 text-sm font-bold">ดูทั้งหมด</button>
+          </div>
+          <div className="space-y-2.5">
+            {quickStart.map((item, i) => (
+              <motion.button
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.25 + i * 0.05 }}
+                onClick={() => router.push(`/?exam=${item.exam}&section=${item.section}`)}
+                className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
+              >
+                <div className="w-11 h-11 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-5 h-5 text-orange-500" />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-bold text-gray-900 text-sm">{item.label}</p>
+                  <p className="text-xs text-gray-400">{item.sub}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Plus Banner */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <button className="w-full bg-black rounded-2xl p-5 flex items-center justify-between active:opacity-80 transition-opacity">
+            <div className="text-left">
+              <p className="text-white font-black text-base">Mydemy Plus 👑</p>
+              <p className="text-gray-400 text-sm mt-0.5">หัวใจไม่จำกัด · AI Scoring</p>
+            </div>
+            <div className="bg-orange-500 px-4 py-2 rounded-xl">
+              <p className="text-white font-bold text-sm">อัพเกรด</p>
+            </div>
+          </button>
+        </motion.div>
+
       </div>
 
       <BottomNav />

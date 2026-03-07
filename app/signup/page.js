@@ -60,9 +60,6 @@ export default function SignupPage() {
 
       <div className="flex-1 bg-white rounded-t-3xl -mt-6 px-6 pt-8 pb-10">
         <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
           onSubmit={handleSignup}
           className="space-y-4"
         >
