@@ -1,20 +1,89 @@
 import './globals.css'
 
-export const metadata = {
-  title: 'Mydemy - AI-Powered Mock Exams',
-  description: 'Master TOEIC, IELTS, and CU-TEP with bite-sized, interactive lessons',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
   themeColor: '#10b981',
+}
+
+export const metadata = {
+  title: 'Mydemy - AI Mock Exams',
+  description: 'ฝึกสอบ TOEIC และ IELTS ด้วย AI - ทีละข้อ สนุกเหมือน Duolingo',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Mydemy',
+    startupImage: ['/icons/icon-512.png'],
+  },
+  icons: {
+    apple: [
+      { url: '/icons/icon-152.png', sizes: '152x152' },
+      { url: '/icons/icon-192.png', sizes: '192x192' },
+    ],
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': 'Mydemy',
+    'msapplication-TileColor': '#10b981',
+    'msapplication-TileImage': '/icons/icon-144.png',
+  },
 }
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="th">
       <head>
-        <script dangerouslySetInnerHTML={{__html:'window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);'}} />
+        {/* PWA - iOS specific */}
+        <link rel="apple-touch-icon" href="/icons/icon-152.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+
+        {/* Splash screens for iOS */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Mydemy" />
+
+        {/* Prevent scroll bounce on iOS */}
+        <style dangerouslySetInnerHTML={{__html: `
+          * { -webkit-tap-highlight-color: transparent; }
+          html { height: 100%; overflow: hidden; }
+          body { height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: none; }
+          input, textarea, select { font-size: 16px !important; }
+        `}} />
+
+        {/* SW registration */}
+        <script dangerouslySetInnerHTML={{__html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                console.log('SW registered:', reg.scope);
+              }).catch(function(err) {
+                console.log('SW failed:', err);
+              });
+            });
+          }
+          // Fix DataCloneError
+          window.addEventListener('error', function(e) {
+            if (e.error instanceof DOMException && e.error.name === 'DataCloneError') {
+              e.stopImmediatePropagation(); e.preventDefault();
+            }
+          }, true);
+        `}} />
       </head>
-      <body className="antialiased">
-        {children}
+      <body className="antialiased bg-gray-50" style={{ WebkitUserSelect: 'none', userSelect: 'none' }}>
+        <div id="app-root" className="relative max-w-md mx-auto min-h-screen overflow-hidden">
+          {children}
+        </div>
       </body>
     </html>
   )
