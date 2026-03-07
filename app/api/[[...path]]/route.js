@@ -67,7 +67,10 @@ function buildExamPrompt(examType, section, count) {
   if (section === 'grammar') {
     return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST have "type": "multiple-choice" and include "explanation" field explaining WHY the answer is correct.
+IMPORTANT: 
+- Each question MUST have "type": "multiple-choice" 
+- MUST include "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining WHY the answer is correct
+- Explanation should be easy to understand with examples
 
 Mix different grammar topics: tenses, prepositions, articles, vocabulary, conditionals, reported speech, subject-verb agreement.
 
@@ -84,7 +87,7 @@ Format:
       {"id": "c", "text": "going", "correct": false},
       {"id": "d", "text": "gone", "correct": false}
     ],
-    "explanation": "The correct answer is 'goes' because the subject 'She' is third person singular, and in present simple tense, we add -s/-es to the verb for third person singular subjects."
+    "explanation": "คำตอบที่ถูกคือ 'goes' เพราะประธาน 'She' เป็นเอกพจน์บุรุษที่ 3 ในรูป Present Simple Tense เราต้องเติม -s/-es ที่ท้ายกริยา เช่น He goes, She works, It rains"
   },
   {
     "id": "q2",
@@ -97,13 +100,13 @@ Format:
       {"id": "c", "text": "during", "correct": false},
       {"id": "d", "text": "while", "correct": false}
     ],
-    "explanation": "The correct answer is 'for' because we use 'for' with a duration of time (two hours). 'Since' is used with a specific point in time."
+    "explanation": "ใช้ 'for' กับช่วงเวลา (duration) เช่น for two hours, for three days ส่วน 'since' ใช้กับจุดเวลา เช่น since Monday, since 2020"
   }
 ]
 
 Rules:
 - "type" MUST be "multiple-choice"
-- MUST include "explanation" field with clear grammatical reasoning in English
+- "explanation" MUST be in THAI language (ภาษาไทย) with clear examples
 - Cover various grammar topics
 - Generate exactly ${count} grammar questions. Return ONLY the JSON array.`
   }
@@ -112,7 +115,10 @@ Rules:
   if (section === 'listening') {
     return `Generate ${count} ${examType} Listening questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST have "type": "listening", MUST have "audioText" field, and MUST have "explanation" field explaining why the answer is correct.
+IMPORTANT: 
+- Each question MUST have "type": "listening"
+- MUST have "audioText" field containing the English text to be spoken
+- MUST have "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining why the answer is correct
 
 Format for listening questions:
 [
@@ -127,7 +133,7 @@ Format for listening questions:
       {"id": "c", "text": "Employee promotions", "correct": false},
       {"id": "d", "text": "Office renovations", "correct": false}
     ],
-    "explanation": "The speaker mentions 'quarterly sales figures' and 'exceeded targets by 15 percent', indicating the topic is about sales performance."
+    "explanation": "ผู้พูดกล่าวว่า 'quarterly sales figures' และ 'exceeded our targets by 15 percent' ซึ่งหมายถึงผลประกอบการยอดขายรายไตรมาส คำสำคัญคือ sales figures = ตัวเลขยอดขาย"
   },
   {
     "id": "q2",
@@ -139,14 +145,14 @@ Format for listening questions:
       {"id": "b", "text": "The time of the next train", "correct": false},
       {"id": "c", "text": "A ticket price", "correct": false}
     ],
-    "explanation": "Person A asks 'could you tell me how to get to the train station?' which is clearly asking for directions."
+    "explanation": "คนที่ A ถามว่า 'how to get to the train station' แปลว่า 'ไปสถานีรถไฟอย่างไร' ซึ่งเป็นการถามทาง (directions)"
   }
 ]
 
 Rules:
 - "type" MUST be "listening"
 - "audioText" MUST contain 20-80 words of dialogue or announcement in English
-- "explanation" MUST explain why the correct answer is right, referencing the audio text
+- "explanation" MUST be in THAI language with key vocabulary translations
 - Include a mix of: announcements, conversations, monologues
 - Make difficulty appropriate for ${examType} level
 - Generate exactly ${count} questions. Return ONLY the JSON array.`
@@ -270,7 +276,7 @@ Format:
     if (examType === 'IELTS') {
       return `Generate ${count} IELTS Academic Reading questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST include an "explanation" field explaining why the answer is correct.
+IMPORTANT: Each question MUST include an "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining why the answer is correct.
 
 Mix these types:
 
@@ -281,7 +287,7 @@ Mix these types:
   "passage": "150-200 word academic passage about science, history, or society",
   "statement": "The study found that climate change affects migration patterns.",
   "correctAnswer": "TRUE",
-  "explanation": "The passage states '...climate change has significantly impacted bird migration patterns...' which directly supports this statement."
+  "explanation": "ในย่อหน้าที่ 2 ระบุว่า 'climate change has significantly impacted bird migration' ซึ่งตรงกับข้อความที่ให้มา จึงตอบ TRUE"
 }
 
 2. Multiple Choice:
@@ -296,7 +302,7 @@ Mix these types:
     {"id": "c", "text": "option C", "correct": false},
     {"id": "d", "text": "option D", "correct": false}
   ],
-  "explanation": "The passage mentions in paragraph 2 that '...' which indicates option A is correct."
+  "explanation": "คำตอบคือ A เพราะในบทความกล่าวว่า '...' คำสำคัญ: cause = สาเหตุ"
 }
 
 3. Completion:
@@ -308,16 +314,16 @@ Mix these types:
   "correctAnswer": "Southeast Asia",
   "question": "Complete with NO MORE THAN TWO WORDS",
   "wordLimit": 2,
-  "explanation": "The passage explicitly states 'The study took place in Southeast Asia over three years.'"
+  "explanation": "บทความระบุชัดเจนว่า 'The study took place in Southeast Asia' ดังนั้นคำตอบคือ Southeast Asia"
 }
 
-Mix all types. Each must have explanation. Generate exactly ${count} questions. Return ONLY the JSON array.`
+Mix all types. Each must have Thai explanation. Generate exactly ${count} questions. Return ONLY the JSON array.`
     }
 
     // Generic reading for other exams
     return `Generate ${count} ${examType} Reading questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST include an "explanation" field explaining why the answer is correct.
+IMPORTANT: Each question MUST include an "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining why the answer is correct with examples.
 
 Format:
 [
@@ -332,7 +338,7 @@ Format:
       {"id": "c", "text": "option C", "correct": false},
       {"id": "d", "text": "option D", "correct": false}
     ],
-    "explanation": "The main idea is found in the first paragraph where it states '...'"
+    "explanation": "ใจความหลักอยู่ในย่อหน้าแรก คำว่า main idea หมายถึงใจความสำคัญของเรื่อง"
   },
   {
     "id": "q2",
@@ -345,11 +351,11 @@ Format:
       {"id": "c", "text": "planning", "correct": false},
       {"id": "d", "text": "planned", "correct": false}
     ],
-    "explanation": "The subject 'company' is singular, so we use 'plans' (third person singular present tense)."
+    "explanation": "ประธาน 'company' เป็นเอกพจน์ ต้องใช้ 'plans' (เติม -s) ในรูป Present Simple"
   }
 ]
 
-- Each question MUST have an "explanation" field
+- Each question MUST have a Thai "explanation" field
 - Include a mix of: passage comprehension, vocabulary, grammar in context
 - Make difficulty appropriate for ${examType} level
 - Generate exactly ${count} reading questions. Return ONLY the JSON array.`

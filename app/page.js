@@ -316,6 +316,7 @@ function AppInner() {
     setCompletedQuestions(completedQuestions + 1)
     
     if (currentQuestionIndex < questions.length - 1) {
+      // Still have questions in current batch
       setCurrentQuestionIndex(currentQuestionIndex + 1)
       setSelectedAnswer(null)
       setTextAnswer('')
@@ -324,10 +325,73 @@ function AppInner() {
       setAiScore(null)
       setShowFeedback(false)
     } else {
-      // Exam complete - save history
+      // Finished current batch - save history and fetch more questions (Duolingo style!)
       saveExamHistory(answerHistory)
+      setAnswerHistory([]) // Reset for next batch
+      
+      // Auto-fetch next batch of questions
+      fetchMoreQuestions()
+    }
+  }
+
+  // Fetch more questions without resetting progress (continuous mode)
+  const fetchMoreQuestions = async () => {
+    setLoading(true)
+    setStage('loading')
+    setLoadingTip(0)
+    
+    const tipInterval = setInterval(() => {
+      setLoadingTip(prev => (prev + 1) % 4)
+    }, 2000)
+    
+    try {
+      const examTypeMap = {
+        'toeic': 'TOEIC',
+        'ielts': 'IELTS',
+        'grammar': 'Grammar',
+        'toefl': 'TOEFL',
+        'cutep': 'CU-TEP',
+        'tuget': 'TU-GET',
+        'onet': 'O-NET',
+        'gorpor': 'กพ.'
+      }
+      const examType = examTypeMap[selectedGoal] || selectedGoal?.toUpperCase()
+      
+      const response = await fetch('/api/ai/generate-questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          examType: examType,
+          section: selectedSection,
+          count: 5
+        })
+      })
+
+      if (!response.ok) throw new Error('Failed to fetch more questions')
+      
+      const data = await response.json()
+      
+      if (data.questions && data.questions.length > 0) {
+        clearInterval(tipInterval)
+        setQuestions(data.questions)
+        setCurrentQuestionIndex(0)
+        setSelectedAnswer(null)
+        setTextAnswer('')
+        setWritingAnswer('')
+        setRecordedAudio(null)
+        setAiScore(null)
+        setShowFeedback(false)
+        setStage('lesson')
+      } else {
+        throw new Error('No questions received')
+      }
+    } catch (error) {
+      clearInterval(tipInterval)
+      console.error('Error fetching more questions:', error)
+      // On error, go to complete screen instead
       setStage('complete')
     }
+    setLoading(false)
   }
 
   const restartLesson = () => {
@@ -429,32 +493,61 @@ function AppInner() {
     )
   }
 
-  // Complete
+  // Complete - show stats and options to continue or stop
   if (stage === 'complete') {
+    const xpEarned = completedQuestions * 10
     return (
-      <div className="min-h-screen from-yellow-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.8, delay: 0.2 }} className="inline-flex items-center justify-center w-32 h-32 from-yellow-400 rounded-full mb-6 shadow-2xl">
-            <Trophy className="w-16 h-16 text-white" />
+          <motion.div 
+            initial={{ scale: 0 }} 
+            animate={{ scale: 1 }} 
+            transition={{ type: 'spring', duration: 0.8, delay: 0.2 }} 
+            className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full mb-6 shadow-xl"
+          >
+            <Trophy className="w-14 h-14 text-white" />
           </motion.div>
           
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">เสร็จสิ้น!</h1>
-          <p className="text-gray-600 mb-8">คุณได้รับ 50 XP</p>
+          <h1 className="text-3xl font-black text-gray-900 mb-2">ยอดเยี่ยม! 🎉</h1>
+          <p className="text-gray-500 mb-6">คุณทำได้ดีมาก!</p>
 
-          <Card className="bg-white rounded-2xl p-6 shadow-lg mb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600 mb-1">{completedQuestions}</div>
-                <div className="text-sm text-gray-600">ข้อที่ทำ</div>
+          <Card className="bg-white rounded-2xl p-5 shadow-lg mb-6 border-0">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 bg-orange-50 rounded-xl">
+                <div className="text-2xl font-black text-orange-600 mb-1">{completedQuestions}</div>
+                <div className="text-xs text-gray-500 font-medium">ข้อที่ทำ</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600 mb-1">{streak}</div>
-                <div className="text-sm text-gray-600">วันติดต่อกัน</div>
+              <div className="text-center p-3 bg-green-50 rounded-xl">
+                <div className="text-2xl font-black text-green-600 mb-1">+{xpEarned}</div>
+                <div className="text-xs text-gray-500 font-medium">XP</div>
+              </div>
+              <div className="text-center p-3 bg-purple-50 rounded-xl">
+                <div className="text-2xl font-black text-purple-600 mb-1">{streak}</div>
+                <div className="text-xs text-gray-500 font-medium">🔥 Streak</div>
               </div>
             </div>
           </Card>
 
-          <Button onClick={restartLesson} className="w-full h-14 text-lg font-semibold hover:hover:" size="lg">ฝึกอีกครั้ง</Button>
+          <div className="space-y-3">
+            {/* Continue button - fetch more questions */}
+            <Button 
+              onClick={fetchMoreQuestions} 
+              className="w-full h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600"
+              size="lg"
+            >
+              🚀 ทำต่อเลย!
+            </Button>
+            
+            {/* Back to practice selection */}
+            <Button 
+              onClick={restartLesson} 
+              variant="outline"
+              className="w-full h-12 font-semibold"
+              size="lg"
+            >
+              เลือกข้อสอบอื่น
+            </Button>
+          </div>
         </motion.div>
       </div>
     )
