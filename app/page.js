@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader2 } from 'lucide-react'
 import AudioPlayer from '@/components/AudioPlayer'
 import VoiceRecorder from '@/components/VoiceRecorder'
+import ExamChart from '@/components/ExamChart'
 
 const GOALS = [
   { id: 'toeic', icon: Target, title: 'TOEIC 700+', description: 'การฟังและการอ่านภาษาอังกฤษธุรกิจ', sections: ['reading', 'listening'] },
@@ -640,6 +641,11 @@ function AppInner() {
             {/* Writing */}
             {currentQuestion.type === 'writing' && (
               <div className="space-y-6">
+                {/* Chart for Task 1 */}
+                {currentQuestion.chartData && (
+                  <ExamChart chartData={currentQuestion.chartData} />
+                )}
+
                 <Card className="bg-orange-50 border-orange-200">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-3">

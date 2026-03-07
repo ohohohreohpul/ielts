@@ -198,31 +198,52 @@ Mix all 4 types.`,
 }`,
       'writing': `Generate ${count} IELTS Writing task prompts. Return ONLY a valid JSON array (starting with [ and ending with ]).
 
-Each item should alternate between Task 1 and Task 2. Use DIFFERENT topics for each.
+IMPORTANT: Alternate between Task 1 and Task 2. Use DIFFERENT topics for each.
 
-Example format:
-[
-  {
-    "id": "q1",
-    "type": "writing",
-    "task": "Task 1",
-    "prompt": "The graph shows the percentage of internet users in five countries from 2010 to 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
-    "wordLimit": 150,
-    "timeLimit": 20,
-    "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+For Task 1: You MUST include a "chartData" field with numerical data for a chart. Choose ONE chart type: "bar", "line", or "pie".
+
+Task 1 format (with chart data):
+{
+  "id": "q1",
+  "type": "writing",
+  "task": "Task 1",
+  "prompt": "The bar chart below shows the percentage of households with internet access in five countries between 2010 and 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+  "chartData": {
+    "chartType": "bar",
+    "title": "Household Internet Access (%)",
+    "xAxisLabel": "Country",
+    "yAxisLabel": "Percentage (%)",
+    "categories": ["USA", "UK", "Japan", "Brazil", "India"],
+    "datasets": [
+      {"label": "2010", "data": [75, 82, 78, 41, 7]},
+      {"label": "2015", "data": [84, 89, 91, 58, 26]},
+      {"label": "2020", "data": [90, 94, 93, 71, 43]}
+    ]
   },
-  {
-    "id": "q2",
-    "type": "writing",
-    "task": "Task 2",
-    "prompt": "Some people believe that technology has made our lives more complicated. Others think it has made things easier. Discuss both views and give your own opinion.",
-    "wordLimit": 250,
-    "timeLimit": 40,
-    "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
-  }
-]
+  "wordLimit": 150,
+  "timeLimit": 20,
+  "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+}
 
-Generate exactly ${count} different writing tasks with unique topics. Return ONLY the JSON array.`,
+For Task 2 (no chart needed):
+{
+  "id": "q2",
+  "type": "writing",
+  "task": "Task 2",
+  "prompt": "Some people believe that technology has made our lives more complicated. Others think it has made things easier. Discuss both views and give your own opinion.",
+  "wordLimit": 250,
+  "timeLimit": 40,
+  "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+}
+
+Rules for chartData:
+- chartType must be "bar", "line", or "pie"
+- For "bar" and "line": include categories (x-axis labels) and datasets (each with label and data array)
+- For "pie": include categories and ONE dataset with data array
+- Data values must be realistic numbers that match the prompt description
+- categories and data arrays must have the same length
+
+Generate exactly ${count} writing tasks. Return ONLY the JSON array.`,
       'speaking': `Generate ${count} IELTS Speaking questions across 3 parts. Return ONLY a valid JSON array (starting with [ and ending with ]).
 
 Mix questions from all 3 parts:
