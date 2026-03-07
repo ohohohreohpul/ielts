@@ -50,6 +50,7 @@ function AppInner() {
   const [loadingTip, setLoadingTip] = useState(0)
   const [scoring, setScoring] = useState(false)
   const [recordedAudio, setRecordedAudio] = useState(null)
+  const [answerHistory, setAnswerHistory] = useState([]) // Track answers for history
 
   const currentQuestion = questions[currentQuestionIndex]
   const progress = questions.length > 0 ? (completedQuestions / questions.length) * 100 : 0
@@ -133,13 +134,31 @@ function AppInner() {
     setLoading(false)
   }
 
+  // Helper to record answer for history
+  const recordAnswer = (correct, userAns, correctAns, scoreData) => {
+    const q = currentQuestion
+    const record = {
+      id: q.id,
+      type: q.type,
+      question: q.question || q.prompt || q.statement || q.sentence || '',
+      passage: q.passage || null,
+      userAnswer: userAns,
+      correctAnswer: correctAns,
+      isCorrect: correct,
+      aiScore: scoreData || null,
+    }
+    setAnswerHistory(prev => [...prev, record])
+  }
+
   const checkAnswer = async () => {
     const qType = currentQuestion.type
     
     if (qType === 'multiple-choice' || qType === 'reading' || qType === 'listening') {
       const selected = currentQuestion.options?.find(opt => opt.id === selectedAnswer)
+      const correctOpt = currentQuestion.options?.find(opt => opt.correct)
       const correct = selected?.correct || false
       setIsCorrect(correct)
+      recordAnswer(correct, selected?.text || selectedAnswer, correctOpt?.text || '', null)
       
       if (!correct) {
         const newHearts = hearts - 1
@@ -155,6 +174,7 @@ function AppInner() {
       const correctAns = currentQuestion.correctAnswer.toLowerCase()
       const correct = userAns === correctAns || userAns.includes(correctAns) || correctAns.includes(userAns)
       setIsCorrect(correct)
+      recordAnswer(correct, textAnswer.trim(), currentQuestion.correctAnswer, null)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -164,6 +184,7 @@ function AppInner() {
     } else if (qType === 'true-false-notgiven') {
       const correct = selectedAnswer?.toUpperCase() === currentQuestion.correctAnswer.toUpperCase()
       setIsCorrect(correct)
+      recordAnswer(correct, selectedAnswer, currentQuestion.correctAnswer, null)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -173,6 +194,7 @@ function AppInner() {
     } else if (qType === 'short-answer') {
       const correct = textAnswer.trim().toLowerCase().includes(currentQuestion.correctAnswer.toLowerCase())
       setIsCorrect(correct)
+      recordAnswer(correct, textAnswer.trim(), currentQuestion.correctAnswer, null)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -195,9 +217,11 @@ function AppInner() {
         const scoreData = await response.json()
         setAiScore(scoreData)
         setIsCorrect(scoreData.score >= 6.0)
+        recordAnswer(scoreData.score >= 6.0, writingAnswer, '-', scoreData)
       } catch (error) {
         console.error('Scoring error:', error)
         setIsCorrect(true)
+        recordAnswer(true, writingAnswer, '-', null)
       } finally {
         setScoring(false)
         setShowFeedback(true)
@@ -222,13 +246,43 @@ function AppInner() {
         const scoreData = await response.json()
         setAiScore(scoreData)
         setIsCorrect(scoreData.score >= 6.0)
+        recordAnswer(scoreData.score >= 6.0, '[Audio]', '-', scoreData)
       } catch (error) {
         console.error('Scoring error:', error)
         setIsCorrect(true)
+        recordAnswer(true, '[Audio]', '-', null)
       } finally {
         setScoring(false)
         setShowFeedback(true)
       }
+    }
+  }
+
+  // Save exam history to backend
+  const saveExamHistory = async (answers) => {
+    try {
+      const userData = localStorage.getItem('user')
+      const user = userData ? JSON.parse(userData) : null
+      if (!user?.id) return
+
+      const correctCount = answers.filter(a => a.isCorrect).length
+      const score = answers.length > 0 ? Math.round((correctCount / answers.length) * 100) : 0
+
+      await fetch('/api/exam-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          examType: selectedGoal === 'toeic' ? 'TOEIC' : 'IELTS',
+          section: selectedSection,
+          questions: answers,
+          totalQuestions: answers.length,
+          correctCount,
+          score
+        })
+      })
+    } catch (err) {
+      console.error('Failed to save exam history:', err)
     }
   }
 
@@ -244,6 +298,8 @@ function AppInner() {
       setAiScore(null)
       setShowFeedback(false)
     } else {
+      // Exam complete - save history
+      saveExamHistory(answerHistory)
       setStage('complete')
     }
   }

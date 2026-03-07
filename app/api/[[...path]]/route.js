@@ -947,6 +947,64 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
     }
 
+    // Save Exam History
+    if (route === '/exam-history' && method === 'POST') {
+      const body = await request.json()
+      const { userId, examType, section, questions, totalQuestions, correctCount, score } = body
+
+      if (!userId || !examType || !section) {
+        return handleCORS(NextResponse.json(
+          { error: "userId, examType, and section are required" },
+          { status: 400 }
+        ))
+      }
+
+      const record = {
+        id: uuidv4(),
+        userId,
+        examType,
+        section,
+        questions: questions || [],
+        totalQuestions: totalQuestions || 0,
+        correctCount: correctCount || 0,
+        score: score || 0,
+        completedAt: new Date(),
+        createdAt: new Date()
+      }
+
+      await db.collection('exam_history').insertOne(record)
+      const { _id, ...recordData } = record
+      return handleCORS(NextResponse.json(recordData))
+    }
+
+    // Get Exam History (with filters)
+    if (route.startsWith('/exam-history') && method === 'GET') {
+      const url = new URL(request.url)
+      const userId = url.searchParams.get('userId')
+      const examType = url.searchParams.get('examType')
+      const section = url.searchParams.get('section')
+
+      if (!userId) {
+        return handleCORS(NextResponse.json(
+          { error: "userId is required" },
+          { status: 400 }
+        ))
+      }
+
+      const filter = { userId }
+      if (examType) filter.examType = examType
+      if (section) filter.section = section
+
+      const history = await db.collection('exam_history')
+        .find(filter)
+        .sort({ completedAt: -1 })
+        .limit(50)
+        .toArray()
+
+      const cleanedHistory = history.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedHistory))
+    }
+
     // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` },
