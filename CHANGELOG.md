@@ -115,7 +115,7 @@
 - Copy the key (starts with `AIzaSy...`)
 
 ### 2. Configure in Admin Console
-- Go to: https://exam-ai-debug.preview.emergentagent.com/admin
+- Go to: https://premium-unlock-23.preview.emergentagent.com/admin
 - Paste Gemini API key
 - (Optional) Add Google Cloud API key for audio
 - Click "Save API Keys"
@@ -155,8 +155,8 @@ Additional features:
 
 ## 🌐 URLs
 
-- **Main App**: https://exam-ai-debug.preview.emergentagent.com
-- **Admin Console**: https://exam-ai-debug.preview.emergentagent.com/admin
+- **Main App**: https://premium-unlock-23.preview.emergentagent.com
+- **Admin Console**: https://premium-unlock-23.preview.emergentagent.com/admin
 
 ## 📊 API Endpoints Summary
 

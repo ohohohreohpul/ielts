@@ -95,6 +95,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [selectedExam, setSelectedExam] = useState(null)
   const [lastExam, setLastExam] = useState(null)
+  const [isPremium, setIsPremium] = useState(false)
 
   // Lock body scroll when modal is open (iOS fix)
   useEffect(() => {
@@ -112,11 +113,25 @@ export default function DashboardPage() {
     try {
       const u = JSON.parse(userData)
       setUser(u)
-      // Load last exam from localStorage
+      setIsPremium(u.premium === true)
       const last = localStorage.getItem('lastExam')
       if (last) setLastExam(JSON.parse(last))
     } catch {}
     setLoading(false)
+
+    // Background refresh: fetch latest user data from server
+    if (token) {
+      fetch('/api/auth/session', { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data?.user) {
+            localStorage.setItem('user', JSON.stringify(data.user))
+            setUser(data.user)
+            setIsPremium(data.user.premium === true)
+          }
+        })
+        .catch(() => {})
+    }
   }, [])
 
   if (loading) return (
@@ -127,6 +142,9 @@ export default function DashboardPage() {
 
   const freeExams = EXAMS.filter(e => e.free)
   const premiumExams = EXAMS.filter(e => !e.free)
+
+  // For premium users, all exams are accessible
+  const isExamAccessible = (exam) => exam.free || isPremium
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
@@ -198,36 +216,40 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Premium Exams */}
+        {/* PREMIUM / ADDITIONAL EXAMS */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">👑 Premium</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
             <button onClick={() => router.push('/practice')} className="text-xs font-bold text-orange-500">ดูทั้งหมด</button>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {premiumExams.map((exam, i) => (
-              <motion.button
-                key={exam.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
-                onClick={() => setSelectedExam(exam)}
-                className="bg-white rounded-2xl border-2 border-gray-100 p-4 text-left relative overflow-hidden active:scale-95 transition-all"
-              >
-                {/* Lock overlay */}
-                <div className="absolute top-2 right-2">
-                  <Lock className="w-3.5 h-3.5 text-gray-300" />
-                </div>
-                <span className="text-3xl opacity-60">{exam.emoji}</span>
-                <h3 className="font-black text-gray-500 mt-2">{exam.name}</h3>
-                <p className="text-xs text-gray-300 mt-1 line-clamp-2">{exam.desc}</p>
-                <div className="flex items-center gap-2 mt-3">
-                  <span className={`text-xs font-bold ${exam.diffColor} opacity-60`}>● {exam.difficulty}</span>
-                  <span className="text-xs text-gray-300">|</span>
-                  <span className="text-xs text-gray-300">{exam.sections.length} พาร์ท</span>
-                </div>
-              </motion.button>
-            ))}
+            {premiumExams.map((exam, i) => {
+              const accessible = isExamAccessible(exam)
+              return (
+                <motion.button
+                  key={exam.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 + i * 0.05 }}
+                  onClick={() => setSelectedExam(exam)}
+                  className={`bg-white rounded-2xl border-2 p-4 text-left relative overflow-hidden active:scale-95 transition-all ${accessible ? 'border-gray-100' : 'border-gray-100'}`}
+                >
+                  {!accessible && (
+                    <div className="absolute top-2 right-2">
+                      <Lock className="w-3.5 h-3.5 text-gray-300" />
+                    </div>
+                  )}
+                  <span className={`text-3xl ${accessible ? '' : 'opacity-60'}`}>{exam.emoji}</span>
+                  <h3 className={`font-black mt-2 ${accessible ? 'text-gray-900' : 'text-gray-500'}`}>{exam.name}</h3>
+                  <p className={`text-xs mt-1 line-clamp-2 ${accessible ? 'text-gray-400' : 'text-gray-300'}`}>{exam.desc}</p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className={`text-xs font-bold ${exam.diffColor} ${accessible ? '' : 'opacity-60'}`}>● {exam.difficulty}</span>
+                    <span className="text-xs text-gray-300">|</span>
+                    <span className={`text-xs ${accessible ? 'text-gray-400' : 'text-gray-300'}`}>{exam.sections.length} พาร์ท</span>
+                  </div>
+                </motion.button>
+              )
+            })}
           </div>
         </div>
 
@@ -307,7 +329,7 @@ export default function DashboardPage() {
                       <button
                         key={sec.id}
                         onClick={() => {
-                          if (!selectedExam.free) {
+                          if (!isExamAccessible(selectedExam)) {
                             router.push('/practice')
                             setSelectedExam(null)
                             return
@@ -324,14 +346,14 @@ export default function DashboardPage() {
                         }}
                         className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm active:opacity-70 transition-opacity"
                       >
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${selectedExam.free ? 'bg-orange-50' : 'bg-gray-100'}`}>
-                          <sec.icon className={`w-5 h-5 ${selectedExam.free ? 'text-orange-500' : 'text-gray-400'}`} />
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isExamAccessible(selectedExam) ? 'bg-orange-50' : 'bg-gray-100'}`}>
+                          <sec.icon className={`w-5 h-5 ${isExamAccessible(selectedExam) ? 'text-orange-500' : 'text-gray-400'}`} />
                         </div>
                         <div className="flex-1 text-left">
-                          <p className={`font-bold ${selectedExam.free ? 'text-gray-900' : 'text-gray-400'}`}>{sec.label}</p>
+                          <p className={`font-bold ${isExamAccessible(selectedExam) ? 'text-gray-900' : 'text-gray-400'}`}>{sec.label}</p>
                           <p className="text-xs text-gray-400">{sec.sub}</p>
                         </div>
-                        {selectedExam.free ? (
+                        {isExamAccessible(selectedExam) ? (
                           <div className="bg-orange-500 px-4 py-2.5 rounded-xl flex-shrink-0">
                             <p className="text-white text-sm font-bold">เริ่ม</p>
                           </div>
@@ -343,8 +365,8 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Unlock Button for Premium */}
-                {!selectedExam.free && (
+                {/* Unlock Button for non-premium users on premium exams */}
+                {!isExamAccessible(selectedExam) && (
                   <button
                     onClick={() => { router.push('/practice'); setSelectedExam(null) }}
                     className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 active:opacity-80 text-lg"

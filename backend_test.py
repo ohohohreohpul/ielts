@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = "https://exam-ai-debug.preview.emergentagent.com/api"
+BASE_URL = "https://premium-unlock-23.preview.emergentagent.com/api"
 
 class MydemyAPITester:
     def __init__(self):

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, Headphones, PenTool, Mic, ChevronDown, ChevronUp, Lock, Crown, Check } from 'lucide-react'
@@ -87,12 +87,35 @@ export default function PracticePage() {
   const router = useRouter()
   const [expanded, setExpanded] = useState('toeic')
   const [showPricing, setShowPricing] = useState(false)
+  const [isPremium, setIsPremium] = useState(false)
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user')
+    if (userData) {
+      try {
+        const u = JSON.parse(userData)
+        setIsPremium(u.premium === true)
+      } catch {}
+    }
+    // Background refresh
+    const token = localStorage.getItem('token')
+    if (token) {
+      fetch('/api/auth/session', { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data?.user) {
+            localStorage.setItem('user', JSON.stringify(data.user))
+            setIsPremium(data.user.premium === true)
+          }
+        }).catch(() => {})
+    }
+  }, [])
 
   const freeExams = EXAMS.filter(e => e.free)
   const premiumExams = EXAMS.filter(e => !e.free)
 
   const handleExamClick = (exam) => {
-    if (!exam.free) {
+    if (!exam.free && !isPremium) {
       setShowPricing(true)
       return
     }
@@ -118,30 +141,34 @@ export default function PracticePage() {
 
         {/* PREMIUM SECTION */}
         <div className="flex items-center justify-between pt-2">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">👑 Premium</p>
-          <button onClick={() => setShowPricing(true)} className="text-xs font-bold text-orange-500">ปลดล็อค</button>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
+          {!isPremium && <button onClick={() => setShowPricing(true)} className="text-xs font-bold text-orange-500">ปลดล็อค</button>}
         </div>
         {premiumExams.map((exam, ei) => (
-          <motion.div
-            key={exam.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + ei * 0.05 }}
-          >
-            <button
-              onClick={() => setShowPricing(true)}
-              className="w-full bg-white rounded-2xl border-2 border-gray-100 p-4 flex items-center gap-4 opacity-60 active:opacity-40 transition-opacity"
+          isPremium ? (
+            <ExamCard key={exam.id} exam={exam} expanded={expanded} onToggle={() => setExpanded(expanded === exam.id ? null : exam.id)} router={router} />
+          ) : (
+            <motion.div
+              key={exam.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + ei * 0.05 }}
             >
-              <span className="text-2xl">{exam.emoji}</span>
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">{exam.name}</span>
-                  <Lock className="w-3.5 h-3.5 text-gray-400" />
+              <button
+                onClick={() => setShowPricing(true)}
+                className="w-full bg-white rounded-2xl border-2 border-gray-100 p-4 flex items-center gap-4 opacity-60 active:opacity-40 transition-opacity"
+              >
+                <span className="text-2xl">{exam.emoji}</span>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-gray-900">{exam.name}</span>
+                    <Lock className="w-3.5 h-3.5 text-gray-400" />
+                  </div>
+                  <p className="text-xs text-gray-400">{exam.desc}</p>
                 </div>
-                <p className="text-xs text-gray-400">{exam.desc}</p>
-              </div>
-            </button>
-          </motion.div>
+              </button>
+            </motion.div>
+          )
         ))}
 
         {/* Tip */}

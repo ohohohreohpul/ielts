@@ -8,7 +8,7 @@ import aiohttp
 import json
 import time
 
-BASE_URL = "https://exam-ai-debug.preview.emergentagent.com/api"
+BASE_URL = "https://premium-unlock-23.preview.emergentagent.com/api"
 
 async def test_ai_endpoint(session, test_case):
     """Test a single AI endpoint with detailed validation"""

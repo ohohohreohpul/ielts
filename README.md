@@ -219,7 +219,7 @@ http://localhost:3000
 ```env
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=mydemy_db
-NEXT_PUBLIC_BASE_URL=https://exam-ai-debug.preview.emergentagent.com
+NEXT_PUBLIC_BASE_URL=https://premium-unlock-23.preview.emergentagent.com
 CORS_ORIGINS=*
 ```
 
