@@ -1146,6 +1146,350 @@ Provide a JSON response with ONLY this structure, no extra text:
       return handleCORS(NextResponse.json(cleanedHistory))
     }
 
+    // ============ ADMIN CONFIG API ============
+    
+    // Get Admin Config
+    if (route === '/admin/config' && method === 'GET') {
+      const config = await db.collection('config').findOne({ type: 'admin_config' })
+      return handleCORS(NextResponse.json({
+        geminiKey: config?.geminiKey ? '***configured***' : '',
+        stripeKey: config?.stripeKey ? '***configured***' : '',
+        facebookAppId: config?.facebookAppId || '',
+        facebookAppSecret: config?.facebookAppSecret ? '***configured***' : '',
+      }))
+    }
+
+    // Save Admin Config
+    if (route === '/admin/config' && method === 'POST') {
+      const body = await request.json()
+      const { geminiKey, stripeKey, facebookAppId, facebookAppSecret } = body
+
+      const updateData = { type: 'admin_config', updatedAt: new Date() }
+      if (geminiKey && !geminiKey.includes('***')) updateData.geminiKey = geminiKey
+      if (stripeKey && !stripeKey.includes('***')) updateData.stripeKey = stripeKey
+      if (facebookAppId) updateData.facebookAppId = facebookAppId
+      if (facebookAppSecret && !facebookAppSecret.includes('***')) updateData.facebookAppSecret = facebookAppSecret
+
+      await db.collection('config').updateOne(
+        { type: 'admin_config' },
+        { $set: updateData },
+        { upsert: true }
+      )
+
+      return handleCORS(NextResponse.json({ success: true }))
+    }
+
+    // ============ GOOGLE OAUTH (Emergent Auth) ============
+    
+    // Google OAuth Callback - Exchange session_id for user data
+    if (route === '/auth/google-callback' && method === 'POST') {
+      const body = await request.json()
+      const { sessionId } = body
+
+      if (!sessionId) {
+        return handleCORS(NextResponse.json(
+          { error: 'session_id is required' },
+          { status: 400 }
+        ))
+      }
+
+      try {
+        // Call Emergent Auth API to get user data
+        const authResponse = await fetch('https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data', {
+          method: 'GET',
+          headers: {
+            'X-Session-ID': sessionId
+          }
+        })
+
+        if (!authResponse.ok) {
+          throw new Error('Failed to get session data')
+        }
+
+        const authData = await authResponse.json()
+        // authData: { id, email, name, picture, session_token }
+
+        // Check if user exists
+        let user = await db.collection('users').findOne({ email: authData.email })
+
+        if (user) {
+          // Update existing user
+          await db.collection('users').updateOne(
+            { email: authData.email },
+            { $set: { 
+              name: authData.name, 
+              picture: authData.picture,
+              googleId: authData.id,
+              updatedAt: new Date()
+            }}
+          )
+          user = await db.collection('users').findOne({ email: authData.email })
+        } else {
+          // Create new user
+          user = {
+            id: uuidv4(),
+            email: authData.email,
+            username: authData.name,
+            name: authData.name,
+            picture: authData.picture,
+            googleId: authData.id,
+            premium: false,
+            authProvider: 'google',
+            createdAt: new Date()
+          }
+          await db.collection('users').insertOne(user)
+        }
+
+        // Store session
+        const sessionToken = authData.session_token || crypto.randomBytes(32).toString('hex')
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+
+        await db.collection('user_sessions').updateOne(
+          { session_token: sessionToken },
+          { 
+            $set: { 
+              user_id: user.id, 
+              session_token: sessionToken,
+              expires_at: expiresAt,
+              created_at: new Date()
+            }
+          },
+          { upsert: true }
+        )
+
+        const { _id, password, ...safeUser } = user
+        return handleCORS(NextResponse.json({
+          user: safeUser,
+          session_token: sessionToken
+        }))
+
+      } catch (error) {
+        console.error('Google auth error:', error)
+        return handleCORS(NextResponse.json(
+          { error: 'Authentication failed' },
+          { status: 401 }
+        ))
+      }
+    }
+
+    // ============ STRIPE PAYMENT ============
+    
+    // Payment plans
+    const PAYMENT_PLANS = {
+      monthly: { amount: 19900, currency: 'thb', name: 'Premium Monthly' }, // Amount in satang (199 THB)
+      yearly: { amount: 149000, currency: 'thb', name: 'Premium Yearly' }   // Amount in satang (1490 THB)
+    }
+
+    // Create Checkout Session
+    if (route === '/payments/checkout' && method === 'POST') {
+      const body = await request.json()
+      const { plan, userId, email, originUrl } = body
+
+      if (!plan || !PAYMENT_PLANS[plan]) {
+        return handleCORS(NextResponse.json(
+          { error: 'Invalid plan' },
+          { status: 400 }
+        ))
+      }
+
+      const planData = PAYMENT_PLANS[plan]
+      const stripeApiKey = process.env.STRIPE_API_KEY
+
+      if (!stripeApiKey) {
+        return handleCORS(NextResponse.json(
+          { error: 'Payment not configured' },
+          { status: 500 }
+        ))
+      }
+
+      try {
+        const Stripe = (await import('stripe')).default
+        const stripe = new Stripe(stripeApiKey)
+
+        const successUrl = `${originUrl}/pricing?session_id={CHECKOUT_SESSION_ID}`
+        const cancelUrl = `${originUrl}/pricing`
+
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [{
+            price_data: {
+              currency: planData.currency,
+              product_data: {
+                name: planData.name,
+                description: `Carrot School ${planData.name} Subscription`,
+              },
+              unit_amount: planData.amount,
+            },
+            quantity: 1,
+          }],
+          mode: 'payment',
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+          customer_email: email || undefined,
+          metadata: {
+            user_id: userId || '',
+            email: email || '',
+            plan: plan,
+            plan_name: planData.name
+          }
+        })
+
+        // Store payment transaction
+        const transaction = {
+          id: uuidv4(),
+          session_id: session.id,
+          user_id: userId,
+          email: email,
+          plan: plan,
+          amount: planData.amount / 100, // Store in THB
+          currency: planData.currency,
+          status: 'pending',
+          payment_status: 'initiated',
+          created_at: new Date()
+        }
+        await db.collection('payment_transactions').insertOne(transaction)
+
+        return handleCORS(NextResponse.json({
+          url: session.url,
+          session_id: session.id
+        }))
+
+      } catch (error) {
+        console.error('Stripe checkout error:', error)
+        return handleCORS(NextResponse.json(
+          { error: 'Failed to create checkout session: ' + error.message },
+          { status: 500 }
+        ))
+      }
+    }
+
+    // Check Payment Status
+    if (route.startsWith('/payments/status/') && method === 'GET') {
+      const sessionId = route.split('/').pop()
+
+      if (!sessionId) {
+        return handleCORS(NextResponse.json(
+          { error: 'session_id is required' },
+          { status: 400 }
+        ))
+      }
+
+      try {
+        const stripeApiKey = process.env.STRIPE_API_KEY
+        const Stripe = (await import('stripe')).default
+        const stripe = new Stripe(stripeApiKey)
+
+        const session = await stripe.checkout.sessions.retrieve(sessionId)
+
+        // Update transaction in database
+        const transaction = await db.collection('payment_transactions').findOne({ session_id: sessionId })
+
+        if (transaction && transaction.payment_status !== 'paid' && session.payment_status === 'paid') {
+          // Payment successful - update transaction
+          await db.collection('payment_transactions').updateOne(
+            { session_id: sessionId },
+            { $set: { 
+              status: session.status,
+              payment_status: session.payment_status,
+              updated_at: new Date()
+            }}
+          )
+
+          // Upgrade user to premium
+          if (transaction.user_id) {
+            await db.collection('users').updateOne(
+              { id: transaction.user_id },
+              { $set: { 
+                premium: true,
+                premiumSince: new Date(),
+                premiumPlan: transaction.plan
+              }}
+            )
+          } else if (transaction.email) {
+            await db.collection('users').updateOne(
+              { email: transaction.email },
+              { $set: { 
+                premium: true,
+                premiumSince: new Date(),
+                premiumPlan: transaction.plan
+              }}
+            )
+          }
+        }
+
+        return handleCORS(NextResponse.json({
+          status: session.status,
+          payment_status: session.payment_status,
+          amount_total: session.amount_total,
+          currency: session.currency
+        }))
+
+      } catch (error) {
+        console.error('Payment status error:', error)
+        return handleCORS(NextResponse.json(
+          { error: 'Failed to check payment status' },
+          { status: 500 }
+        ))
+      }
+    }
+
+    // Stripe Webhook
+    if (route === '/webhook/stripe' && method === 'POST') {
+      try {
+        const body = await request.text()
+        const signature = request.headers.get('stripe-signature')
+        
+        const stripeApiKey = process.env.STRIPE_API_KEY
+        const Stripe = (await import('stripe')).default
+        const stripe = new Stripe(stripeApiKey)
+
+        // For production, verify webhook signature
+        // const event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+        const event = JSON.parse(body)
+
+        // Process webhook event
+        if (event.type === 'checkout.session.completed') {
+          const session = event.data.object
+          
+          if (session.payment_status === 'paid') {
+            const transaction = await db.collection('payment_transactions').findOne({ 
+              session_id: session.id 
+            })
+
+            if (transaction && transaction.payment_status !== 'paid') {
+              // Update transaction
+              await db.collection('payment_transactions').updateOne(
+                { session_id: session.id },
+                { $set: { 
+                  status: 'completed',
+                  payment_status: 'paid',
+                  updated_at: new Date()
+                }}
+              )
+
+              // Upgrade user
+              const metadata = session.metadata || {}
+              if (metadata.user_id) {
+                await db.collection('users').updateOne(
+                  { id: metadata.user_id },
+                  { $set: { premium: true, premiumSince: new Date() }}
+                )
+              }
+            }
+          }
+        }
+
+        return handleCORS(NextResponse.json({ received: true }))
+
+      } catch (error) {
+        console.error('Webhook error:', error)
+        return handleCORS(NextResponse.json(
+          { error: 'Webhook processing failed' },
+          { status: 400 }
+        ))
+      }
+    }
+
     // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` },

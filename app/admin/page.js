@@ -1,358 +1,197 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Settings, Key, Save, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, Key, CreditCard, Settings, Eye, EyeOff, Save, Check, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 export default function AdminPage() {
-  const [geminiKey, setGeminiKey] = useState('')
-  const [googleTTSKey, setGoogleTTSKey] = useState('')
-  const [elevenLabsKey, setElevenLabsKey] = useState('')
-  const [openAIKey, setOpenAIKey] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState('')
-  const [showGeminiKey, setShowGeminiKey] = useState(false)
-  const [showTTSKey, setShowTTSKey] = useState(false)
-  const [showElevenLabsKey, setShowElevenLabsKey] = useState(false)
-  const [showOpenAIKey, setShowOpenAIKey] = useState(false)
-  const [currentKeys, setCurrentKeys] = useState({ gemini: false, googleTTS: false, elevenLabs: false, openAI: false })
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [showKeys, setShowKeys] = useState({})
+  
+  const [config, setConfig] = useState({
+    geminiKey: '',
+    stripeKey: '',
+    facebookAppId: '',
+    facebookAppSecret: '',
+  })
 
   useEffect(() => {
-    loadCurrentKeys()
+    fetchConfig()
   }, [])
 
-  const loadCurrentKeys = async () => {
+  const fetchConfig = async () => {
     try {
-      const response = await fetch('/api/admin/keys')
-      if (response.ok) {
-        const data = await response.json()
-        setCurrentKeys(data)
+      const res = await fetch('/api/admin/config')
+      if (res.ok) {
+        const data = await res.json()
+        setConfig({
+          geminiKey: data.geminiKey || '',
+          stripeKey: data.stripeKey || '',
+          facebookAppId: data.facebookAppId || '',
+          facebookAppSecret: data.facebookAppSecret || '',
+        })
       }
     } catch (err) {
-      console.error('Failed to load keys:', err)
+      console.error('Failed to fetch config:', err)
     }
+    setLoading(false)
   }
 
-  const handleSaveKeys = async () => {
-    setLoading(true)
-    setSuccess(false)
-    setError('')
-
+  const saveConfig = async () => {
+    setSaving(true)
     try {
-      const response = await fetch('/api/admin/keys', {
+      const res = await fetch('/api/admin/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          geminiKey: geminiKey || undefined,
-          googleTTSKey: googleTTSKey || undefined,
-          elevenLabsKey: elevenLabsKey || undefined,
-          openAIKey: openAIKey || undefined
-        })
+        body: JSON.stringify(config)
       })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setSuccess(true)
-        setGeminiKey('')
-        setGoogleTTSKey('')
-        await loadCurrentKeys()
-        setTimeout(() => setSuccess(false), 3000)
-      } else {
-        setError(data.error || 'Failed to save keys')
+      if (res.ok) {
+        setSaved(true)
+        setTimeout(() => setSaved(false), 2000)
       }
     } catch (err) {
-      setError('Network error: ' + err.message)
-    } finally {
-      setLoading(false)
+      console.error('Failed to save config:', err)
     }
+    setSaving(false)
+  }
+
+  const toggleShowKey = (key) => {
+    setShowKeys(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const configSections = [
+    {
+      title: 'AI Configuration',
+      icon: '🤖',
+      description: 'ตั้งค่า API key สำหรับ AI (Gemini)',
+      fields: [
+        { key: 'geminiKey', label: 'Gemini API Key', placeholder: 'AIza...' }
+      ]
+    },
+    {
+      title: 'Payment (Stripe)',
+      icon: '💳',
+      description: 'ตั้งค่า Stripe สำหรับรับชำระเงิน Premium',
+      fields: [
+        { key: 'stripeKey', label: 'Stripe Secret Key', placeholder: 'sk_live_...' }
+      ]
+    },
+    {
+      title: 'Facebook Login',
+      icon: '🔷',
+      description: 'ตั้งค่า Facebook App สำหรับ Social Login',
+      fields: [
+        { key: 'facebookAppId', label: 'Facebook App ID', placeholder: '123456789...' },
+        { key: 'facebookAppSecret', label: 'Facebook App Secret', placeholder: 'abc123...' }
+      ]
+    }
+  ]
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen ">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
-              <Settings className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Console</h1>
-              <p className="text-gray-600">Manage API Keys & Configuration</p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard')}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div>
+            <h1 className="text-xl font-bold">Admin Console</h1>
+            <p className="text-sm text-gray-500">ตั้งค่า API Keys และ Integrations</p>
           </div>
-        </motion.div>
-
-        {/* Status Alerts */}
-        {success && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6"
-          >
-            <Alert className="border-orange-200 bg-orange-50">
-              <CheckCircle className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-800">
-                API keys saved successfully!
-              </AlertDescription>
-            </Alert>
-          </motion.div>
-        )}
-
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6"
-          >
-            <Alert className="border-red-200 bg-red-50">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                {error}
-              </AlertDescription>
-            </Alert>
-          </motion.div>
-        )}
-
-        {/* API Keys Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Key className="w-5 h-5" />
-                API Keys Configuration
-              </CardTitle>
-              <CardDescription>
-                Configure your AI service providers for exam generation and audio services
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Google Gemini API Key */}
-              <div className="space-y-2">
-                <Label htmlFor="gemini-key" className="text-base font-semibold">
-                  Google Gemini API Key
-                  {currentKeys.gemini && (
-                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                      ✓ Configured
-                    </span>
-                  )}
-                </Label>
-                <p className="text-sm text-gray-600 mb-2">
-                  Used for AI-powered question generation (Reading, Writing, Speaking)
-                </p>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Input
-                      id="gemini-key"
-                      type={showGeminiKey ? 'text' : 'password'}
-                      value={geminiKey}
-                      onChange={(e) => setGeminiKey(e.target.value)}
-                      placeholder="AIzaSy..." 
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowGeminiKey(!showGeminiKey)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showGeminiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <a
-                  href="https://aistudio.google.com/apikey"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-orange-500 hover:underline inline-block"
-                >
-                  Get your Gemini API key →
-                </a>
-              </div>
-
-              {/* Google Cloud TTS/STT Key */}
-              <div className="space-y-2">
-                <Label htmlFor="google-tts-key" className="text-base font-semibold">
-                  Google Cloud API Key (Optional)
-                  {currentKeys.googleTTS && (
-                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                      ✓ Configured
-                    </span>
-                  )}
-                </Label>
-                <p className="text-sm text-gray-600 mb-2">
-                  Used for Text-to-Speech (Listening) and Speech-to-Text (Speaking)
-                </p>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Input
-                      id="google-tts-key"
-                      type={showTTSKey ? 'text' : 'password'}
-                      value={googleTTSKey}
-                      onChange={(e) => setGoogleTTSKey(e.target.value)}
-                      placeholder="AIzaSy..."
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowTTSKey(!showTTSKey)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showTTSKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <a
-                  href="https://console.cloud.google.com/apis/credentials"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-orange-500 hover:underline inline-block"
-                >
-                  Get Google Cloud API key →
-                </a>
-              </div>
-
-              {/* ElevenLabs API Key */}
-              <div className="space-y-2">
-                <Label htmlFor="elevenlabs-key" className="text-base font-semibold">
-                  ElevenLabs API Key (แนะนำ)
-                  {currentKeys.elevenLabs && (
-                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                      ✓ Configured
-                    </span>
-                  )}
-                </Label>
-                <p className="text-sm text-gray-600 mb-2">
-                  เสียงธรรมชาติสำหรับ Listening questions (Free: 10k chars/month)
-                </p>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Input
-                      id="elevenlabs-key"
-                      type={showElevenLabsKey ? 'text' : 'password'}
-                      value={elevenLabsKey}
-                      onChange={(e) => setElevenLabsKey(e.target.value)}
-                      placeholder="sk_..."
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowElevenLabsKey(!showElevenLabsKey)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showElevenLabsKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <a
-                  href="https://elevenlabs.io/app/settings/api-keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-orange-500 hover:underline inline-block"
-                >
-                  Get ElevenLabs API key →
-                </a>
-              </div>
-
-              {/* OpenAI API Key */}
-              <div className="space-y-2">
-                <Label htmlFor="openai-key" className="text-base font-semibold">
-                  OpenAI API Key (แนะนำ)
-                  {currentKeys.openAI && (
-                    <span className="ml-2 text-xs font-normal text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                      ✓ Configured
-                    </span>
-                  )}
-                </Label>
-                <p className="text-sm text-gray-600 mb-2">
-                  Whisper STT สำหรับ Speaking assessment ($0.006/minute)
-                </p>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Input
-                      id="openai-key"
-                      type={showOpenAIKey ? 'text' : 'password'}
-                      value={openAIKey}
-                      onChange={(e) => setOpenAIKey(e.target.value)}
-                      placeholder="sk-..."
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowOpenAIKey(!showOpenAIKey)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showOpenAIKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <a
-                  href="https://platform.openai.com/api-keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-orange-500 hover:underline inline-block"
-                >
-                  Get OpenAI API key →
-                </a>
-              </div>
-
-              {/* Save Button */}
-              <div className="pt-4">
-                <Button
-                  onClick={handleSaveKeys}
-                  disabled={loading || (!geminiKey && !googleTTSKey)}
-                  className="w-full hover:hover:"
-                  size="lg"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {loading ? 'Saving...' : 'Save API Keys'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Info Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mt-6"
-        >
-          <Card className="bg-orange-500 border-orange-200">
-            <CardContent className="p-6">
-              <h3 className="font-semibold text-orange-500 mb-2">ℹ️ Important Notes</h3>
-              <ul className="text-sm text-orange-500 space-y-1">
-                <li>• API keys are stored securely in the database</li>
-                <li>• Gemini API key is required for AI question generation</li>
-                <li>• Google Cloud key is optional (for audio features)</li>
-                <li>• You can update keys anytime by entering new values</li>
-                <li>• Leave fields empty to keep existing keys unchanged</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Back to Home */}
-        <div className="mt-8 text-center">
-          <a href="/" className="text-indigo-600 hover:text-indigo-800 font-medium">
-            ← กลับไปหน้าหลัก
-          </a>
         </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        {/* Google OAuth Info */}
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🔵</span>
+              <div>
+                <h3 className="font-bold text-green-800">Google Login</h3>
+                <p className="text-sm text-green-700">✅ พร้อมใช้งานแล้ว! ไม่ต้องตั้งค่าอะไรเพิ่มเติม</p>
+                <p className="text-xs text-green-600 mt-1">ใช้ Emergent Auth - รองรับ Google OAuth อัตโนมัติ</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Config Sections */}
+        {configSections.map((section, idx) => (
+          <motion.div
+            key={section.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+          >
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{section.icon}</span>
+                  <div>
+                    <CardTitle className="text-lg">{section.title}</CardTitle>
+                    <CardDescription>{section.description}</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {section.fields.map(field => (
+                  <div key={field.key} className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">{field.label}</label>
+                    <div className="relative">
+                      <Input
+                        type={showKeys[field.key] ? 'text' : 'password'}
+                        value={config[field.key]}
+                        onChange={(e) => setConfig(prev => ({ ...prev, [field.key]: e.target.value }))}
+                        placeholder={field.placeholder}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => toggleShowKey(field.key)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showKeys[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+
+        {/* Save Button */}
+        <Button
+          onClick={saveConfig}
+          disabled={saving}
+          className="w-full h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600"
+        >
+          {saving ? (
+            <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> กำลังบันทึก...</>
+          ) : saved ? (
+            <><Check className="w-5 h-5 mr-2" /> บันทึกแล้ว!</>
+          ) : (
+            <><Save className="w-5 h-5 mr-2" /> บันทึกการตั้งค่า</>
+          )}
+        </Button>
       </div>
     </div>
   )
