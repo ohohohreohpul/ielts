@@ -115,7 +115,7 @@ function AppInner() {
           body: JSON.stringify({
             examType: examType,
             section: section,
-            count: 5
+            count: 15  // Generate 15 questions per batch for smoother experience
           })
         })
 
@@ -363,7 +363,7 @@ function AppInner() {
         body: JSON.stringify({
           examType: examType,
           section: selectedSection,
-          count: 5
+          count: 15  // Generate 15 questions per batch
         })
       })
 
