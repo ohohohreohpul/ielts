@@ -934,10 +934,6 @@ function AppInner() {
                 </ul>
               </CardContent>
             </Card>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />เข้าถึงฟีเจอร์ใหม่ก่อนใคร</li>
-                </ul>
-              </CardContent>
-            </Card>
           </div>
 
           <DialogFooter className="flex-col gap-2">
