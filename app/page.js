@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -25,7 +25,7 @@ const SECTION_INFO = {
   speaking: { icon: Mic, label: 'การพูด', color: 'orange' }
 }
 
-export default function App() {
+function AppInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [stage, setStage] = useState('init') // init → check auth → lesson or redirect
@@ -852,5 +852,17 @@ export default function App() {
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
+        <Loader2 className="animate-spin h-10 w-10 text-green-500" />
+      </div>
+    }>
+      <AppInner />
+    </Suspense>
   )
 }
