@@ -22,7 +22,7 @@ const EXAMS = [
     desc: 'ไวยากรณ์ภาษาอังกฤษ พื้นฐาน - ขั้นสูง',
     emoji: '📝',
     sections: [
-      { id: 'reading',   icon: BookOpen,   label: 'Grammar Practice',   sub: 'Tenses, Prepositions, Vocabulary' },
+      { id: 'grammar',   icon: BookOpen,   label: 'Grammar Practice',   sub: 'Tenses, Prepositions, Vocabulary' },
     ]
   },
   // PREMIUM TIER

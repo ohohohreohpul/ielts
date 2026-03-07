@@ -63,11 +63,56 @@ function handleCORS(response) {
 function buildExamPrompt(examType, section, count) {
   // ===== SECTION-SPECIFIC PROMPTS (works for ALL exam types) =====
   
+  // GRAMMAR section - dedicated grammar questions
+  if (section === 'grammar') {
+    return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array.
+
+IMPORTANT: Each question MUST have "type": "multiple-choice" and include "explanation" field explaining WHY the answer is correct.
+
+Mix different grammar topics: tenses, prepositions, articles, vocabulary, conditionals, reported speech, subject-verb agreement.
+
+Format:
+[
+  {
+    "id": "q1",
+    "type": "multiple-choice",
+    "sentence": "She ____ to the office every morning by bus.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "go", "correct": false},
+      {"id": "b", "text": "goes", "correct": true},
+      {"id": "c", "text": "going", "correct": false},
+      {"id": "d", "text": "gone", "correct": false}
+    ],
+    "explanation": "The correct answer is 'goes' because the subject 'She' is third person singular, and in present simple tense, we add -s/-es to the verb for third person singular subjects."
+  },
+  {
+    "id": "q2",
+    "type": "multiple-choice",
+    "sentence": "I have been waiting here ____ two hours.",
+    "question": "Choose the correct preposition:",
+    "options": [
+      {"id": "a", "text": "since", "correct": false},
+      {"id": "b", "text": "for", "correct": true},
+      {"id": "c", "text": "during", "correct": false},
+      {"id": "d", "text": "while", "correct": false}
+    ],
+    "explanation": "The correct answer is 'for' because we use 'for' with a duration of time (two hours). 'Since' is used with a specific point in time."
+  }
+]
+
+Rules:
+- "type" MUST be "multiple-choice"
+- MUST include "explanation" field with clear grammatical reasoning in English
+- Cover various grammar topics
+- Generate exactly ${count} grammar questions. Return ONLY the JSON array.`
+  }
+
   // LISTENING prompts - for any exam type
   if (section === 'listening') {
     return `Generate ${count} ${examType} Listening questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST have "type": "listening" and MUST have "audioText" field containing the text to be spoken/heard.
+IMPORTANT: Each question MUST have "type": "listening", MUST have "audioText" field, and MUST have "explanation" field explaining why the answer is correct.
 
 Format for listening questions:
 [
@@ -81,7 +126,8 @@ Format for listening questions:
       {"id": "b", "text": "Quarterly sales performance", "correct": true},
       {"id": "c", "text": "Employee promotions", "correct": false},
       {"id": "d", "text": "Office renovations", "correct": false}
-    ]
+    ],
+    "explanation": "The speaker mentions 'quarterly sales figures' and 'exceeded targets by 15 percent', indicating the topic is about sales performance."
   },
   {
     "id": "q2",
@@ -92,13 +138,15 @@ Format for listening questions:
       {"id": "a", "text": "Directions to the train station", "correct": true},
       {"id": "b", "text": "The time of the next train", "correct": false},
       {"id": "c", "text": "A ticket price", "correct": false}
-    ]
+    ],
+    "explanation": "Person A asks 'could you tell me how to get to the train station?' which is clearly asking for directions."
   }
 ]
 
 Rules:
 - "type" MUST be "listening"
 - "audioText" MUST contain 20-80 words of dialogue or announcement in English
+- "explanation" MUST explain why the correct answer is right, referencing the audio text
 - Include a mix of: announcements, conversations, monologues
 - Make difficulty appropriate for ${examType} level
 - Generate exactly ${count} questions. Return ONLY the JSON array.`
@@ -222,6 +270,8 @@ Format:
     if (examType === 'IELTS') {
       return `Generate ${count} IELTS Academic Reading questions. Return ONLY a valid JSON array.
 
+IMPORTANT: Each question MUST include an "explanation" field explaining why the answer is correct.
+
 Mix these types:
 
 1. TRUE/FALSE/NOT GIVEN:
@@ -230,7 +280,8 @@ Mix these types:
   "type": "true-false-notgiven",
   "passage": "150-200 word academic passage about science, history, or society",
   "statement": "The study found that climate change affects migration patterns.",
-  "correctAnswer": "TRUE"
+  "correctAnswer": "TRUE",
+  "explanation": "The passage states '...climate change has significantly impacted bird migration patterns...' which directly supports this statement."
 }
 
 2. Multiple Choice:
@@ -244,7 +295,8 @@ Mix these types:
     {"id": "b", "text": "option B", "correct": false},
     {"id": "c", "text": "option C", "correct": false},
     {"id": "d", "text": "option D", "correct": false}
-  ]
+  ],
+  "explanation": "The passage mentions in paragraph 2 that '...' which indicates option A is correct."
 }
 
 3. Completion:
@@ -255,14 +307,17 @@ Mix these types:
   "sentence": "The research was conducted in ____.",
   "correctAnswer": "Southeast Asia",
   "question": "Complete with NO MORE THAN TWO WORDS",
-  "wordLimit": 2
+  "wordLimit": 2,
+  "explanation": "The passage explicitly states 'The study took place in Southeast Asia over three years.'"
 }
 
-Mix all types. Generate exactly ${count} questions. Return ONLY the JSON array.`
+Mix all types. Each must have explanation. Generate exactly ${count} questions. Return ONLY the JSON array.`
     }
 
     // Generic reading for other exams
     return `Generate ${count} ${examType} Reading questions. Return ONLY a valid JSON array.
+
+IMPORTANT: Each question MUST include an "explanation" field explaining why the answer is correct.
 
 Format:
 [
@@ -276,7 +331,8 @@ Format:
       {"id": "b", "text": "option B", "correct": true},
       {"id": "c", "text": "option C", "correct": false},
       {"id": "d", "text": "option D", "correct": false}
-    ]
+    ],
+    "explanation": "The main idea is found in the first paragraph where it states '...'"
   },
   {
     "id": "q2",
@@ -288,10 +344,12 @@ Format:
       {"id": "b", "text": "plans", "correct": true},
       {"id": "c", "text": "planning", "correct": false},
       {"id": "d", "text": "planned", "correct": false}
-    ]
+    ],
+    "explanation": "The subject 'company' is singular, so we use 'plans' (third person singular present tense)."
   }
 ]
 
+- Each question MUST have an "explanation" field
 - Include a mix of: passage comprehension, vocabulary, grammar in context
 - Make difficulty appropriate for ${examType} level
 - Generate exactly ${count} reading questions. Return ONLY the JSON array.`

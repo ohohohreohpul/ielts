@@ -887,21 +887,44 @@ function AppInner() {
           ) : (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               {!aiScore && (
-                <Card className={`mb-4 ${isCorrect ? 'bg-orange-50 border-orange-200' : 'bg-red-50 border-red-200'}`}>
+                <Card className={`mb-4 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
                   <CardContent className="p-4">
-                    <div className="flex items-center">
+                    <div className="flex items-start">
                       {isCorrect ? (
-                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
-                          <Check className="w-6 h-6 text-white" />
+                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          <Check className="w-5 h-5 text-white" />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mr-4">
-                          <X className="w-6 h-6 text-white" />
+                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          <X className="w-5 h-5 text-white" />
                         </div>
                       )}
-                      <div>
-                        <h3 className="font-bold text-lg">{isCorrect ? 'ยอดเยี่ยม!' : 'เรียนรู้ต่อไป!'}</h3>
-                        <p className="text-sm text-gray-600">{isCorrect ? 'คุณตอบถูกต้อง!' : 'ทบทวนและลองใหม่'}</p>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg">{isCorrect ? 'ยอดเยี่ยม!' : 'เกือบแล้ว!'}</h3>
+                        
+                        {/* Show correct answer if wrong */}
+                        {!isCorrect && currentQuestion.options && (
+                          <p className="text-sm text-gray-700 mt-1">
+                            คำตอบที่ถูกต้อง: <span className="font-bold text-green-600">
+                              {currentQuestion.options.find(o => o.correct)?.text}
+                            </span>
+                          </p>
+                        )}
+                        
+                        {/* Show explanation if available */}
+                        {currentQuestion.explanation && (
+                          <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
+                            <p className="text-xs font-bold text-orange-500 uppercase mb-1">💡 อธิบาย</p>
+                            <p className="text-sm text-gray-700 leading-relaxed">{currentQuestion.explanation}</p>
+                          </div>
+                        )}
+                        
+                        {/* Show correct answer for completion/short-answer */}
+                        {(currentQuestion.type === 'completion' || currentQuestion.type === 'short-answer' || currentQuestion.type === 'true-false-notgiven') && !isCorrect && currentQuestion.correctAnswer && (
+                          <p className="text-sm text-gray-700 mt-2">
+                            คำตอบที่ถูกต้อง: <span className="font-bold text-green-600">{currentQuestion.correctAnswer}</span>
+                          </p>
+                        )}
                       </div>
                     </div>
                   </CardContent>
