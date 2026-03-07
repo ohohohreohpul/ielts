@@ -61,76 +61,174 @@ function handleCORS(response) {
 
 // Helper function to build Gemini prompts for different exam types
 function buildExamPrompt(examType, section, count) {
-  const prompts = {
-    'TOEIC': {
-      'reading': `Generate ${count} TOEIC Reading questions in MIXED TYPES (Part 5, Part 7). Return ONLY valid JSON array:
+  // ===== SECTION-SPECIFIC PROMPTS (works for ALL exam types) =====
+  
+  // LISTENING prompts - for any exam type
+  if (section === 'listening') {
+    return `Generate ${count} ${examType} Listening questions. Return ONLY a valid JSON array.
 
-Part 5 - Incomplete Sentences (grammar/vocabulary, 4 choices):
+IMPORTANT: Each question MUST have "type": "listening" and MUST have "audioText" field containing the text to be spoken/heard.
+
+Format for listening questions:
+[
+  {
+    "id": "q1",
+    "type": "listening",
+    "audioText": "Good morning everyone. Today I'd like to discuss our quarterly sales figures. As you can see, we exceeded our targets by 15 percent this quarter.",
+    "question": "What is the main topic of the announcement?",
+    "options": [
+      {"id": "a", "text": "A new product launch", "correct": false},
+      {"id": "b", "text": "Quarterly sales performance", "correct": true},
+      {"id": "c", "text": "Employee promotions", "correct": false},
+      {"id": "d", "text": "Office renovations", "correct": false}
+    ]
+  },
+  {
+    "id": "q2",
+    "type": "listening",
+    "audioText": "A: Excuse me, could you tell me how to get to the train station? B: Sure, go straight for two blocks, then turn left. You'll see it on your right.",
+    "question": "What does the person ask for?",
+    "options": [
+      {"id": "a", "text": "Directions to the train station", "correct": true},
+      {"id": "b", "text": "The time of the next train", "correct": false},
+      {"id": "c", "text": "A ticket price", "correct": false}
+    ]
+  }
+]
+
+Rules:
+- "type" MUST be "listening"
+- "audioText" MUST contain 20-80 words of dialogue or announcement in English
+- Include a mix of: announcements, conversations, monologues
+- Make difficulty appropriate for ${examType} level
+- Generate exactly ${count} questions. Return ONLY the JSON array.`
+  }
+
+  // WRITING prompts - for any exam type
+  if (section === 'writing') {
+    if (examType === 'IELTS') {
+      return `Generate ${count} IELTS Writing task prompts. Return ONLY a valid JSON array.
+
+IMPORTANT: Alternate between Task 1 and Task 2. Use DIFFERENT topics for each.
+
+For Task 1: Include "chartData" field with numerical data for a chart. Choose ONE chart type: "bar", "line", or "pie".
+
+Task 1 format:
 {
   "id": "q1",
-  "type": "multiple-choice",
-  "sentence": "The company ____ to expand its operations next year.",
-  "question": "Choose the best option to complete the sentence:",
-  "options": [
-    {"id": "a", "text": "plan", "correct": false},
-    {"id": "b", "text": "plans", "correct": true},
-    {"id": "c", "text": "planning", "correct": false},
-    {"id": "d", "text": "planned", "correct": false}
-  ]
+  "type": "writing",
+  "task": "Task 1",
+  "prompt": "The bar chart below shows the percentage of households with internet access in five countries between 2010 and 2020. Summarise the information by selecting and reporting the main features.",
+  "chartData": {
+    "chartType": "bar",
+    "title": "Household Internet Access (%)",
+    "xAxisLabel": "Country",
+    "yAxisLabel": "Percentage (%)",
+    "categories": ["USA", "UK", "Japan", "Brazil", "India"],
+    "datasets": [
+      {"label": "2010", "data": [75, 82, 78, 41, 7]},
+      {"label": "2020", "data": [90, 94, 93, 71, 43]}
+    ]
+  },
+  "wordLimit": 150,
+  "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
 }
 
-Part 7 - Reading Comprehension (business passages, 2-4 questions):
+Task 2 format:
 {
   "id": "q2",
-  "type": "reading",
-  "passage": "50-100 word business email, memo, or article",
-  "question": "What is the main purpose of this message?",
-  "options": [
-    {"id": "a", "text": "option A", "correct": false},
-    {"id": "b", "text": "option B", "correct": true},
-    {"id": "c", "text": "option C", "correct": false},
-    {"id": "d", "text": "option D", "correct": false}
-  ]
+  "type": "writing",
+  "task": "Task 2",
+  "prompt": "Some people believe that technology has made our lives more complicated. Discuss both views and give your opinion.",
+  "wordLimit": 250,
+  "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
 }
 
-Mix both types in the array.`,
-      'listening': `Generate ${count} TOEIC Listening questions in MIXED TYPES. Return JSON:
+Generate exactly ${count} writing tasks. Return ONLY the JSON array.`
+    }
 
-Part 2 - Question-Response (3 response choices):
-{
-  "id": "q1",
-  "type": "listening",
-  "audioText": "When is the meeting scheduled?",
-  "question": "Choose the best response:",
-  "options": [
-    {"id": "a", "text": "At 3 PM tomorrow.", "correct": true},
-    {"id": "b", "text": "In the conference room.", "correct": false},
-    {"id": "c", "text": "Yes, I'll attend.", "correct": false}
-  ]
-}
+    // Generic writing for other exams (TOEFL, CU-TEP, etc.)
+    return `Generate ${count} ${examType} Writing prompts. Return ONLY a valid JSON array.
 
-Part 3 - Conversations (short dialogue, 3 questions):
-{
-  "id": "q2",
-  "type": "listening",
-  "audioText": "A: Did you finish the report? B: Yes, I sent it this morning. A: Great, thanks!",
-  "question": "What did the man do this morning?",
-  "options": [
-    {"id": "a", "text": "Wrote a report", "correct": false},
-    {"id": "b", "text": "Sent a report", "correct": true},
-    {"id": "c", "text": "Received a report", "correct": false},
-    {"id": "d", "text": "Read a report", "correct": false}
-  ]
-}`
-    },
-    'IELTS': {
-      'reading': `Generate ${count} IELTS Academic Reading questions with OFFICIAL TYPES. Return JSON array:
+Format:
+[
+  {
+    "id": "q1",
+    "type": "writing",
+    "task": "Essay Writing",
+    "prompt": "Do you agree or disagree with the following statement? Technology has made communication between people easier than ever before. Use specific reasons and examples to support your opinion.",
+    "wordLimit": 200,
+    "rubric": "Content, Organization, Grammar, Vocabulary"
+  },
+  {
+    "id": "q2",
+    "type": "writing",
+    "task": "Summary Writing",
+    "prompt": "Read the following passage and write a summary in your own words: [Include a 100-150 word passage about education, environment, or technology]",
+    "wordLimit": 100,
+    "rubric": "Comprehension, Paraphrasing, Conciseness"
+  }
+]
 
-1. TRUE/FALSE/NOT GIVEN (most common):
+- "type" MUST be "writing"
+- Include essay, summary, or opinion writing tasks
+- Make difficulty appropriate for ${examType} level
+- Generate exactly ${count} writing prompts. Return ONLY the JSON array.`
+  }
+
+  // SPEAKING prompts - for any exam type
+  if (section === 'speaking') {
+    return `Generate ${count} ${examType} Speaking questions. Return ONLY a valid JSON array.
+
+Format:
+[
+  {
+    "id": "q1",
+    "type": "speaking",
+    "part": "Part 1",
+    "question": "Tell me about your hometown. What do you like most about living there?",
+    "preparationTime": 0,
+    "speakingTime": 30,
+    "rubric": "Fluency, Vocabulary, Grammar, Pronunciation"
+  },
+  {
+    "id": "q2",
+    "type": "speaking",
+    "part": "Part 2",
+    "question": "Describe a memorable trip you have taken. You should say: where you went, who you went with, what you did there, and explain why it was memorable.",
+    "preparationTime": 60,
+    "speakingTime": 120,
+    "rubric": "Fluency, Vocabulary, Grammar, Pronunciation"
+  },
+  {
+    "id": "q3",
+    "type": "speaking",
+    "part": "Part 3",
+    "question": "What are the advantages and disadvantages of traveling abroad?",
+    "preparationTime": 0,
+    "speakingTime": 60,
+    "rubric": "Fluency, Vocabulary, Grammar, Pronunciation"
+  }
+]
+
+- "type" MUST be "speaking"
+- Include a mix of: personal questions, descriptive tasks, opinion/discussion questions
+- Make difficulty appropriate for ${examType} level
+- Generate exactly ${count} speaking questions. Return ONLY the JSON array.`
+  }
+
+  // READING prompts - for any exam type
+  if (section === 'reading') {
+    if (examType === 'IELTS') {
+      return `Generate ${count} IELTS Academic Reading questions. Return ONLY a valid JSON array.
+
+Mix these types:
+
+1. TRUE/FALSE/NOT GIVEN:
 {
   "id": "q1",
   "type": "true-false-notgiven",
-  "passage": "150-250 word academic passage",
+  "passage": "150-200 word academic passage about science, history, or society",
   "statement": "The study found that climate change affects migration patterns.",
   "correctAnswer": "TRUE"
 }
@@ -139,7 +237,7 @@ Part 3 - Conversations (short dialogue, 3 questions):
 {
   "id": "q2",
   "type": "reading",
-  "passage": "Academic text about science/history/society",
+  "passage": "Academic text",
   "question": "According to the passage, what is the main cause?",
   "options": [
     {"id": "a", "text": "option A", "correct": true},
@@ -149,144 +247,63 @@ Part 3 - Conversations (short dialogue, 3 questions):
   ]
 }
 
-3. Sentence/Summary/Note Completion (NO MORE THAN TWO WORDS):
+3. Completion:
 {
   "id": "q3",
   "type": "completion",
-  "passage": "Context passage with specific information",
-  "sentence": "The research was conducted in ____ and lasted three years.",
+  "passage": "Context passage",
+  "sentence": "The research was conducted in ____.",
   "correctAnswer": "Southeast Asia",
-  "question": "Complete with NO MORE THAN TWO WORDS from the passage",
-  "wordLimit": 2
-}
-
-4. Short Answer Questions:
-{
-  "id": "q4",
-  "type": "short-answer",
-  "passage": "Passage with factual details",
-  "question": "In what year was the theory proposed?",
-  "correctAnswer": "1998",
-  "wordLimit": 1
-}
-
-Mix all 4 types.`,
-      'listening': `Generate ${count} IELTS Listening questions with OFFICIAL TYPES. Return JSON:
-
-1. Multiple Choice:
-{
-  "id": "q1",
-  "type": "listening",
-  "audioText": "Conversation or monologue 40-60 words",
-  "question": "What is the speaker's main point?",
-  "options": [
-    {"id": "a", "text": "option A", "correct": false},
-    {"id": "b", "text": "option B", "correct": true},
-    {"id": "c", "text": "option C", "correct": false}
-  ]
-}
-
-2. Form/Note Completion (specific information):
-{
-  "id": "q2",
-  "type": "completion",
-  "audioText": "Conversation with specific details (names, dates, places)",
-  "sentence": "The appointment is scheduled for ____.",
-  "correctAnswer": "next Tuesday",
   "question": "Complete with NO MORE THAN TWO WORDS",
   "wordLimit": 2
-}`,
-      'writing': `Generate ${count} IELTS Writing task prompts. Return ONLY a valid JSON array (starting with [ and ending with ]).
-
-IMPORTANT: Alternate between Task 1 and Task 2. Use DIFFERENT topics for each.
-
-For Task 1: You MUST include a "chartData" field with numerical data for a chart. Choose ONE chart type: "bar", "line", or "pie".
-
-Task 1 format (with chart data):
-{
-  "id": "q1",
-  "type": "writing",
-  "task": "Task 1",
-  "prompt": "The bar chart below shows the percentage of households with internet access in five countries between 2010 and 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
-  "chartData": {
-    "chartType": "bar",
-    "title": "Household Internet Access (%)",
-    "xAxisLabel": "Country",
-    "yAxisLabel": "Percentage (%)",
-    "categories": ["USA", "UK", "Japan", "Brazil", "India"],
-    "datasets": [
-      {"label": "2010", "data": [75, 82, 78, 41, 7]},
-      {"label": "2015", "data": [84, 89, 91, 58, 26]},
-      {"label": "2020", "data": [90, 94, 93, 71, 43]}
-    ]
-  },
-  "wordLimit": 150,
-  "timeLimit": 20,
-  "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
 }
 
-For Task 2 (no chart needed):
-{
-  "id": "q2",
-  "type": "writing",
-  "task": "Task 2",
-  "prompt": "Some people believe that technology has made our lives more complicated. Others think it has made things easier. Discuss both views and give your own opinion.",
-  "wordLimit": 250,
-  "timeLimit": 40,
-  "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
-}
+Mix all types. Generate exactly ${count} questions. Return ONLY the JSON array.`
+    }
 
-Rules for chartData:
-- chartType must be "bar", "line", or "pie"
-- For "bar" and "line": include categories (x-axis labels) and datasets (each with label and data array)
-- For "pie": include categories and ONE dataset with data array
-- Data values must be realistic numbers that match the prompt description
-- categories and data arrays must have the same length
+    // Generic reading for other exams
+    return `Generate ${count} ${examType} Reading questions. Return ONLY a valid JSON array.
 
-Generate exactly ${count} writing tasks. Return ONLY the JSON array.`,
-      'speaking': `Generate ${count} IELTS Speaking questions across 3 parts. Return ONLY a valid JSON array (starting with [ and ending with ]).
-
-Mix questions from all 3 parts:
-
+Format:
 [
   {
     "id": "q1",
-    "type": "speaking",
-    "part": "Part 1",
-    "question": "Do you enjoy reading books? Why or why not?",
-    "preparationTime": 0,
-    "speakingTime": 20,
-    "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+    "type": "reading",
+    "passage": "A 100-150 word passage about business, science, or daily life appropriate for ${examType} level.",
+    "question": "What is the main idea of this passage?",
+    "options": [
+      {"id": "a", "text": "option A", "correct": false},
+      {"id": "b", "text": "option B", "correct": true},
+      {"id": "c", "text": "option C", "correct": false},
+      {"id": "d", "text": "option D", "correct": false}
+    ]
   },
   {
     "id": "q2",
-    "type": "speaking",
-    "part": "Part 2",
-    "question": "Describe a place you visited that left a strong impression on you. You should say: where it was, when you went there, what you did there, and explain why it was memorable.",
-    "preparationTime": 60,
-    "speakingTime": 120,
-    "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
-  },
-  {
-    "id": "q3",
-    "type": "speaking",
-    "part": "Part 3",
-    "question": "How has tourism changed in your country over the past 20 years?",
-    "preparationTime": 0,
-    "speakingTime": 40,
-    "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+    "type": "multiple-choice",
+    "sentence": "The company ____ to expand its operations next year.",
+    "question": "Choose the best answer:",
+    "options": [
+      {"id": "a", "text": "plan", "correct": false},
+      {"id": "b", "text": "plans", "correct": true},
+      {"id": "c", "text": "planning", "correct": false},
+      {"id": "d", "text": "planned", "correct": false}
+    ]
   }
 ]
 
-Generate exactly ${count} speaking questions with DIFFERENT topics. Return ONLY the JSON array.`
-    }
+- Include a mix of: passage comprehension, vocabulary, grammar in context
+- Make difficulty appropriate for ${examType} level
+- Generate exactly ${count} reading questions. Return ONLY the JSON array.`
   }
 
-  // Grammar exam type
+  // ===== GRAMMAR (no sections, just grammar questions) =====
   if (examType === 'Grammar' || examType === 'grammar') {
-    return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array. Mix different grammar topics (tenses, prepositions, articles, vocabulary, conditionals, reported speech).
+    return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array.
 
-Each question should be multiple-choice with 4 options:
+Mix different grammar topics: tenses, prepositions, articles, vocabulary, conditionals, reported speech.
+
+Format:
 [
   {
     "id": "q1",
@@ -302,13 +319,13 @@ Each question should be multiple-choice with 4 options:
   }
 ]
 
-Generate exactly ${count} different grammar questions covering various topics. Return ONLY the JSON array.`
+Generate exactly ${count} different grammar questions. Return ONLY the JSON array.`
   }
 
-  // Generic prompt for other exam types (TOEFL, CU-TEP, TU-GET, O-NET, กพ.)
+  // ===== FALLBACK: Default reading/multiple-choice =====
   return `Generate ${count} ${examType} English exam questions. Return ONLY a valid JSON array.
 
-Mix multiple-choice and reading comprehension questions:
+Format:
 [
   {
     "id": "q1",
@@ -325,8 +342,8 @@ Mix multiple-choice and reading comprehension questions:
   {
     "id": "q2",
     "type": "reading",
-    "passage": "A short academic or general passage about 50-100 words relevant to the exam type.",
-    "question": "What is the main idea of this passage?",
+    "passage": "A 50-100 word passage",
+    "question": "What is the main idea?",
     "options": [
       {"id": "a", "text": "option A", "correct": false},
       {"id": "b", "text": "option B", "correct": true},
@@ -336,7 +353,7 @@ Mix multiple-choice and reading comprehension questions:
   }
 ]
 
-Make the difficulty appropriate for ${examType} level. Generate exactly ${count} questions. Return ONLY the JSON array.`
+Make difficulty appropriate for ${examType} level. Generate exactly ${count} questions. Return ONLY the JSON array.`
 }
 
 // OPTIONS handler for CORS

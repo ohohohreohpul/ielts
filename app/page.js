@@ -96,11 +96,24 @@ function AppInner() {
           await new Promise(r => setTimeout(r, 1000)) // Wait 1s before retry
         }
         
+        // Map goalId to proper examType
+        const examTypeMap = {
+          'toeic': 'TOEIC',
+          'ielts': 'IELTS',
+          'grammar': 'Grammar',
+          'toefl': 'TOEFL',
+          'cutep': 'CU-TEP',
+          'tuget': 'TU-GET',
+          'onet': 'O-NET',
+          'gorpor': 'กพ.'
+        }
+        const examType = examTypeMap[goalId] || goalId.toUpperCase()
+        
         const response = await fetch('/api/ai/generate-questions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            examType: goalId === 'toeic' ? 'TOEIC' : 'IELTS',
+            examType: examType,
             section: section,
             count: 5
           })
@@ -268,12 +281,25 @@ function AppInner() {
       const correctCount = answers.filter(a => a.isCorrect).length
       const score = answers.length > 0 ? Math.round((correctCount / answers.length) * 100) : 0
 
+      // Map goalId to proper examType for history
+      const examTypeMap = {
+        'toeic': 'TOEIC',
+        'ielts': 'IELTS',
+        'grammar': 'Grammar',
+        'toefl': 'TOEFL',
+        'cutep': 'CU-TEP',
+        'tuget': 'TU-GET',
+        'onet': 'O-NET',
+        'gorpor': 'กพ.'
+      }
+      const examType = examTypeMap[selectedGoal] || selectedGoal?.toUpperCase() || 'Unknown'
+
       await fetch('/api/exam-history', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: user.id,
-          examType: selectedGoal === 'toeic' ? 'TOEIC' : 'IELTS',
+          examType: examType,
           section: selectedSection,
           questions: answers,
           totalQuestions: answers.length,
@@ -545,7 +571,8 @@ function AppInner() {
             {/* Listening with Audio Player */}
             {currentQuestion.type === 'listening' && (
               <div className="space-y-6">
-                {currentQuestion.audioText && <AudioPlayer text={currentQuestion.audioText} />}
+                {/* Always show AudioPlayer for listening questions - use audioText or question as fallback */}
+                <AudioPlayer text={currentQuestion.audioText || currentQuestion.question || 'No audio available'} />
                 
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">{currentQuestion.question}</h2>
 
