@@ -1,213 +1,298 @@
 <analysis>
 
-**original_problem_statement**: The user wants to build 'Mydemy', a mobile-first, Duolingo-inspired web application for AI-powered mock exams (TOEIC, IELTS, etc.).
+**original_problem_statement**: The user wants to build 'Mydemy', a mobile-first, Duolingo-inspired web application for AI-powered mock exams. The user has since pivoted and now wants a **native mobile application built with React Native (Expo)** instead of a web app, for eventual submission to the Apple App Store.
 
-**PRODUCT REQUIREMENTS:**
--   **Core App:** A lesson-runner with a progress bar, question cards, and instant feedback.
--   **Question Types:** Multiple Choice, Sentence Reordering (Drag & Drop), Reading Comprehension, Fill-in-the-blank, True/False/Not Given, etc.
--   **Gamification:** Hearts (lives) system and a daily streak counter.
--   **AI Integration:** Dynamically generate exam questions for various formats (Reading, Listening, Writing, Speaking) using an AI model. Implement AI-based scoring for speaking and writing.
--   **Monetization:** Placeholders for a Mydemy Plus subscription.
--   **UX/UI:**
-    -   Must be in the **Thai language**.
-    -   Needs a full-screen preloader with tips and tricks.
-    -   Requires a full app experience including Welcome, Login, and Sign Up screens.
-    -   A native-app feel with a bottom navigation bar and a user dashboard.
--   **Tech Stack:** Next.js 15, Tailwind CSS, Framer Motion, Shadcn/UI.
--   **Integrations:**
-    -   Initially used Google Gemini for question generation.
-    -   User requested to switch to **ElevenLabs** for Text-to-Speech (TTS) and **OpenAI Whisper** for Speech-to-Text (STT) for better quality.
+The user has also requested a complete UI overhaul to a strict **orange, white, and black** color scheme, with all gradients removed.
 
-**User's preferred language**: The user communicates in both **Thai** and English. The UI and user-facing copy MUST be in **Thai**. The next agent should primarily respond in Thai, especially for UI/UX-related discussions, but can use English for technical explanations.
+Most recently, the user has identified three specific issues with the current web app version:
+1.  **Profile Page UI Bug**: The bottom navigation bar is overlapping and cutting off the content on the profile screen.
+2.  **Poor Preloader UX**: The loading screen that appears while AI questions are being generated is not aesthetically pleasing, and the text is difficult to read.
+3.  **AI Generation Error**: The AI fails to generate questions for certain exam types, specifically writing questions, resulting in an error.
+
+**User's preferred language**: The user communicates in both **Thai** and English. The UI and user-facing copy MUST be in **Thai**. The next agent MUST respond in Thai.
 
 **what currently exists?**
-The project is a Next.js application.
-- A single, very large  file attempts to handle user onboarding, exam selection, a buggy loading screen, and the lesson runner for all question types.
-- The UI has been partially translated to Thai.
-- An API route  exists, which uses the Google Gemini AI model () to generate questions.
-- A complete backend authentication system has been built () with endpoints for signup, login, logout, and session management using JWT and cookies. User and ApiKey models are defined.
-- Placeholders for new question types (like text completion) and AI scoring endpoints (, ) have been added to the backend API route file.
+-   A functional Next.js web application. The original app-breaking loading bug has been fixed. User authentication (signup, login, session) and core AI question generation (for most types) are working.
+-   The web app's UI has been re-themed to an orange, white, and black color scheme as requested, though it has introduced some new UI bugs.
+-   A complete but **non-running** skeleton for a React Native (Expo) application located in the  directory. This includes the navigation structure and placeholder screens for the entire app, styled with the new orange theme. It is not yet connected to the backend and has not been run by the user.
+-   A monolithic backend API at  that handles all API requests (auth, AI generation, etc.) and is functioning correctly for the core features.
 
 **Last working item**:
--   **Last item agent was working**: The agent had just finished Phase 1 which was building the backend authentication system (user model, password hashing, JWT session management, and API endpoints for signup/login/logout). It was about to start Phase 2: creating the new UI, including a Dashboard and a Bottom Navigation bar.
--   **Status**: NOT STARTED (for Phase 2 - UI work).
--   **Agent Testing Done**: N (The new auth backend has not been tested).
--   **Which testing method agent to use?**: backend testing agent (to validate all new  endpoints) followed by manual testing of the full login/signup flow once the UI is built.
--   **User Testing Done**: N
+-   **Last item agent was working**: The agent had just received feedback from the user about three new issues and was about to begin fixing them.
+    -   1. Profile page UI bug.
+    -   2. Ugly preloader screen.
+    -   3. AI error on writing questions.
+-   **Status**: NOT STARTED
+-   **Agent Testing Done**: N (for these 3 new issues)
+-   **Which testing method agent to use?**:
+    -   For the Profile and Preloader UI issues: **Frontend testing agent** or **screenshot tool** to verify layout and style fixes in .
+    -   For the AI error: **Manual testing** by triggering the specific exam type from the UI and checking backend logs ( GET /dashboard 200 in 25ms
+ ✓ Compiled in 1824ms (1336 modules)
+ ✓ Compiled /login in 358ms (617 modules)
+ GET /login 200 in 558ms
+ ✓ Compiled /welcome in 300ms (630 modules)
+ ✓ Compiled in 350ms (606 modules)
+ ○ Compiling /practice ...
+ ✓ Compiled /practice in 1043ms (1343 modules)
+ ✓ Compiled /profile in 128ms (622 modules)
+ ✓ Compiled in 617ms (730 modules)
+ ✓ Compiled in 629ms (730 modules)
+ ✓ Compiled /api/[[...path]] in 138ms (670 modules)
+API Error: TypeError: Cannot read properties of undefined (reading 'collection')
+    at handleRoute (webpack-internal:///(rsc)/./app/api/[[...path]]/route.js:501:38)
+    at async /app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53446
+    at async e_.execute (/app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44747)
+    at async e_.handle (/app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54700)
+    at async doRender (/app/node_modules/next/dist/server/base-server.js:1377:42)
+    at async cacheEntry.responseCache.get.routeKind (/app/node_modules/next/dist/server/base-server.js:1587:40)
+ GET /api/auth/session 500 in 638ms
+ GET /api/auth/session 200 in 724ms
+ ✓ Compiled /welcome in 475ms (683 modules)
+ ✓ Compiled /login in 148ms (678 modules)
+ GET /login 200 in 304ms
+ GET /dashboard 200 in 102ms
+ ✓ Compiled / in 336ms (756 modules)
+ POST /api/auth/login 200 in 54ms
+ GET /api/auth/session 200 in 65ms
+ GET /api/auth/session 200 in 102ms
+ ✓ Compiled /profile in 144ms (674 modules)
+ ✓ Compiled /practice in 212ms (681 modules)
+ GET /api/auth/session 200 in 54ms
+ GET /api/auth/session 200 in 41ms
+ GET /api/auth/session 200 in 34ms
+ GET /api/auth/session 200 in 14ms
+ GET /dashboard 200 in 93ms
+ GET /api/auth/session 200 in 56ms
+ GET /api/auth/session 200 in 61ms
+ ✓ Compiled / in 159ms (704 modules)
+ ✓ Compiled /api/[[...path]] in 491ms (746 modules)
+API Error: TypeError: Cannot read properties of undefined (reading 'collection')
+    at handleRoute (webpack-internal:///(rsc)/./app/api/[[...path]]/route.js:673:37)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53446
+    at async e_.execute (/app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44747)
+    at async e_.handle (/app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54700)
+    at async doRender (/app/node_modules/next/dist/server/base-server.js:1377:42)
+    at async cacheEntry.responseCache.get.routeKind (/app/node_modules/next/dist/server/base-server.js:1587:40)
+    at async DevServer.renderToResponseWithComponentsImpl (/app/node_modules/next/dist/server/base-server.js:1507:28)
+    at async DevServer.renderPageComponent (/app/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/app/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/app/node_modules/next/dist/server/base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/app/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/app/node_modules/next/dist/server/base-server.js:816:17)
+    at async /app/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/app/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/app/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/app/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/app/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/app/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/app/node_modules/next/dist/server/lib/start-server.js:141:13)
+ POST /api/ai/generate-questions 500 in 600ms
+ POST /api/ai/generate-questions 200 in 10715ms
+ POST /api/ai/generate-questions 200 in 4687ms
+ POST /api/ai/generate-questions 200 in 5210ms
+ ✓ Compiled /progress in 131ms (704 modules)
+ GET / 200 in 118ms
+ GET / 200 in 28ms
+ GET / 200 in 29ms
+ GET / 200 in 315ms
+ GET /?x_request_source=preview 200 in 170ms
+ GET / 200 in 28ms
+ GET / 200 in 29ms
+ ○ Compiling /welcome ...
+ ✓ Compiled /progress in 1798ms (695 modules)
+ ✓ Compiled (714 modules)
+ GET / 200 in 1688ms
+ GET /welcome 200 in 1881ms
+ GET /dashboard 200 in 2094ms
+ GET /practice 200 in 1880ms
+ GET /progress 200 in 1684ms
+ GET /profile 200 in 1791ms
+ ✓ Compiled /api/[[...path]] in 223ms (762 modules)
+API Error: TypeError: Cannot read properties of undefined (reading 'collection')
+    at handleRoute (webpack-internal:///(rsc)/./app/api/[[...path]]/route.js:501:38)
+    at async /app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53446
+    at async e_.execute (/app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44747)
+    at async e_.handle (/app/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54700)
+    at async doRender (/app/node_modules/next/dist/server/base-server.js:1377:42)
+    at async cacheEntry.responseCache.get.routeKind (/app/node_modules/next/dist/server/base-server.js:1587:40)
+ GET /api/auth/session 500 in 531ms
+ GET /api/auth/session 200 in 571ms
+yarn run v1.22.22
+$ NODE_OPTIONS='--max-old-space-size=512' next dev --hostname 0.0.0.0 --port 3000
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+  - Network:      http://0.0.0.0:3000
+  - Environments: .env
+
+ ✓ Starting...) and debugging the prompt/logic in .
+-   **User Testing Done**: Y (User identified and reported these three issues).
 
 **All Pending/In progress Issue list**:
--   **Issue 1**: App is blocked by a faulty loading screen (P0)
--   **Issue 2**: Speaking module is non-functional (P1)
--   **Issue 3**: Exam question formats are not accurate (P2)
+-   **Issue 1**: Profile page content is cut off by the bottom navigation bar (P0)
+-   **Issue 2**: AI generation fails for writing exam questions (P1)
+-   **Issue 3**: The preloader screen for AI question generation is ugly and unreadable (P1)
+-   **Issue 4**: The Speaking module is non-functional (P2)
 
 **Issues Detail**:
--   **Issue 1: App is blocked by a faulty loading screen**
-    -   **Description**: The user reported that after selecting an exam section, the app shows a loading screen but never proceeds to the lesson, effectively blocking all functionality. The agent confirmed the  API call succeeds (HTTP 200), but the frontend state () does not seem to update to 'lesson'.
-    -   **Attempted fixes**:
-        1.  Refactored the  into a separate component. This failed due to dynamic Tailwind classes and a missing  import.
-        2.  Fixed the import and replaced dynamic classes with static ones. The issue persisted.
-        3.  Removed the separate  component and implemented a simplified, inline loading state directly within . The app still gets stuck.
+-   **Issue 1: Profile page content is cut off by the bottom navigation bar**
+    -   **Description**: As shown in the user's screenshot, when navigating to the Profile page (which is a state within ), the main content is partially obscured by the fixed bottom navigation bar. This is a CSS/layout issue.
     -   **Next debug checklist**:
-        1.  In , inside the  function, add  statements immediately before and after the  call.
-        2.  In the  block after the fetch, log the received  to ensure questions are actually present in the response.
-        3.  Log the value of  right before and after  is called to confirm the state update is being triggered.
-        4.  Check the browser's developer console for any client-side errors that might be occurring after the API call returns but before the component re-renders.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical, app-breaking bug. Fixing it will unblock all core functionality and allow the user to actually take exams.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y
+        1.  Inspect the CSS for the profile view within .
+        2.  Apply appropriate padding or margin to the bottom of the main content container to account for the height of the  component. The container should have a style like  (adjusting for the nav bar's actual height).
+    -   **Why fix this issue and what will be achieved with the fix?**: To make the profile page usable and fix a clear UI layout bug.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on other issue**: None
 
--   **Issue 2: Speaking module is non-functional**
-    -   **Description**: The user reported that the speaking question type is broken. Clicking record does not seem to capture audio, and clicking the button again just resets the UI to a blank state. There is no AI evaluation.
-    -   **Attempted fixes**: The agent created a  component and updated  to manage a  state. It's unclear if this fix was effective.
+-   **Issue 2: AI generation fails for writing exam questions**
+    -   **Description**: The user reports that selecting some exam types, like writing, results in an error instead of generating questions. This worked for TOEIC and IELTS reading questions.
     -   **Next debug checklist**:
-        1.  Verify the  component's  callback is correctly passing the audio data (or blob) back to the parent .
-        2.  Check the state management in  for handling the recording status (, , ).
-        3.  Implement the logic to send the recorded audio to the  endpoint. Currently, this is not implemented.
-        4.  Wire up the planned ElevenLabs/Whisper integration for STT.
-    -   **Why fix this issue and what will be achieved with the fix?**: This will make one of the key IELTS exam features functional and enable AI scoring.
-    -   **Status**: IN PROGRESS
+        1.  Examine the  logic in .
+        2.  Find the specific prompt being sent to the AI for the writing question type.
+        3.  The prompt is likely malformed, or the AI's response for this specific prompt is in a format the JSON parsing logic cannot handle.
+        4.  Add  statements to print the exact AI response before the JSON parsing attempt to identify the malformed output.
+        5.  Adjust the prompt or the JSON extraction logic to handle this case.
+    -   **Why fix this issue and what will be achieved with the fix?**: To restore a core feature of the application and ensure all exam types can be generated.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
+
+-   **Issue 3: The preloader screen for AI question generation is ugly and unreadable**
+    -   **Description**: The user is not satisfied with the design of the loading screen shown while waiting for the AI. The text is hard to read.
+    -   **Next debug checklist**:
+        1.  Locate the JSX for the preloader within .
+        2.  Redesign the component with better contrast and aesthetics, following the new orange/white/black theme.
+        3.  Ensure text is clearly visible against the background. Consider using a larger font size, a solid background color for the text container, or a simpler, cleaner design.
+    -   **Why fix this issue and what will be achieved with the fix?**: To improve the user experience during a common waiting period in the app.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+
+-   **Issue 4: The Speaking module is non-functional**
+    -   **Description**: This is a long-standing issue. The UI for recording exists, but it does not successfully capture audio, send it for processing, or get a score. The required ElevenLabs/Whisper integration was never completed.
+    -   **Attempted fixes**: A  component was created, but the end-to-end flow was never implemented.
+    -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Both
-    -   **Blocked on other issue**: Blocked by the planned **ElevenLabs/Whisper Integration**.
-
--   **Issue 3: Exam question formats are not accurate**
-    -   **Description**: The user pointed out that some generated question types (e.g., a standalone fill-in-the-blank) are not authentic to real exams like TOEIC.
-    -   **Attempted fixes**: The agent researched correct formats and updated the AI generation prompts in .
-    -   **Next debug checklist**:
-        1.  Thoroughly test the  endpoint for both TOEIC and IELTS.
-        2.  Review the generated JSON to confirm it matches the updated, more accurate prompts.
-        3.  Ensure the frontend  can correctly render the new/updated question formats (e.g., Text Completion for TOEIC Part 6).
-    -   **Why fix this issue and what will be achieved with the fix?**: This will improve the core value of the app by providing realistic exam practice.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Both
-    -   **Blocked on other issue**: None
+    -   **Blocked on other issue**: Blocked by the Implement ElevenLabs and Whisper Integration future task.
 
 **In progress Task List**:
--   **Task 1: Implement New Application UI (Phase 2)**
-    -   **Description**: The user requested a complete UI overhaul to give the app a more polished, native-app experience, moving away from the single-page MVP. This was broken down into phases, and Phase 2 is the UI implementation.
-    -   **Where to resume**: Start by creating the main layout file () to include a new  component. Then create a  component which will serve as the new home page after login.
-    -   **What will be achieved with this?**: A modern, multi-screen application structure with proper user navigation and a central dashboard.
-    -   **Status**: NOT STARTED
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on something**: Authentication UI (Login/Signup pages) needs to be built first.
+None. The agent has just finished a major set of changes.
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks**:
-    -   **P0: Build Authentication UI**: Create Login and Sign Up pages that use the already-built backend authentication endpoints. This is the first step of Phase 2.
-    -   **P1: Build Dashboard & Bottom Navigation**: Implement the main app shell with a dashboard and a persistent bottom navigation bar (e.g., for Home, Profile, Exams).
-    -   **P2: Refactor **: Break down the monolithic  into smaller, reusable components (e.g., , , ). The  itself should be moved to a dynamic route like .
+    -   **P0: Guide User to Run the Expo App**: The user's primary goal is the native app. The immediate next step after fixing the 3 bugs is to clearly explain to the user how to download the  folder, run 
+up to date, audited 309 packages in 6s
+
+50 packages are looking for funding
+  run `npm fund` for details
+
+6 vulnerabilities (1 moderate, 3 high, 2 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues, run:
+  npm audit fix --force
+
+Run `npm audit` for details. and env: load .env
+env: export CORS_ORIGINS DB_NAME EMERGENT_LLM_KEY MONGO_URL NEXT_PUBLIC_BASE_URL
+Starting project at /app on their local machine, and scan the QR code with the Expo Go app.
+    -   **P1: Implement and Test Backend Connection in Expo App**: The Expo app screens are placeholders. They need to be updated to call the live backend API for login, signup, session checks, and fetching exam questions. The  will be crucial here.
 -   **Future Tasks**:
-    -   **P1: Implement ElevenLabs and Whisper Integration**: Create new API endpoints to act as a proxy to ElevenLabs (for TTS in listening questions) and OpenAI Whisper (for STT in speaking questions). This requires getting API keys from the user.
-    -   **P2: Build Admin Console for API Keys**: The user deferred this, but a proper UI is needed for the admin to input and manage third-party API keys (Gemini, ElevenLabs, etc.).
-    -   **P2: Implement Full AI Scoring**: The endpoints for scoring exist but contain no logic. They need to be implemented to take user input (text or audio) and use an AI model to return a score and feedback.
+    -   **P1: Refactor the Web App**: The  file is an unmaintainable monolith. If any further work is done on the web app, it MUST be refactored to use Next.js's file-based routing (e.g., , ).
+    -   **P2: Implement ElevenLabs and Whisper Integration**: To make the speaking module functional, new API endpoints are needed to handle Text-to-Speech and Speech-to-Text.
 
 **Completed work in this session**
--   **Initial App Scaffolding**: Created the initial Duolingo-style lesson runner with mock data.
--   **Thai Language UI**: Translated most of the UI text to Thai.
--   **Gemini AI Integration**: Implemented  endpoint using  to create dynamic questions. Updated the model to  after the previous one was deprecated.
--   **Backend Authentication System**:
-    -   Created  model with  for password hashing ().
-    -   Implemented JWT-based session management ().
-    -   Added API endpoints: , , , .
--   **New Exam Formats**: Added prompts for new TOEIC/IELTS question types to the AI generation logic.
+-   **Fixed Critical App-Breaking Bug**: Resolved the issue where the application would get stuck on the initial loading screen.
+-   **Repaired AI Question Generation**: Debugged and fixed the backend logic for parsing JSON responses from the AI, making question generation reliable.
+-   **Implemented a Full Authentication Flow**: The signup, login, and session management for the web app are now fully functional.
+-   **Created Expo Native App Skeleton**: Built a complete file structure for a React Native (Expo) app in the  directory, as per the user's pivot.
+-   **Re-themed Entire Web App**: Changed the application's color scheme from a gradient to a solid orange, white, and black theme as requested.
+-   **Improved Dashboard UX**: Optimized the dashboard to load instantly by checking for a session token in  before making a background API call.
 
 **Earlier issues found/mentioned but not fixed**
-All known issues have been captured in the **All Pending/In progress Issue list** section. The primary ones are the blocking loading screen and the broken speaking module.
+-   **Speaking Module**: The speaking question type remains non-functional as the required STT/TTS integrations have not been implemented.
 
 **Known issue recurrence from previous fork**
--   No previous fork summary was provided.
+-   N/A
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Frontend**: Next.js 15 (App Router), React, Tailwind CSS, Shadcn/UI, Framer Motion
--   **Backend**: Next.js API Routes (Serverless Functions)
--   **Database**: MongoDB with Mongoose ODM
--   **Authentication**: JWT (JSON Web Tokens) stored in HTTP-only cookies, password hashing with .
--   **AI**: Google Generative AI (Gemini) for dynamic content generation.
+-   **Frontend (Web)**: Next.js 15 (App Router), React, Tailwind CSS, Shadcn/UI, Framer Motion
+-   **Frontend (Mobile)**: React Native (Expo) - project created, not yet running.
+-   **Backend**: Next.js API Routes
+-   **Database**: MongoDB with Mongoose
+-   **Authentication**: JWT stored in HTTP-only cookies.
+-   **AI**: Google Generative AI (Gemini) via Emergent LLM Key proxy.
 
 **key DB schema**
 -   **users**: 
 -   **apikeys**: 
 
 **changes in tech stack**
--   : Added for UI animations.
--   , : Added for drag-and-drop question types.
--   : Added for Gemini integration.
--   , , , : Added for the authentication system and database interaction.
+-   **Expo**: A full React Native project has been scaffolded in .
 
 **All files of reference**
--   : The main application frontend file. It is currently a monolith and the source of the critical loading bug.
--   : The main backend API file. It handles all API logic, including auth, AI, and admin functions.
--   : The component for the speaking module, which is currently not working correctly.
--   : Contains helper functions for creating, verifying, and serializing JWTs for session management.
--   : Mongoose schema for the  collection.
--   : Mongoose schema for storing third-party API keys.
+-   : Source of the Profile and Preloader UI bugs. It was heavily rewritten to implement the new theme and still controls the entire web app's UI flow.
+-   : Source of the AI error for writing questions. Contains the prompt logic.
+-   : The entire directory containing the new Expo native app, which is the user's main priority. The user needs instructions to run this locally.
+-   : Updated to support the new theme and PWA metadata.
+-    / : Updated for the new orange/white/black theme.
 
 **Areas that need refactoring**
--   ****: This file is critically oversized and complex. It manages the state for the entire application flow, contains the UI for multiple screens (onboarding, selection, loading, lesson), and handles API calls. It MUST be broken down into smaller, single-responsibility components (e.g., , , ) and use Next.js's file-based routing for different pages (e.g., , , ).
--   ****: This is a monolithic API route handler. While functional for a small MVP, it should be split into separate files based on domain (e.g., , ) for better organization and maintainability as the application grows.
-
-**key api endpoints**
--    (POST)
--    (POST)
--    (POST)
--    (GET)
--    (POST)
--    (POST)
--    (POST)
--    (GET, POST)
+-   ****: This file is critically oversized and manages far too much state. The addition of Profile and Progress as states instead of separate routes has made it worse. It must be broken into proper Next.js pages if the web app is to be maintained.
 
 **Critical Info for New Agent**
--   **PRIORITY #1**: The app is currently unusable because it gets stuck on the loading screen. You must fix this bug in  before doing anything else.
--   **Refactor **: Do not add more logic to the monolithic . The next major task, after fixing the loading bug, should be to start refactoring it as part of building the new Dashboard and Auth UI.
--   **Authentication is Backend-Only**: The backend for auth is complete, but no UI (Login/Signup pages) exists yet. You need to build this.
--   **API Keys Deferred**: The user has postponed providing API keys for ElevenLabs/Whisper and decided against building the admin console for them right now. Focus on the UI/UX and bug fixes first.
+-   **The user's primary goal is the Expo native app.** The web app is now considered secondary. Your first goal after fixing the three urgent bugs should be to guide the user on how to download and run the Expo project from the  folder on their local machine.
+-   **Fix the 3 user-reported bugs first.** Address the Profile UI, Preloader UX, and AI writing error on the *web app* as they are the user's immediate pain points.
+-   **The Expo app is a skeleton.** It has the file structure and UI components but is not connected to the backend. This will be the next major task after the user gets it running locally.
+-   **Avoid blind replacements.** The previous agent's use of  to change colors broke the UI. Make targeted, conscious code edits, especially for styling.
 
 **documents created in this job**
 -   
--   
+-   A zip file  was created, containing the Expo project.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **user**:  - Acknowledged agent's summary and readiness to start Phase 2.
-2.  **user**:  - Gave the final go-ahead to start implementing the authentication system.
-3.  **user**:  (Admin console later. Now we need more screens like welcome, login, sign up... and better UX design...) - User pivoted from integrating ElevenLabs to a major UI/UX overhaul, requesting a full app experience with auth and navigation.
-4.  **user**:  - Chose to use ElevenLabs for TTS and OpenAI Whisper for STT.
-5.  **user**:  (For TTS/STT, wouldn't ElevenLabs be more natural and cheaper?) - Initiated the request to switch from Google services to ElevenLabs.
-6.  **user**:  (Next, I need: 1. Check if exam formats are correct... 2. The speaking exam only lets me record but doesn't work...) - Reported two key issues: incorrect exam formats and a broken speaking module.
-7.  **user**:  (No, it's still stuck. Should you delete the code and rewrite it?) - Confirmed that the agent's fix for the preloader did not work and suggested a rewrite.
-8.  **user**:  - Reported the critical bug where the preloader blocks the entire application flow.
-9.  **user**:  - A short, possibly accidental message. The agent interpreted it as a cue to proceed.
-10. **user**:  (Excellent, it works now! But stability is not good at all! e.g., the speaking module doesn't record... we also need a preloader...) - Confirmed the Gemini model fix worked but immediately reported major new issues regarding stability, the speaking module, and requested a full-screen preloader.
+1.  **user**: (Provides screenshot) Identifies 3 new issues: Profile page UI bug, ugly AI preloader, and AI errors on writing questions. (PENDING)
+2.  **user**: The colors are wrong, icons are invisible, and text is unreadable. (ADDRESSED - agent rewrote pages)
+3.  **user**: Why is it still a web app? I don't see the Expo Go button, and the colors haven't changed. (ADDRESSED - agent explained the misunderstanding and fixed web app colors)
+4.  **user**: I want the real app now. (ADDRESSED - agent created the Expo app skeleton)
+5.  **user**: I want an orange theme, remove all gradients, just use orange, white, and black. (ADDRESSED)
+6.  **user**: I want a real app, like the one with Expo. I don't want a web app. (PIVOT - this is the key message that changed the project direction)
+7.  **user**: OK, let's do the PWA. (Reversed by next message)
+8.  **user**: I want it to be an app to put on the Apple store. (PIVOT)
+9.  **user**: It's slow and not all screens are created. Make it a smartphone application. (PIVOT)
+10. **user**: ลงมือ! (Let's do it!) - Agreed to agent's plan to fix the web app.
 
 **Project Health Check:**
 -   **Broken**:
-    -   Core user flow (The app gets stuck on the loading screen).
-    -   Speaking question module.
-    -    is a monolithic component that is difficult to maintain and is the source of the main bug.
+    -   Web app: Profile page layout ().
+    -   Backend: AI generation for writing exam type ().
+    -   Web app: Speaking module (entire flow is missing).
 -   **Mocked**:
-    -   AI scoring for writing and speaking is not implemented.
+    -   AI scoring for writing/speaking is not implemented.
+    -   The entire  project is a non-running skeleton.
 
 **3rd Party Integrations**
--   **Google Gemini ()**: Used for dynamic question generation. Requires a user-provided API key (currently not set up in a robust way). Uses Emergent LLM Key.
+-   **Google Gemini**: Used for dynamic question generation via Emergent LLM Key.
 -   **ElevenLabs (Planned)**: For Text-to-Speech. Will require a User API Key.
 -   **OpenAI Whisper (Planned)**: For Speech-to-Text. Will require a User API Key.
 
 **Testing status**
--   **Testing agent used after significant changes**: NO. The agent did an initial backend test run early on but has not re-tested after adding numerous features (Thai UI, new question types, Gemini integration, Auth system).
+-   **Testing agent used after significant changes**: YES, the backend testing agent was used to verify all API endpoints after the major AI generation fix.
 -   **Troubleshoot agent used after agent stuck in loop**: NO.
 -   **Test files created**: None.
--   **Known regressions**: The main lesson runner was working in the initial MVP but is now inaccessible due to the loading screen bug.
+-   **Known regressions**: AI generation for specific question types (writing) has broken.
 
 **Credentials to test flow:**
-N/A - The signup/login UI has not been built yet. The agent needs to build this first.
+The signup/login UI is functional on the web app. The agent can create a user to test the authenticated flows.
 
 **What agent forgot to execute**
--   **Consistent Testing**: The agent failed to run tests after major changes, leading to the accumulation of bugs like the loading screen and speaking module issues.
--   **Refactoring**: The agent acknowledged  was too large multiple times but continued to add more code to it instead of refactoring it.
--   **Follow-up on Playbook**: The agent received a Python playbook for ElevenLabs but didn't request a Next.js-specific one. It decided on its own architecture (serverless function wrapper), which might be fine, but it didn't exhaust the expert agent's capabilities first.
+-   The agent did not refactor  into separate routes when adding the Profile and Progress pages, instead adding more complexity to the monolith.
+-   The agent did not complete the implementation of the speaking module, which has been a pending issue since the beginning.
 
 </analysis>

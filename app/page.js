@@ -250,45 +250,62 @@ function AppInner() {
       speaking: ['ใช้เวลาเตรียมอย่างเต็มที่', 'พูดชัดเจนและช้าพอ', 'ขยายความคำตอบ', 'อย่ากลัวพูดผิด']
     }
 
+    const sectionIcons = {
+      reading: '📖',
+      listening: '🎧',
+      writing: '✍️',
+      speaking: '🎤'
+    }
+
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-sm text-center"
         >
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 shadow-xl">
-              <Sparkles className="w-12 h-12 text-white animate-pulse" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">กำลังสร้างคำถามด้วย AI</h2>
-            <p className="text-gray-600">กรุณารอสักครู่...</p>
+          {/* Animated Icon */}
+          <motion.div
+            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="text-6xl mb-6"
+          >
+            {sectionIcons[selectedSection] || '📝'}
+          </motion.div>
+
+          {/* Title */}
+          <h2 className="text-2xl font-black text-gray-900 mb-2">
+            กำลังสร้างข้อสอบ
+          </h2>
+          <p className="text-gray-500 text-sm mb-8">AI กำลังเตรียมคำถามให้คุณ...</p>
+
+          {/* Progress Animation */}
+          <div className="w-full bg-gray-100 rounded-full h-2 mb-8 overflow-hidden">
+            <motion.div
+              className="h-full bg-orange-500 rounded-full"
+              initial={{ width: "5%" }}
+              animate={{ width: "85%" }}
+              transition={{ duration: 12, ease: "easeOut" }}
+            />
           </div>
 
-          <Card className="border-orange-200">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-orange-600" />
-                </div>
-                <div className="flex-1 text-left">
-                  <h3 className="font-semibold text-gray-900 mb-2">💡 เคล็ดลับ:</h3>
-                  <AnimatePresence mode="wait">
-                    <motion.p
-                      key={loadingTip}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-gray-700"
-                    >
-                      {tips[selectedSection]?.[loadingTip] || 'กำลังเตรียมข้อสอบ...'}
-                    </motion.p>
-                  </AnimatePresence>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Tip Card */}
+          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-5">
+            <p className="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">💡 เคล็ดลับ</p>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={loadingTip}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }}
+                className="text-gray-700 font-medium text-sm leading-relaxed"
+              >
+                {tips[selectedSection]?.[loadingTip] || 'กำลังเตรียมข้อสอบ...'}
+              </motion.p>
+            </AnimatePresence>
+          </div>
         </motion.div>
       </div>
     )

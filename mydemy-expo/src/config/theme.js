@@ -1,4 +1,4 @@
-export const API_BASE = 'https://exam-genius-ai-1.preview.emergentagent.com/api'
+export const API_BASE = 'https://exam-ai-debug.preview.emergentagent.com/api'
 
 export const COLORS = {
   primary: '#FF6500',

@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = "https://exam-genius-ai-1.preview.emergentagent.com/api"
+BASE_URL = "https://exam-ai-debug.preview.emergentagent.com/api"
 
 class MydemyAPITester:
     def __init__(self):
@@ -691,127 +691,149 @@ class MydemyAPITester:
             self.test_results["auth_session_no_token"] = False
     
     async def test_ai_endpoints(self):
-        """Test AI-powered endpoints"""
+        """Test AI-powered endpoints - ALL section types"""
         print("\n" + "="*50)
-        print("Testing AI Endpoints")
+        print("Testing AI Generate Questions - ALL SECTION TYPES")
         print("="*50)
         
-        # Test AI Generate Questions - TOEIC Reading
-        print("\n--- Testing POST /ai/generate-questions (TOEIC Reading) ---")
+        # Test cases for ALL section types as requested
+        ai_test_cases = [
+            {
+                "name": "TOEIC Reading",
+                "data": {"examType": "TOEIC", "section": "reading", "count": 2},
+                "key": "ai_generate_toeic_reading",
+                "expected_fields": ["id", "type"]
+            },
+            {
+                "name": "TOEIC Listening", 
+                "data": {"examType": "TOEIC", "section": "listening", "count": 2},
+                "key": "ai_generate_toeic_listening",
+                "expected_fields": ["id", "type"]
+            },
+            {
+                "name": "IELTS Reading",
+                "data": {"examType": "IELTS", "section": "reading", "count": 2},
+                "key": "ai_generate_ielts_reading", 
+                "expected_fields": ["id", "type"]
+            },
+            {
+                "name": "IELTS Listening",
+                "data": {"examType": "IELTS", "section": "listening", "count": 2},
+                "key": "ai_generate_ielts_listening",
+                "expected_fields": ["id", "type"]
+            },
+            {
+                "name": "IELTS Writing",
+                "data": {"examType": "IELTS", "section": "writing", "count": 2},
+                "key": "ai_generate_ielts_writing",
+                "expected_fields": ["id", "type", "prompt", "task"],
+                "type_check": "writing"
+            },
+            {
+                "name": "IELTS Speaking",
+                "data": {"examType": "IELTS", "section": "speaking", "count": 2}, 
+                "key": "ai_generate_ielts_speaking",
+                "expected_fields": ["id", "type", "question", "part"],
+                "type_check": "speaking"
+            }
+        ]
         
-        toeic_data = {
-            "examType": "TOEIC",
-            "section": "reading",
-            "count": 2
-        }
-        
-        try:
-            status, response_text = await self.make_auth_request("POST", "/ai/generate-questions", toeic_data)
+        for test_case in ai_test_cases:
+            print(f"\n--- Testing POST /ai/generate-questions ({test_case['name']}) ---")
             
-            if status is None:
-                print(f"❌ FAILED: AI generate questions TOEIC - {response_text}")
-                self.test_results["ai_generate_toeic"] = False
-            elif status == 200:
-                try:
-                    data = json.loads(response_text)
-                    required_fields = ['examType', 'section', 'questions']
-                    
-                    if all(field in data for field in required_fields):
-                        questions = data.get('questions', [])
-                        if isinstance(questions, list) and len(questions) > 0:
-                            # Validate question structure
-                            question = questions[0]
-                            if 'id' in question and 'type' in question:
-                                print("✅ SUCCESS: AI generate questions TOEIC working correctly")
-                                print(f"   - Generated {len(questions)} questions")
-                                print(f"   - ExamType: {data.get('examType')}, Section: {data.get('section')}")
-                                self.test_results["ai_generate_toeic"] = True
-                            else:
-                                print("❌ FAILED: AI generate questions TOEIC - Invalid question structure")
-                                self.test_results["ai_generate_toeic"] = False
-                        else:
-                            print("❌ FAILED: AI generate questions TOEIC - No questions generated")
-                            self.test_results["ai_generate_toeic"] = False
-                    else:
-                        print("❌ FAILED: AI generate questions TOEIC - Missing required fields")
-                        self.test_results["ai_generate_toeic"] = False
-                except json.JSONDecodeError:
-                    print("❌ FAILED: AI generate questions TOEIC - Invalid JSON response")
-                    self.test_results["ai_generate_toeic"] = False
-            elif status == 400:
-                print("❌ FAILED: AI generate questions TOEIC - API key not configured or validation error")
-                print(f"Response: {response_text}")
-                self.test_results["ai_generate_toeic"] = False
-            elif status == 500:
-                print("❌ FAILED: AI generate questions TOEIC - Server error (likely AI API issue)")
-                print(f"Response: {response_text}")
-                self.test_results["ai_generate_toeic"] = False
-            else:
-                print(f"❌ FAILED: AI generate questions TOEIC - Expected 200, got {status}")
-                print(f"Response: {response_text}")
-                self.test_results["ai_generate_toeic"] = False
+            try:
+                # Use longer timeout for AI generation (30 seconds as per request)
+                original_timeout = self.session.timeout
+                self.session = aiohttp.ClientSession(
+                    connector=aiohttp.TCPConnector(ssl=False),
+                    timeout=aiohttp.ClientTimeout(total=30),
+                    headers={'Content-Type': 'application/json', 'User-Agent': 'Mydemy-Test-Client/1.0'}
+                )
                 
-        except Exception as e:
-            print(f"❌ ERROR: AI generate questions TOEIC - {str(e)}")
-            self.test_results["ai_generate_toeic"] = False
-        
-        # Test AI Generate Questions - IELTS Reading
-        print("\n--- Testing POST /ai/generate-questions (IELTS Reading) ---")
-        
-        ielts_data = {
-            "examType": "IELTS",
-            "section": "reading",
-            "count": 2
-        }
-        
-        try:
-            status, response_text = await self.make_auth_request("POST", "/ai/generate-questions", ielts_data)
+                status, response_text = await self.make_auth_request("POST", "/ai/generate-questions", test_case["data"])
+                
+                if status is None:
+                    print(f"❌ FAILED: AI {test_case['name']} - {response_text}")
+                    self.test_results[test_case["key"]] = False
+                    continue
+                    
+                print(f"[RESPONSE] Status: {status}")
+                if len(response_text) > 500:
+                    print(f"[RESPONSE] Body: {response_text[:500]}...")
+                else:
+                    print(f"[RESPONSE] Body: {response_text}")
+                
+                if status == 200:
+                    try:
+                        data = json.loads(response_text)
+                        required_fields = ['examType', 'section', 'questions']
+                        
+                        if all(field in data for field in required_fields):
+                            questions = data.get('questions', [])
+                            
+                            # Verify response structure
+                            if data.get('examType') == test_case["data"]["examType"] and data.get('section') == test_case["data"]["section"]:
+                                
+                                if isinstance(questions, list) and len(questions) > 0:
+                                    # Validate each question structure 
+                                    all_valid = True
+                                    for i, question in enumerate(questions):
+                                        missing_fields = [field for field in test_case["expected_fields"] if field not in question]
+                                        if missing_fields:
+                                            print(f"   ❌ Question {i+1} missing fields: {missing_fields}")
+                                            all_valid = False
+                                        
+                                        # Check specific type requirements
+                                        if "type_check" in test_case:
+                                            if question.get("type") != test_case["type_check"]:
+                                                print(f"   ❌ Question {i+1} has wrong type: expected '{test_case['type_check']}', got '{question.get('type')}'")
+                                                all_valid = False
+                                    
+                                    if all_valid:
+                                        print(f"✅ SUCCESS: AI {test_case['name']} working correctly")
+                                        print(f"   - Generated {len(questions)} questions")
+                                        print(f"   - ExamType: {data.get('examType')}, Section: {data.get('section')}")
+                                        print(f"   - All questions have required fields: {test_case['expected_fields']}")
+                                        if "type_check" in test_case:
+                                            print(f"   - All questions have correct type: {test_case['type_check']}")
+                                        self.test_results[test_case["key"]] = True
+                                    else:
+                                        print(f"❌ FAILED: AI {test_case['name']} - Invalid question structure")
+                                        self.test_results[test_case["key"]] = False
+                                else:
+                                    print(f"❌ FAILED: AI {test_case['name']} - No questions generated or empty array")
+                                    self.test_results[test_case["key"]] = False
+                            else:
+                                print(f"❌ FAILED: AI {test_case['name']} - Response examType/section mismatch")
+                                print(f"   Expected: {test_case['data']['examType']}/{test_case['data']['section']}")
+                                print(f"   Got: {data.get('examType')}/{data.get('section')}")
+                                self.test_results[test_case["key"]] = False
+                        else:
+                            print(f"❌ FAILED: AI {test_case['name']} - Missing required response fields: {[f for f in required_fields if f not in data]}")
+                            self.test_results[test_case["key"]] = False
+                    except json.JSONDecodeError as e:
+                        print(f"❌ FAILED: AI {test_case['name']} - Invalid JSON response: {str(e)}")
+                        print(f"   Raw response: {response_text[:200]}...")
+                        self.test_results[test_case["key"]] = False
+                elif status == 400:
+                    print(f"❌ FAILED: AI {test_case['name']} - API key not configured or validation error")
+                    print(f"Response: {response_text}")
+                    self.test_results[test_case["key"]] = False
+                elif status == 500:
+                    print(f"❌ FAILED: AI {test_case['name']} - Server error (likely AI API issue)")
+                    print(f"Response: {response_text}")
+                    self.test_results[test_case["key"]] = False
+                else:
+                    print(f"❌ FAILED: AI {test_case['name']} - Expected 200, got {status}")
+                    print(f"Response: {response_text}")
+                    self.test_results[test_case["key"]] = False
+                    
+            except Exception as e:
+                print(f"❌ ERROR: AI {test_case['name']} - {str(e)}")
+                self.test_results[test_case["key"]] = False
             
-            if status is None:
-                print(f"❌ FAILED: AI generate questions IELTS - {response_text}")
-                self.test_results["ai_generate_ielts"] = False
-            elif status == 200:
-                try:
-                    data = json.loads(response_text)
-                    required_fields = ['examType', 'section', 'questions']
-                    
-                    if all(field in data for field in required_fields):
-                        questions = data.get('questions', [])
-                        if isinstance(questions, list) and len(questions) > 0:
-                            question = questions[0]
-                            if 'id' in question and 'type' in question:
-                                print("✅ SUCCESS: AI generate questions IELTS working correctly")
-                                print(f"   - Generated {len(questions)} questions")
-                                print(f"   - ExamType: {data.get('examType')}, Section: {data.get('section')}")
-                                self.test_results["ai_generate_ielts"] = True
-                            else:
-                                print("❌ FAILED: AI generate questions IELTS - Invalid question structure")
-                                self.test_results["ai_generate_ielts"] = False
-                        else:
-                            print("❌ FAILED: AI generate questions IELTS - No questions generated")
-                            self.test_results["ai_generate_ielts"] = False
-                    else:
-                        print("❌ FAILED: AI generate questions IELTS - Missing required fields")
-                        self.test_results["ai_generate_ielts"] = False
-                except json.JSONDecodeError:
-                    print("❌ FAILED: AI generate questions IELTS - Invalid JSON response")
-                    self.test_results["ai_generate_ielts"] = False
-            elif status == 400:
-                print("❌ FAILED: AI generate questions IELTS - API key not configured or validation error")
-                print(f"Response: {response_text}")
-                self.test_results["ai_generate_ielts"] = False
-            elif status == 500:
-                print("❌ FAILED: AI generate questions IELTS - Server error (likely AI API issue)")
-                print(f"Response: {response_text}")
-                self.test_results["ai_generate_ielts"] = False
-            else:
-                print(f"❌ FAILED: AI generate questions IELTS - Expected 200, got {status}")
-                print(f"Response: {response_text}")
-                self.test_results["ai_generate_ielts"] = False
-                
-        except Exception as e:
-            print(f"❌ ERROR: AI generate questions IELTS - {str(e)}")
-            self.test_results["ai_generate_ielts"] = False
+            # Small delay between AI requests to avoid rate limits
+            await asyncio.sleep(1)
     
     async def test_admin_keys_endpoint(self):
         """Test admin API keys endpoint"""
@@ -914,9 +936,11 @@ class MydemyAPITester:
         # Determine overall status
         critical_endpoints = [
             'auth_signup', 'auth_login_success', 'auth_session_valid',
-            'ai_generate_toeic', 'ai_generate_ielts', 'admin_keys_get',
-            'generate_exam_case_1', 'progress_post', 'progress_get', 
-            'user_post_create', 'user_get_existing', 'lessons'
+            'ai_generate_toeic_reading', 'ai_generate_toeic_listening', 
+            'ai_generate_ielts_reading', 'ai_generate_ielts_listening',
+            'ai_generate_ielts_writing', 'ai_generate_ielts_speaking',
+            'admin_keys_get', 'generate_exam_case_1', 'progress_post', 
+            'progress_get', 'user_post_create', 'user_get_existing', 'lessons'
         ]
         
         critical_failures = [test for test in critical_endpoints if test in self.test_results and not self.test_results[test]]

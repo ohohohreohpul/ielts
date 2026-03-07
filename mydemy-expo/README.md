@@ -45,7 +45,7 @@ npx expo start
 ## API Backend
 แอพเชื่อมต่อกับ Backend ที่:
 ```
-https://exam-genius-ai-1.preview.emergentagent.com/api
+https://exam-ai-debug.preview.emergentagent.com/api
 ```
 
 ---

@@ -275,6 +275,15 @@ backend:
       - working: true
         agent: "testing"
         comment: "Comprehensive testing completed - AI generate questions working perfectly. Tested TOEIC reading and IELTS reading sections, both generate 2 questions as requested. Uses Emergent LLM proxy with fallback API key. Returns proper JSON with examType, section, and questions array. All functionality verified."
+      - working: false
+        agent: "user"
+        comment: "User reported that AI fails to generate writing questions. Returns empty questions array. Issue was: 1) AI returned single object instead of array, Object.values() broke the object into individual property values. 2) Writing prompt was ambiguous. Fixed both: improved JSON parsing to detect single question objects, and rewrote writing+speaking prompts to explicitly request JSON arrays."
+      - working: true
+        agent: "main"
+        comment: "Fixed JSON parsing logic and improved prompts. Tested writing endpoint - returns proper array of 3 writing tasks with type=writing, task, prompt fields. Also improved speaking prompts similarly."
+      - working: true
+        agent: "testing"
+        comment: "🎉 COMPREHENSIVE TESTING OF ALL SECTION TYPES COMPLETED - 100% SUCCESS! Tested ALL 6 section types as requested: TOEIC reading (2.9s), TOEIC listening (2.9s), IELTS reading (4.9s), IELTS listening (3.6s), IELTS writing (2.9s), IELTS speaking (1.8s). All endpoints generate proper questions with required fields. Writing questions have type=writing+prompt+task fields. Speaking questions have type=speaking+question+part fields. All response times under 5 seconds. Uses Emergent LLM key successfully. 6/6 endpoints working perfectly."
 
   - task: "Admin API Keys Endpoint"
     implemented: true
@@ -515,11 +524,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Auth Signup Endpoint"
-    - "Auth Login Endpoint"
-    - "Auth Session Endpoint"
-    - "AI Generate Questions Endpoint"
-    - "Root Page - Auth Redirect + Lesson Runner"
+    - "AI Generate Questions Endpoint - ALL section types tested and working"
+    - "Auth endpoints tested and working"  
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -527,25 +533,21 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      Phase 2 Implementation Complete! Major changes made:
+      Fixed 3 user-reported bugs:
       
-      BACKEND:
-      ✅ Auth system: /api/auth/signup, /api/auth/login, /api/auth/logout, /api/auth/session
-      ✅ AI questions: /api/ai/generate-questions now uses Emergent LLM key (sk-emergent-...) as default fallback
-      ✅ AI scoring: /api/ai/score-answer also uses Emergent LLM key as fallback
-      ✅ Admin keys: Now handles gemini, googleTTS, elevenLabs, openAI keys
-      ✅ DB_NAME fixed: Changed from 'your_database_name' to 'mydemy'
+      1. AI Writing Error: Fixed JSON parsing logic in /api/ai/generate-questions.
+         - Problem: AI returned single object for writing questions, Object.values() broke it
+         - Fix: Added smart detection of single question objects (checks for id/type/prompt keys)
+         - Also rewrote writing+speaking prompts to explicitly request JSON arrays
       
-      FRONTEND:
-      ✅ Welcome page: /welcome - branding + CTA buttons
-      ✅ Login page: /login - email/password auth
-      ✅ Signup page: /signup - registration form
-      ✅ Dashboard: /dashboard - stats, recent lesson, weekly goal, quick actions
-      ✅ Practice: /practice - exam + section selection
-      ✅ Root /: Auth check → redirect to /welcome or /dashboard, or start lesson from URL params
+      2. Profile Page UI: Increased pb-28 to pb-40 on all pages using BottomNav (profile, dashboard, practice, progress)
       
-      Please test all auth endpoints and AI generation endpoint.
-      Test the complete flow: signup → dashboard → practice → lesson runner.
+      3. Preloader UX: Completely redesigned the loading screen with animated emoji icons, progress bar, cleaner tip card
+      
+      Please test:
+      - AI generation for ALL section types: TOEIC reading, TOEIC listening, IELTS reading, IELTS listening, IELTS writing, IELTS speaking
+      - Auth endpoints (signup, login, session) - should still work
+      - Verify writing endpoint returns proper question objects with type=writing, task, prompt fields
   - agent: "testing"
     message: |
       ✅ COMPREHENSIVE BACKEND TESTING COMPLETE - ALL ENDPOINTS WORKING PERFECTLY!
@@ -567,3 +569,29 @@ agent_communication:
       ✅ MongoDB integration functional with proper data persistence
       
       🏆 SUMMARY: The backend is production-ready with comprehensive authentication, AI-powered question generation, and complete CRUD operations. All critical endpoints tested and verified working.
+  - agent: "testing"
+    message: |
+      🎉 FINAL TESTING COMPLETED - ALL AI GENERATION SECTION TYPES WORKING PERFECTLY!
+      
+      ✅ COMPREHENSIVE AI TESTING RESULTS (6/6 sections tested):
+      
+      🔹 TOEIC Reading (2.9s) - ✅ Generated 2 questions with proper id/type fields
+      🔹 TOEIC Listening (2.9s) - ✅ Generated 2 questions with proper id/type fields  
+      🔹 IELTS Reading (4.9s) - ✅ Generated 2 questions with proper id/type fields
+      🔹 IELTS Listening (3.6s) - ✅ Generated 2 questions with proper id/type fields
+      🔹 IELTS Writing (2.9s) - ✅ Generated 2 questions with type=writing, prompt, task fields
+      🔹 IELTS Speaking (1.8s) - ✅ Generated 2 questions with type=speaking, question, part fields
+      
+      ✅ AUTH SYSTEM (3/3 endpoints verified):
+      🔹 POST /auth/signup - Creates users with hashed passwords, returns user + token
+      🔹 POST /auth/login - Validates credentials, correctly rejects wrong passwords  
+      🔹 GET /auth/session - Validates Bearer tokens, rejects missing/invalid tokens
+      
+      🏆 BACKEND STATUS: Production-ready! All requested endpoints tested and working with proper response times (1.8s - 4.9s per AI generation).
+      
+      💡 NOTES: 
+      - Uses Emergent LLM key (sk-emergent-...) successfully
+      - All writing questions contain required type/prompt/task fields as specified
+      - All speaking questions contain required type/question/part fields as specified
+      - Response times are excellent (under 5 seconds for all AI generations)
+      - MongoDB integration working perfectly with proper data persistence

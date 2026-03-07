@@ -43,7 +43,7 @@ export default function ProgressPage() {
   const scoreColor = (s) => s >= 80 ? '#22C55E' : s >= 60 ? '#F59E0B' : '#EF4444'
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-gray-50 pb-40">
 
       {/* Header */}
       <div className="bg-orange-500 pt-14 pb-6 px-5">

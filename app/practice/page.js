@@ -32,7 +32,7 @@ export default function PracticePage() {
   const [expanded, setExpanded] = useState('toeic')
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-gray-50 pb-40">
 
       {/* Header */}
       <div className="bg-orange-500 pt-14 pb-6 px-5">

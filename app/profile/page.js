@@ -53,7 +53,7 @@ export default function ProfilePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-gray-50 pb-40">
 
       {/* Orange Header + Avatar */}
       <div className="bg-orange-500 pt-14 pb-20 px-5 text-center relative">

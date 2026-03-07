@@ -172,63 +172,68 @@ Mix all 4 types.`,
   "question": "Complete with NO MORE THAN TWO WORDS",
   "wordLimit": 2
 }`,
-      'writing': `Generate ${count} IELTS Writing prompts. Return JSON:
+      'writing': `Generate ${count} IELTS Writing task prompts. Return ONLY a valid JSON array (starting with [ and ending with ]).
 
-Task 1 (describe visual data):
-{
-  "id": "q1",
-  "type": "writing",
-  "task": "Task 1",
-  "prompt": "The graph shows the percentage of internet users in five countries from 2010 to 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
-  "wordLimit": 150,
-  "timeLimit": 20,
-  "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
-}
+Each item should alternate between Task 1 and Task 2. Use DIFFERENT topics for each.
 
-Task 2 (argumentative essay):
-{
-  "id": "q2",
-  "type": "writing",
-  "task": "Task 2",
-  "prompt": "Some people believe that technology has made our lives more complicated. Others think it has made things easier. Discuss both views and give your own opinion.",
-  "wordLimit": 250,
-  "timeLimit": 40,
-  "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
-}`,
-      'speaking': `Generate ${count} IELTS Speaking questions across 3 parts. Return JSON:
+Example format:
+[
+  {
+    "id": "q1",
+    "type": "writing",
+    "task": "Task 1",
+    "prompt": "The graph shows the percentage of internet users in five countries from 2010 to 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+    "wordLimit": 150,
+    "timeLimit": 20,
+    "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+  },
+  {
+    "id": "q2",
+    "type": "writing",
+    "task": "Task 2",
+    "prompt": "Some people believe that technology has made our lives more complicated. Others think it has made things easier. Discuss both views and give your own opinion.",
+    "wordLimit": 250,
+    "timeLimit": 40,
+    "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+  }
+]
 
-Part 1 (4-5 minutes, personal questions):
-{
-  "id": "q1",
-  "type": "speaking",
-  "part": "Part 1",
-  "question": "Do you enjoy reading books? Why or why not?",
-  "preparationTime": 0,
-  "speakingTime": 20,
-  "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
-}
+Generate exactly ${count} different writing tasks with unique topics. Return ONLY the JSON array.`,
+      'speaking': `Generate ${count} IELTS Speaking questions across 3 parts. Return ONLY a valid JSON array (starting with [ and ending with ]).
 
-Part 2 (2-minute monologue with cue card):
-{
-  "id": "q2",
-  "type": "speaking",
-  "part": "Part 2",
-  "question": "Describe a place you visited that left a strong impression on you. You should say: where it was, when you went there, what you did there, and explain why it was memorable.",
-  "preparationTime": 60,
-  "speakingTime": 120,
-  "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
-}
+Mix questions from all 3 parts:
 
-Part 3 (4-5 minutes, abstract discussion):
-{
-  "id": "q3",
-  "type": "speaking",
-  "part": "Part 3",
-  "question": "How has tourism changed in your country over the past 20 years?",
-  "preparationTime": 0,
-  "speakingTime": 40,
-  "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
-}`
+[
+  {
+    "id": "q1",
+    "type": "speaking",
+    "part": "Part 1",
+    "question": "Do you enjoy reading books? Why or why not?",
+    "preparationTime": 0,
+    "speakingTime": 20,
+    "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+  },
+  {
+    "id": "q2",
+    "type": "speaking",
+    "part": "Part 2",
+    "question": "Describe a place you visited that left a strong impression on you. You should say: where it was, when you went there, what you did there, and explain why it was memorable.",
+    "preparationTime": 60,
+    "speakingTime": 120,
+    "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+  },
+  {
+    "id": "q3",
+    "type": "speaking",
+    "part": "Part 3",
+    "question": "How has tourism changed in your country over the past 20 years?",
+    "preparationTime": 0,
+    "speakingTime": 40,
+    "rubric": "Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation"
+  }
+]
+
+Generate exactly ${count} speaking questions with DIFFERENT topics. Return ONLY the JSON array.`
     }
   }
 
@@ -740,8 +745,30 @@ async function handleRoute(request, { params }) {
           throw new Error('Failed to parse AI response as JSON: ' + parseErr.message)
         }
 
-        // Ensure it's an array
-        const questionsArray = Array.isArray(questions) ? questions : questions.questions || []
+        // Ensure it's an array of question objects
+        let questionsArray
+        if (Array.isArray(questions)) {
+          questionsArray = questions
+        } else if (questions && typeof questions === 'object') {
+          // Check if it's a single question object (has 'id' or 'type' or 'question' or 'prompt')
+          if (questions.id || questions.type || questions.question || questions.prompt) {
+            questionsArray = [questions]
+          } else if (questions.questions && Array.isArray(questions.questions)) {
+            questionsArray = questions.questions
+          } else if (questions.data && Array.isArray(questions.data)) {
+            questionsArray = questions.data
+          } else {
+            // Last resort: try Object.values but only if they are objects
+            const vals = Object.values(questions)
+            if (vals.length > 0 && typeof vals[0] === 'object' && vals[0] !== null) {
+              questionsArray = vals
+            } else {
+              questionsArray = [questions]
+            }
+          }
+        } else {
+          questionsArray = []
+        }
 
         return handleCORS(NextResponse.json({
           examType,

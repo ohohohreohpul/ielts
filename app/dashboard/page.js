@@ -46,7 +46,7 @@ export default function DashboardPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-gray-50 pb-40">
 
       {/* Orange Header */}
       <div className="bg-orange-500 pt-14 pb-16 px-5">
