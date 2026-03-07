@@ -46,7 +46,7 @@ export default function DashboardPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-40">
+    <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Orange Header */}
       <div className="bg-orange-500 pt-14 pb-16 px-5">
