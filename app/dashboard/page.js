@@ -99,18 +99,9 @@ export default function DashboardPage() {
   // Lock body scroll when modal is open (iOS fix)
   useEffect(() => {
     if (selectedExam) {
+      const scrollY = window.scrollY
       document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.width = '100%'
-    } else {
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.width = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.width = ''
+      return () => { document.body.style.overflow = '' }
     }
   }, [selectedExam])
 
@@ -259,38 +250,29 @@ export default function DashboardPage() {
         </motion.button>
       </div>
 
-      {/* Exam Detail Modal */}
+      {/* Exam Detail - Full Screen Overlay (iOS scroll fix) */}
       <AnimatePresence>
         {selectedExam && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
-            onClick={() => setSelectedExam(null)}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 25 }}
+            className="fixed inset-0 z-50 bg-white"
           >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25 }}
-              className="bg-white rounded-t-3xl w-full max-w-md overflow-y-auto overscroll-contain"
-              style={{ maxHeight: '85vh', paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))', WebkitOverflowScrolling: 'touch' }}
-              onTouchMove={e => e.stopPropagation()}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className="relative bg-orange-50 px-6 pt-6 pb-4">
+            <div className="h-full overflow-y-scroll" style={{ WebkitOverflowScrolling: 'touch' }}>
+              {/* Header */}
+              <div className="bg-orange-50 px-5 pt-14 pb-5 relative">
                 <button
                   onClick={() => setSelectedExam(null)}
-                  className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm"
+                  className="absolute top-12 right-4 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm z-10"
                 >
-                  <X className="w-4 h-4 text-gray-500" />
+                  <X className="w-5 h-5 text-gray-500" />
                 </button>
                 <div className="flex items-center gap-4">
                   <span className="text-5xl">{selectedExam.emoji}</span>
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="pr-10">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="text-2xl font-black text-gray-900">{selectedExam.name}</h2>
                       {!selectedExam.free && (
                         <span className="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -304,77 +286,75 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Detail */}
-              {selectedExam.detail && (
-                <div className="px-6 pt-4">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">📋 รายละเอียด</p>
-                  <div className="bg-gray-50 rounded-xl p-3">
-                    {selectedExam.detail.split('\n').map((line, i) => (
-                      <p key={i} className="text-sm text-gray-600 leading-relaxed">{line}</p>
+              <div className="px-5 pt-5 pb-20 space-y-5">
+                {/* Detail */}
+                {selectedExam.detail && (
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">📋 รายละเอียด</p>
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      {selectedExam.detail.split('\n').map((line, i) => (
+                        <p key={i} className="text-sm text-gray-600 leading-relaxed">{line}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sections */}
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">📚 เลือกพาร์ท ({selectedExam.sections.length})</p>
+                  <div className="space-y-2.5">
+                    {selectedExam.sections.map((sec) => (
+                      <button
+                        key={sec.id}
+                        onClick={() => {
+                          if (!selectedExam.free) {
+                            router.push('/practice')
+                            setSelectedExam(null)
+                            return
+                          }
+                          localStorage.setItem('lastExam', JSON.stringify({
+                            examId: selectedExam.id,
+                            name: selectedExam.name,
+                            emoji: selectedExam.emoji,
+                            section: sec.id,
+                            sectionLabel: sec.label,
+                          }))
+                          router.push(`/?exam=${selectedExam.id}&section=${sec.id}`)
+                          setSelectedExam(null)
+                        }}
+                        className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm active:opacity-70 transition-opacity"
+                      >
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${selectedExam.free ? 'bg-orange-50' : 'bg-gray-100'}`}>
+                          <sec.icon className={`w-5 h-5 ${selectedExam.free ? 'text-orange-500' : 'text-gray-400'}`} />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className={`font-bold ${selectedExam.free ? 'text-gray-900' : 'text-gray-400'}`}>{sec.label}</p>
+                          <p className="text-xs text-gray-400">{sec.sub}</p>
+                        </div>
+                        {selectedExam.free ? (
+                          <div className="bg-orange-500 px-4 py-2.5 rounded-xl flex-shrink-0">
+                            <p className="text-white text-sm font-bold">เริ่ม</p>
+                          </div>
+                        ) : (
+                          <Lock className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                        )}
+                      </button>
                     ))}
                   </div>
                 </div>
-              )}
 
-              {/* Sections */}
-              <div className="px-6 pt-4 pb-2">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">📚 เลือกพาร์ท ({selectedExam.sections.length})</p>
-                <div className="space-y-2">
-                  {selectedExam.sections.map((sec) => (
-                    <button
-                      key={sec.id}
-                      onClick={() => {
-                        if (!selectedExam.free) {
-                          // Navigate to practice which will show pricing
-                          router.push('/practice')
-                          setSelectedExam(null)
-                          return
-                        }
-                        // Save last exam
-                        localStorage.setItem('lastExam', JSON.stringify({
-                          examId: selectedExam.id,
-                          name: selectedExam.name,
-                          emoji: selectedExam.emoji,
-                          section: sec.id,
-                          sectionLabel: sec.label,
-                        }))
-                        router.push(`/?exam=${selectedExam.id}&section=${sec.id}`)
-                        setSelectedExam(null)
-                      }}
-                      className="w-full flex items-center gap-3 p-3.5 bg-white rounded-xl border border-gray-100 active:opacity-70 transition-opacity"
-                    >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${selectedExam.free ? 'bg-orange-50' : 'bg-gray-100'}`}>
-                        <sec.icon className={`w-5 h-5 ${selectedExam.free ? 'text-orange-500' : 'text-gray-400'}`} />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className={`font-bold ${selectedExam.free ? 'text-gray-900' : 'text-gray-400'}`}>{sec.label}</p>
-                        <p className="text-xs text-gray-400">{sec.sub}</p>
-                      </div>
-                      {selectedExam.free ? (
-                        <div className="bg-orange-500 px-3.5 py-2 rounded-xl flex-shrink-0">
-                          <p className="text-white text-sm font-bold">เริ่ม</p>
-                        </div>
-                      ) : (
-                        <Lock className="w-4 h-4 text-gray-300 flex-shrink-0" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Unlock Button for Premium */}
-              {!selectedExam.free && (
-                <div className="px-6 pt-3 pb-2">
+                {/* Unlock Button for Premium */}
+                {!selectedExam.free && (
                   <button
                     onClick={() => { router.push('/practice'); setSelectedExam(null) }}
-                    className="w-full bg-orange-500 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 active:opacity-80"
+                    className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 active:opacity-80 text-lg"
                   >
-                    <Crown className="w-4 h-4" />
+                    <Crown className="w-5 h-5" />
                     ปลดล็อคด้วย Carrot School Plus
                   </button>
-                </div>
-              )}
-            </motion.div>
+                )}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
