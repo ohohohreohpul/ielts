@@ -96,6 +96,24 @@ export default function DashboardPage() {
   const [selectedExam, setSelectedExam] = useState(null)
   const [lastExam, setLastExam] = useState(null)
 
+  // Lock body scroll when modal is open (iOS fix)
+  useEffect(() => {
+    if (selectedExam) {
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+    }
+  }, [selectedExam])
+
   useEffect(() => {
     const token = localStorage.getItem('token')
     const userData = localStorage.getItem('user')
@@ -256,8 +274,9 @@ export default function DashboardPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="bg-white rounded-t-3xl w-full max-w-md overflow-y-auto"
-              style={{ maxHeight: '85vh', paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
+              className="bg-white rounded-t-3xl w-full max-w-md overflow-y-auto overscroll-contain"
+              style={{ maxHeight: '85vh', paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))', WebkitOverflowScrolling: 'touch' }}
+              onTouchMove={e => e.stopPropagation()}
               onClick={e => e.stopPropagation()}
             >
               {/* Modal Header */}

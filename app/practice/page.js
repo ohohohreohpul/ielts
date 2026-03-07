@@ -168,15 +168,17 @@ export default function PracticePage() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
             onClick={() => setShowPricing(false)}
+            onTouchMove={e => e.preventDefault()}
           >
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="bg-white rounded-t-3xl w-full max-w-md p-6"
-              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
+              className="bg-white rounded-t-3xl w-full max-w-md p-6 overflow-y-auto overscroll-contain"
+              style={{ maxHeight: '85vh', paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))', WebkitOverflowScrolling: 'touch' }}
               onClick={e => e.stopPropagation()}
+              onTouchMove={e => e.stopPropagation()}
             >
               <div className="text-center mb-6">
                 <p className="text-4xl mb-2">🥕</p>
