@@ -596,14 +596,16 @@ async function handleRoute(request, { params }) {
       
       return handleCORS(NextResponse.json({
         gemini: !!config?.geminiKey,
-        googleTTS: !!config?.googleTTSKey
+        googleTTS: !!config?.googleTTSKey,
+        elevenLabs: !!config?.elevenLabsKey,
+        openAI: !!config?.openAIKey
       }))
     }
 
     // Admin: Save API Keys
     if (route === '/admin/keys' && method === 'POST') {
       const body = await request.json()
-      const { geminiKey, googleTTSKey } = body
+      const { geminiKey, googleTTSKey, elevenLabsKey, openAIKey } = body
 
       const updateData = {
         type: 'api_keys',
@@ -612,6 +614,8 @@ async function handleRoute(request, { params }) {
 
       if (geminiKey) updateData.geminiKey = geminiKey
       if (googleTTSKey) updateData.googleTTSKey = googleTTSKey
+      if (elevenLabsKey) updateData.elevenLabsKey = elevenLabsKey
+      if (openAIKey) updateData.openAIKey = openAIKey
 
       await db.collection('config').updateOne(
         { type: 'api_keys' },
@@ -625,63 +629,115 @@ async function handleRoute(request, { params }) {
       }))
     }
 
-    // Generate AI questions using Gemini
+    // Generate AI questions using LLM (Emergent proxy or admin-configured key)
     if (route === '/ai/generate-questions' && method === 'POST') {
       const body = await request.json()
       const { examType, section, count = 5 } = body
 
-      // Get Gemini API key from config
+      // Get API key: use admin-configured key first, fallback to Emergent key
       const config = await db.collection('config').findOne({ type: 'api_keys' })
-      
-      if (!config?.geminiKey) {
+      const apiKey = config?.geminiKey || process.env.EMERGENT_LLM_KEY
+
+      if (!apiKey) {
         return handleCORS(NextResponse.json(
-          { error: "Gemini API key not configured. Please set it in the admin console." },
+          { error: "API key not configured." },
           { status: 400 }
         ))
       }
 
       try {
-        // Call Gemini API
         const prompt = buildExamPrompt(examType, section, count)
         
-        const geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${config.geminiKey}`,
-          {
+        // Use Emergent LLM proxy (OpenAI-compatible) or direct Gemini based on key type
+        const isEmergentKey = apiKey.startsWith('sk-emergent-')
+        let generatedText
+
+        if (isEmergentKey) {
+          // Use Emergent proxy with OpenAI format
+          const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
             body: JSON.stringify({
-              contents: [{
-                parts: [{ text: prompt }]
-              }],
-              generationConfig: {
-                temperature: 0.9,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 8192,
-              }
+              model: 'gpt-4.1',
+              messages: [{ role: 'user', content: prompt }],
+              temperature: 0.9,
+              max_tokens: 8192,
             })
+          })
+
+          if (!aiResponse.ok) {
+            const errorData = await aiResponse.json()
+            throw new Error(errorData.error?.message || 'AI API request failed')
           }
-        )
 
-        if (!geminiResponse.ok) {
-          const errorData = await geminiResponse.json()
-          throw new Error(errorData.error?.message || 'Gemini API request failed')
-        }
-
-        const geminiData = await geminiResponse.json()
-        const generatedText = geminiData.candidates[0].content.parts[0].text
-        
-        // Extract JSON from response
-        const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/) || 
-                         generatedText.match(/\{[\s\S]*\}/) ||
-                         generatedText.match(/\[[\s\S]*\]/)
-        
-        let questions
-        if (jsonMatch) {
-          const jsonText = jsonMatch[1] || jsonMatch[0]
-          questions = JSON.parse(jsonText)
+          const aiData = await aiResponse.json()
+          generatedText = aiData.choices[0].message.content
         } else {
-          questions = JSON.parse(generatedText)
+          // Use direct Gemini API
+          const geminiResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.9, topK: 40, topP: 0.95, maxOutputTokens: 8192 }
+              })
+            }
+          )
+
+          if (!geminiResponse.ok) {
+            const errorData = await geminiResponse.json()
+            throw new Error(errorData.error?.message || 'Gemini API request failed')
+          }
+
+          const geminiData = await geminiResponse.json()
+          generatedText = geminiData.candidates[0].content.parts[0].text
+        }
+        
+        // Extract JSON from response - robust extraction
+        let questions
+        try {
+          // Try code block extraction first
+          const codeBlockMatch = generatedText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/)
+          if (codeBlockMatch) {
+            questions = JSON.parse(codeBlockMatch[1].trim())
+          } else {
+            // Find the outermost JSON array or object
+            const arrStart = generatedText.indexOf('[')
+            const objStart = generatedText.indexOf('{')
+            
+            if (arrStart !== -1 && (objStart === -1 || arrStart < objStart)) {
+              // Find matching bracket
+              let depth = 0, endIdx = -1
+              for (let i = arrStart; i < generatedText.length; i++) {
+                if (generatedText[i] === '[') depth++
+                else if (generatedText[i] === ']') { depth--; if (depth === 0) { endIdx = i; break; } }
+              }
+              if (endIdx !== -1) {
+                questions = JSON.parse(generatedText.substring(arrStart, endIdx + 1))
+              }
+            } else if (objStart !== -1) {
+              let depth = 0, endIdx = -1
+              for (let i = objStart; i < generatedText.length; i++) {
+                if (generatedText[i] === '{') depth++
+                else if (generatedText[i] === '}') { depth--; if (depth === 0) { endIdx = i; break; } }
+              }
+              if (endIdx !== -1) {
+                questions = JSON.parse(generatedText.substring(objStart, endIdx + 1))
+              }
+            }
+            
+            if (!questions) {
+              questions = JSON.parse(generatedText)
+            }
+          }
+        } catch (parseErr) {
+          console.error('JSON parse error, raw text:', generatedText.substring(0, 500))
+          throw new Error('Failed to parse AI response as JSON: ' + parseErr.message)
         }
 
         // Ensure it's an array
@@ -707,12 +763,13 @@ async function handleRoute(request, { params }) {
       const body = await request.json()
       const { type, question, answer, rubric } = body
 
-      // Get Gemini API key from config
+      // Get API key: use admin-configured key first, fallback to Emergent key
       const config = await db.collection('config').findOne({ type: 'api_keys' })
-      
-      if (!config?.geminiKey) {
+      const apiKey = config?.geminiKey || process.env.EMERGENT_LLM_KEY
+
+      if (!apiKey) {
         return handleCORS(NextResponse.json(
-          { error: "Gemini API key not configured." },
+          { error: "API key not configured." },
           { status: 400 }
         ))
       }
@@ -730,7 +787,7 @@ ${answer}
 
 Evaluation Criteria: ${rubric || 'Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy'}
 
-Provide a JSON response with:
+Provide a JSON response with ONLY this structure, no extra text:
 {
   "score": 7.5,
   "feedback": "Detailed feedback explaining the score",
@@ -747,7 +804,7 @@ ${answer}
 
 Evaluation Criteria: ${rubric || 'Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation'}
 
-Provide a JSON response with:
+Provide a JSON response with ONLY this structure, no extra text:
 {
   "score": 7.0,
   "feedback": "Detailed feedback explaining the score",
@@ -756,29 +813,44 @@ Provide a JSON response with:
 }`
         }
 
-        const geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${config.geminiKey}`,
-          {
+        const isEmergentKey = apiKey.startsWith('sk-emergent-')
+        let generatedText
+
+        if (isEmergentKey) {
+          const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
             body: JSON.stringify({
-              contents: [{
-                parts: [{ text: scoringPrompt }]
-              }],
-              generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 2048,
-              }
+              model: 'gpt-4.1',
+              messages: [{ role: 'user', content: scoringPrompt }],
+              temperature: 0.7,
+              max_tokens: 2048,
             })
-          }
-        )
+          })
 
-        if (!geminiResponse.ok) {
-          throw new Error('Gemini scoring failed')
+          if (!aiResponse.ok) throw new Error('AI scoring failed')
+          const aiData = await aiResponse.json()
+          generatedText = aiData.choices[0].message.content
+        } else {
+          const geminiResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: scoringPrompt }] }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+              })
+            }
+          )
+
+          if (!geminiResponse.ok) throw new Error('Gemini scoring failed')
+          const geminiData = await geminiResponse.json()
+          generatedText = geminiData.candidates[0].content.parts[0].text
         }
-
-        const geminiData = await geminiResponse.json()
-        const generatedText = geminiData.candidates[0].content.parts[0].text
         
         // Extract JSON
         const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/) || 

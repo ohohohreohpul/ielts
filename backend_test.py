@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = "https://exam-quest-ai.preview.emergentagent.com/api"
+BASE_URL = "https://exam-genius-ai-1.preview.emergentagent.com/api"
 
 class MydemyAPITester:
     def __init__(self):
@@ -468,6 +468,395 @@ class MydemyAPITester:
         except Exception as e:
             print(f"❌ ERROR: GET /user/{nonexistent_user_id} - {str(e)}")
             self.test_results["user_get_nonexistent"] = False
+
+    async def make_auth_request(self, method, endpoint, data=None, token=None):
+        """Make HTTP request with authentication header"""
+        url = f"{self.base_url}{endpoint}"
+        headers = {'Content-Type': 'application/json'}
+        if token:
+            headers['Authorization'] = f'Bearer {token}'
+            
+        try:
+            print(f"[REQUEST] {method} {url}")
+            if data:
+                print(f"[PAYLOAD] {json.dumps(data, indent=2)}")
+            if token:
+                print(f"[AUTH] Bearer {token[:10]}...")
+                
+            if method.upper() == 'GET':
+                async with self.session.get(url, headers=headers) as response:
+                    text = await response.text()
+                    return response.status, text
+            elif method.upper() == 'POST':
+                async with self.session.post(url, json=data, headers=headers) as response:
+                    text = await response.text()
+                    return response.status, text
+                    
+        except asyncio.TimeoutError:
+            return None, "Timeout error"
+        except Exception as e:
+            return None, f"Connection error: {str(e)}"
+    
+    async def test_auth_endpoints(self):
+        """Test authentication endpoints: signup, login, session"""
+        print("\n" + "="*50)
+        print("Testing Authentication Endpoints")
+        print("="*50)
+        
+        # Generate unique test credentials
+        test_email = f"testuser{uuid.uuid4().hex[:8]}@example.com"
+        test_password = "SecurePassword123!"
+        test_name = "Sarah Thompson"
+        auth_token = None
+        
+        # Test Auth Signup
+        print("\n--- Testing POST /auth/signup ---")
+        
+        signup_data = {
+            "name": test_name,
+            "email": test_email,
+            "password": test_password
+        }
+        
+        try:
+            status, response_text = await self.make_auth_request("POST", "/auth/signup", signup_data)
+            
+            if status is None:
+                print(f"❌ FAILED: Auth signup - {response_text}")
+                self.test_results["auth_signup"] = False
+            elif status == 200:
+                try:
+                    data = json.loads(response_text)
+                    required_fields = ['user', 'token']
+                    user_fields = ['id', 'name', 'email', 'streak', 'hearts', 'totalXP', 'createdAt']
+                    
+                    if all(field in data for field in required_fields):
+                        user = data.get('user', {})
+                        if all(field in user for field in user_fields) and 'password' not in user:
+                            auth_token = data.get('token')
+                            print("✅ SUCCESS: Auth signup working correctly")
+                            print(f"   - User created: {user.get('name')} ({user.get('email')})")
+                            print(f"   - Token received: {auth_token[:10]}...")
+                            self.test_results["auth_signup"] = True
+                        else:
+                            print("❌ FAILED: Auth signup - Invalid user object (missing fields or password exposed)")
+                            self.test_results["auth_signup"] = False
+                    else:
+                        print("❌ FAILED: Auth signup - Missing user or token in response")
+                        self.test_results["auth_signup"] = False
+                except json.JSONDecodeError:
+                    print("❌ FAILED: Auth signup - Invalid JSON response")
+                    self.test_results["auth_signup"] = False
+            elif status == 400:
+                print("❌ FAILED: Auth signup - User may already exist or validation error")
+                print(f"Response: {response_text}")
+                self.test_results["auth_signup"] = False
+            else:
+                print(f"❌ FAILED: Auth signup - Expected 200, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["auth_signup"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: Auth signup - {str(e)}")
+            self.test_results["auth_signup"] = False
+        
+        # Test Auth Login - Success
+        print("\n--- Testing POST /auth/login (valid credentials) ---")
+        
+        login_data = {
+            "email": test_email,
+            "password": test_password
+        }
+        
+        try:
+            status, response_text = await self.make_auth_request("POST", "/auth/login", login_data)
+            
+            if status is None:
+                print(f"❌ FAILED: Auth login - {response_text}")
+                self.test_results["auth_login_success"] = False
+            elif status == 200:
+                try:
+                    data = json.loads(response_text)
+                    required_fields = ['user', 'token']
+                    user_fields = ['id', 'name', 'email', 'streak', 'hearts']
+                    
+                    if all(field in data for field in required_fields):
+                        user = data.get('user', {})
+                        if all(field in user for field in user_fields) and 'password' not in user:
+                            login_token = data.get('token')
+                            print("✅ SUCCESS: Auth login working correctly")
+                            print(f"   - User logged in: {user.get('name')} ({user.get('email')})")
+                            print(f"   - Token received: {login_token[:10]}...")
+                            # Use login token for session test
+                            if not auth_token:
+                                auth_token = login_token
+                            self.test_results["auth_login_success"] = True
+                        else:
+                            print("❌ FAILED: Auth login - Invalid user object (missing fields or password exposed)")
+                            self.test_results["auth_login_success"] = False
+                    else:
+                        print("❌ FAILED: Auth login - Missing user or token in response")
+                        self.test_results["auth_login_success"] = False
+                except json.JSONDecodeError:
+                    print("❌ FAILED: Auth login - Invalid JSON response")
+                    self.test_results["auth_login_success"] = False
+            else:
+                print(f"❌ FAILED: Auth login - Expected 200, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["auth_login_success"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: Auth login - {str(e)}")
+            self.test_results["auth_login_success"] = False
+        
+        # Test Auth Login - Wrong Password
+        print("\n--- Testing POST /auth/login (wrong password) ---")
+        
+        wrong_login_data = {
+            "email": test_email,
+            "password": "WrongPassword123!"
+        }
+        
+        try:
+            status, response_text = await self.make_auth_request("POST", "/auth/login", wrong_login_data)
+            
+            if status == 401:
+                print("✅ SUCCESS: Auth login correctly rejects wrong password")
+                self.test_results["auth_login_wrong_password"] = True
+            else:
+                print(f"❌ FAILED: Auth login - Expected 401 for wrong password, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["auth_login_wrong_password"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: Auth login wrong password - {str(e)}")
+            self.test_results["auth_login_wrong_password"] = False
+        
+        # Test Auth Session - Valid Token
+        if auth_token:
+            print("\n--- Testing GET /auth/session (with valid token) ---")
+            
+            try:
+                status, response_text = await self.make_auth_request("GET", "/auth/session", token=auth_token)
+                
+                if status is None:
+                    print(f"❌ FAILED: Auth session - {response_text}")
+                    self.test_results["auth_session_valid"] = False
+                elif status == 200:
+                    try:
+                        data = json.loads(response_text)
+                        required_fields = ['user']
+                        user_fields = ['id', 'name', 'email', 'streak', 'hearts']
+                        
+                        if 'user' in data:
+                            user = data.get('user', {})
+                            if all(field in user for field in user_fields) and 'password' not in user:
+                                print("✅ SUCCESS: Auth session working correctly")
+                                print(f"   - User data retrieved: {user.get('name')} ({user.get('email')})")
+                                self.test_results["auth_session_valid"] = True
+                            else:
+                                print("❌ FAILED: Auth session - Invalid user object (missing fields or password exposed)")
+                                self.test_results["auth_session_valid"] = False
+                        else:
+                            print("❌ FAILED: Auth session - Missing user in response")
+                            self.test_results["auth_session_valid"] = False
+                    except json.JSONDecodeError:
+                        print("❌ FAILED: Auth session - Invalid JSON response")
+                        self.test_results["auth_session_valid"] = False
+                else:
+                    print(f"❌ FAILED: Auth session - Expected 200, got {status}")
+                    print(f"Response: {response_text}")
+                    self.test_results["auth_session_valid"] = False
+                    
+            except Exception as e:
+                print(f"❌ ERROR: Auth session - {str(e)}")
+                self.test_results["auth_session_valid"] = False
+        
+        # Test Auth Session - No Token
+        print("\n--- Testing GET /auth/session (without token) ---")
+        
+        try:
+            status, response_text = await self.make_auth_request("GET", "/auth/session")
+            
+            if status == 401:
+                print("✅ SUCCESS: Auth session correctly rejects missing token")
+                self.test_results["auth_session_no_token"] = True
+            else:
+                print(f"❌ FAILED: Auth session - Expected 401 for missing token, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["auth_session_no_token"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: Auth session no token - {str(e)}")
+            self.test_results["auth_session_no_token"] = False
+    
+    async def test_ai_endpoints(self):
+        """Test AI-powered endpoints"""
+        print("\n" + "="*50)
+        print("Testing AI Endpoints")
+        print("="*50)
+        
+        # Test AI Generate Questions - TOEIC Reading
+        print("\n--- Testing POST /ai/generate-questions (TOEIC Reading) ---")
+        
+        toeic_data = {
+            "examType": "TOEIC",
+            "section": "reading",
+            "count": 2
+        }
+        
+        try:
+            status, response_text = await self.make_auth_request("POST", "/ai/generate-questions", toeic_data)
+            
+            if status is None:
+                print(f"❌ FAILED: AI generate questions TOEIC - {response_text}")
+                self.test_results["ai_generate_toeic"] = False
+            elif status == 200:
+                try:
+                    data = json.loads(response_text)
+                    required_fields = ['examType', 'section', 'questions']
+                    
+                    if all(field in data for field in required_fields):
+                        questions = data.get('questions', [])
+                        if isinstance(questions, list) and len(questions) > 0:
+                            # Validate question structure
+                            question = questions[0]
+                            if 'id' in question and 'type' in question:
+                                print("✅ SUCCESS: AI generate questions TOEIC working correctly")
+                                print(f"   - Generated {len(questions)} questions")
+                                print(f"   - ExamType: {data.get('examType')}, Section: {data.get('section')}")
+                                self.test_results["ai_generate_toeic"] = True
+                            else:
+                                print("❌ FAILED: AI generate questions TOEIC - Invalid question structure")
+                                self.test_results["ai_generate_toeic"] = False
+                        else:
+                            print("❌ FAILED: AI generate questions TOEIC - No questions generated")
+                            self.test_results["ai_generate_toeic"] = False
+                    else:
+                        print("❌ FAILED: AI generate questions TOEIC - Missing required fields")
+                        self.test_results["ai_generate_toeic"] = False
+                except json.JSONDecodeError:
+                    print("❌ FAILED: AI generate questions TOEIC - Invalid JSON response")
+                    self.test_results["ai_generate_toeic"] = False
+            elif status == 400:
+                print("❌ FAILED: AI generate questions TOEIC - API key not configured or validation error")
+                print(f"Response: {response_text}")
+                self.test_results["ai_generate_toeic"] = False
+            elif status == 500:
+                print("❌ FAILED: AI generate questions TOEIC - Server error (likely AI API issue)")
+                print(f"Response: {response_text}")
+                self.test_results["ai_generate_toeic"] = False
+            else:
+                print(f"❌ FAILED: AI generate questions TOEIC - Expected 200, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["ai_generate_toeic"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: AI generate questions TOEIC - {str(e)}")
+            self.test_results["ai_generate_toeic"] = False
+        
+        # Test AI Generate Questions - IELTS Reading
+        print("\n--- Testing POST /ai/generate-questions (IELTS Reading) ---")
+        
+        ielts_data = {
+            "examType": "IELTS",
+            "section": "reading",
+            "count": 2
+        }
+        
+        try:
+            status, response_text = await self.make_auth_request("POST", "/ai/generate-questions", ielts_data)
+            
+            if status is None:
+                print(f"❌ FAILED: AI generate questions IELTS - {response_text}")
+                self.test_results["ai_generate_ielts"] = False
+            elif status == 200:
+                try:
+                    data = json.loads(response_text)
+                    required_fields = ['examType', 'section', 'questions']
+                    
+                    if all(field in data for field in required_fields):
+                        questions = data.get('questions', [])
+                        if isinstance(questions, list) and len(questions) > 0:
+                            question = questions[0]
+                            if 'id' in question and 'type' in question:
+                                print("✅ SUCCESS: AI generate questions IELTS working correctly")
+                                print(f"   - Generated {len(questions)} questions")
+                                print(f"   - ExamType: {data.get('examType')}, Section: {data.get('section')}")
+                                self.test_results["ai_generate_ielts"] = True
+                            else:
+                                print("❌ FAILED: AI generate questions IELTS - Invalid question structure")
+                                self.test_results["ai_generate_ielts"] = False
+                        else:
+                            print("❌ FAILED: AI generate questions IELTS - No questions generated")
+                            self.test_results["ai_generate_ielts"] = False
+                    else:
+                        print("❌ FAILED: AI generate questions IELTS - Missing required fields")
+                        self.test_results["ai_generate_ielts"] = False
+                except json.JSONDecodeError:
+                    print("❌ FAILED: AI generate questions IELTS - Invalid JSON response")
+                    self.test_results["ai_generate_ielts"] = False
+            elif status == 400:
+                print("❌ FAILED: AI generate questions IELTS - API key not configured or validation error")
+                print(f"Response: {response_text}")
+                self.test_results["ai_generate_ielts"] = False
+            elif status == 500:
+                print("❌ FAILED: AI generate questions IELTS - Server error (likely AI API issue)")
+                print(f"Response: {response_text}")
+                self.test_results["ai_generate_ielts"] = False
+            else:
+                print(f"❌ FAILED: AI generate questions IELTS - Expected 200, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["ai_generate_ielts"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: AI generate questions IELTS - {str(e)}")
+            self.test_results["ai_generate_ielts"] = False
+    
+    async def test_admin_keys_endpoint(self):
+        """Test admin API keys endpoint"""
+        print("\n" + "="*50)
+        print("Testing Admin Keys Endpoint")
+        print("="*50)
+        
+        # Test GET /admin/keys
+        print("\n--- Testing GET /admin/keys ---")
+        
+        try:
+            status, response_text = await self.make_auth_request("GET", "/admin/keys")
+            
+            if status is None:
+                print(f"❌ FAILED: Admin keys GET - {response_text}")
+                self.test_results["admin_keys_get"] = False
+            elif status == 200:
+                try:
+                    data = json.loads(response_text)
+                    required_keys = ['gemini', 'googleTTS', 'elevenLabs', 'openAI']
+                    
+                    if all(key in data for key in required_keys):
+                        # Validate that all values are booleans
+                        all_booleans = all(isinstance(data[key], bool) for key in required_keys)
+                        if all_booleans:
+                            print("✅ SUCCESS: Admin keys GET working correctly")
+                            print(f"   - API Keys status: {data}")
+                            self.test_results["admin_keys_get"] = True
+                        else:
+                            print("❌ FAILED: Admin keys GET - Values should be booleans")
+                            self.test_results["admin_keys_get"] = False
+                    else:
+                        print("❌ FAILED: Admin keys GET - Missing required keys")
+                        self.test_results["admin_keys_get"] = False
+                except json.JSONDecodeError:
+                    print("❌ FAILED: Admin keys GET - Invalid JSON response")
+                    self.test_results["admin_keys_get"] = False
+            else:
+                print(f"❌ FAILED: Admin keys GET - Expected 200, got {status}")
+                print(f"Response: {response_text}")
+                self.test_results["admin_keys_get"] = False
+                
+        except Exception as e:
+            print(f"❌ ERROR: Admin keys GET - {str(e)}")
+            self.test_results["admin_keys_get"] = False
     
     async def run_all_tests(self):
         """Run all test suites"""
@@ -480,6 +869,9 @@ class MydemyAPITester:
         try:
             # Run all test suites
             await self.test_root_endpoint()
+            await self.test_auth_endpoints()
+            await self.test_ai_endpoints() 
+            await self.test_admin_keys_endpoint()
             await self.test_generate_exam_endpoint() 
             await self.test_lessons_endpoint()
             await self.test_progress_endpoints()
@@ -521,6 +913,8 @@ class MydemyAPITester:
         
         # Determine overall status
         critical_endpoints = [
+            'auth_signup', 'auth_login_success', 'auth_session_valid',
+            'ai_generate_toeic', 'ai_generate_ielts', 'admin_keys_get',
             'generate_exam_case_1', 'progress_post', 'progress_get', 
             'user_post_create', 'user_get_existing', 'lessons'
         ]

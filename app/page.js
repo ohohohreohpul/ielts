@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -25,7 +26,9 @@ const SECTION_INFO = {
 }
 
 export default function App() {
-  const [stage, setStage] = useState('onboarding')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [stage, setStage] = useState('init') // init → check auth → lesson or redirect
   const [selectedGoal, setSelectedGoal] = useState(null)
   const [selectedSection, setSelectedSection] = useState(null)
   const [questions, setQuestions] = useState([])
@@ -48,16 +51,35 @@ export default function App() {
   const currentQuestion = questions[currentQuestionIndex]
   const progress = questions.length > 0 ? (completedQuestions / questions.length) * 100 : 0
 
-  const startSectionSelection = () => {
-    if (selectedGoal) setStage('sectionSelect')
-  }
+  // Auth check + URL param handling on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const examParam = searchParams?.get('exam')
+    const sectionParam = searchParams?.get('section')
 
-  const startLesson = async (section) => {
+    if (!token) {
+      // Not authenticated → go to welcome
+      router.push('/welcome')
+      return
+    }
+
+    if (examParam && sectionParam) {
+      // Authenticated + exam params → start lesson directly
+      setSelectedGoal(examParam)
+      startLesson(sectionParam, examParam)
+    } else {
+      // Authenticated but no params → go to dashboard
+      router.push('/dashboard')
+    }
+  }, [])
+
+  const startLesson = async (section, examId) => {
+    const goalId = examId || selectedGoal
     setSelectedSection(section)
     setLoading(true)
     setLoadingTip(0)
+    setStage('loading')
     
-    // Animate tips while loading
     const tipInterval = setInterval(() => {
       setLoadingTip(prev => (prev + 1) % 4)
     }, 2000)
@@ -67,7 +89,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          examType: selectedGoal === 'toeic' ? 'TOEIC' : 'IELTS',
+          examType: goalId === 'toeic' ? 'TOEIC' : 'IELTS',
           section: section,
           count: 5
         })
@@ -84,7 +106,8 @@ export default function App() {
       setStage('lesson')
     } catch (error) {
       clearInterval(tipInterval)
-      alert(`เกิดข้อผิดพลาด: ${error.message}\n\nกรุณาตั้งค่า Gemini API Key ที่หน้า Admin`)
+      setStage('error')
+      console.error('startLesson error:', error)
     } finally {
       setLoading(false)
     }
@@ -108,19 +131,14 @@ export default function App() {
       }
       setShowFeedback(true)
     } else if (qType === 'completion' || qType === 'fill-in-blank') {
-      // IELTS completion or TOEIC sentence completion
       const userAns = textAnswer.trim().toLowerCase()
       const correctAns = currentQuestion.correctAnswer.toLowerCase()
-      // Check if answer matches (flexible matching for word limit)
       const correct = userAns === correctAns || userAns.includes(correctAns) || correctAns.includes(userAns)
       setIsCorrect(correct)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
-        if (newHearts === 0) {
-          setShowPaywall(true)
-          return
-        }
+        if (newHearts === 0) { setShowPaywall(true); return }
       }
       setShowFeedback(true)
     } else if (qType === 'true-false-notgiven') {
@@ -129,10 +147,7 @@ export default function App() {
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
-        if (newHearts === 0) {
-          setShowPaywall(true)
-          return
-        }
+        if (newHearts === 0) { setShowPaywall(true); return }
       }
       setShowFeedback(true)
     } else if (qType === 'short-answer') {
@@ -141,10 +156,7 @@ export default function App() {
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
-        if (newHearts === 0) {
-          setShowPaywall(true)
-          return
-        }
+        if (newHearts === 0) { setShowPaywall(true); return }
       }
       setShowFeedback(true)
     } else if (qType === 'writing') {
@@ -177,7 +189,6 @@ export default function App() {
       }
       setScoring(true)
       try {
-        // For now, use placeholder text. In production, convert audio to text first
         const response = await fetch('/api/ai/score-answer', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -218,150 +229,82 @@ export default function App() {
   }
 
   const restartLesson = () => {
-    setStage('sectionSelect')
-    setCurrentQuestionIndex(0)
-    setCompletedQuestions(0)
-    setSelectedAnswer(null)
-    setTextAnswer('')
-    setWritingAnswer('')
-    setRecordedAudio(null)
-    setAiScore(null)
-    setShowFeedback(false)
-    setQuestions([])
+    router.push('/practice')
   }
 
-  // Onboarding
-  if (stage === 'onboarding') {
+  // Init / Loading state
+  if (stage === 'init') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center p-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.6 }} className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-3xl mb-4 shadow-lg">
-              <Sparkles className="w-10 h-10 text-white" />
-            </motion.div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Mydemy</h1>
-            <p className="text-gray-600">ฝึกสอบให้เชี่ยวชาญ ทีละข้อ</p>
-          </div>
-
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-800 text-center mb-6">เลือกเป้าหมายของคุณ</h2>
-            {GOALS.map((goal, index) => (
-              <motion.div key={goal.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }}>
-                <Card className={`cursor-pointer transition-all hover:shadow-lg ${selectedGoal === goal.id ? 'border-2 border-green-500 bg-green-50' : 'border-2 border-transparent hover:border-gray-200'}`} onClick={() => setSelectedGoal(goal.id)}>
-                  <CardContent className="flex items-center p-6">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${selectedGoal === goal.id ? 'bg-green-500' : 'bg-gray-100'}`}>
-                      <goal.icon className={`w-6 h-6 ${selectedGoal === goal.id ? 'text-white' : 'text-gray-600'}`} />
-                    </div>
-                    <div className="ml-4 flex-1">
-                      <h3 className="font-semibold text-gray-900">{goal.title}</h3>
-                      <p className="text-sm text-gray-600">{goal.description}</p>
-                    </div>
-                    {selectedGoal === goal.id && (
-                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                        <Check className="w-4 h-4 text-white" />
-                      </motion.div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <Button onClick={startSectionSelection} disabled={!selectedGoal} className="w-full mt-8 h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50" size="lg">เริ่มเรียนรู้</Button>
-
-          <div className="mt-6 text-center">
-            <a href="/admin" className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-2">
-              <SettingsIcon className="w-4 h-4" />
-              ตั้งค่า API Keys
-            </a>
-          </div>
-        </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
+        <Loader2 className="animate-spin h-10 w-10 text-green-500" />
       </div>
     )
   }
 
-  // Section Selection
-  if (stage === 'sectionSelect') {
-    const selectedGoalData = GOALS.find(g => g.id === selectedGoal)
-    
+  // Loading state
+  if (stage === 'loading') {
     const tips = {
       reading: ['อ่านคำถามก่อนอ่านบทความ', 'ใช้เทคนิค Skimming และ Scanning', 'จับใจความสำคัญของแต่ละย่อหน้า', 'อย่าติดอยู่กับคำที่ไม่รู้จัก'],
       listening: ['อ่านคำถามให้ทันก่อนเสียงเริ่ม', 'จดบันทึกคำสำคัญขณะฟัง', 'ระวังคำพ้อง (synonyms)', 'อย่าหยุดคิดนาน - ไปข้อต่อไปเลย'],
       writing: ['วางแผนโครงร่างก่อนเขียน', 'ใช้เวลาวางแผน เขียน และตรวจ', 'ใช้ linking words เชื่อมประโยค', 'เขียนให้ครบตามจำนวนคำ'],
       speaking: ['ใช้เวลาเตรียมอย่างเต็มที่', 'พูดชัดเจนและช้าพอ', 'ขยายความคำตอบ', 'อย่ากลัวพูดผิด']
     }
-    
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
-          <Button variant="ghost" onClick={() => setStage('onboarding')} className="mb-6">← กลับ</Button>
-
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedGoalData.title}</h1>
-            <p className="text-gray-600">เลือกส่วนที่ต้องการฝึก</p>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md text-center"
+        >
+          <div className="mb-8">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mb-6 shadow-xl">
+              <Sparkles className="w-12 h-12 text-white animate-pulse" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">กำลังสร้างคำถามด้วย AI</h2>
+            <p className="text-gray-600">กรุณารอสักครู่...</p>
           </div>
 
-          {!loading && (
-            <div className="space-y-4">
-              {selectedGoalData.sections.map((section, index) => {
-                const sectionInfo = SECTION_INFO[section]
-                return (
-                  <motion.div key={section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
-                    <Card className="cursor-pointer transition-all hover:shadow-lg hover:border-gray-200 border-2 border-transparent" onClick={() => startLesson(section)}>
-                      <CardContent className="flex items-center p-6">
-                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center bg-${sectionInfo.color}-100`}>
-                          <sectionInfo.icon className={`w-7 h-7 text-${sectionInfo.color}-600`} />
-                        </div>
-                        <div className="ml-4 flex-1">
-                          <h3 className="font-semibold text-lg text-gray-900">{sectionInfo.label}</h3>
-                          <p className="text-sm text-gray-600">5 คำถามจาก AI</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                )
-              })}
-            </div>
-          )}
-
-          {loading && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center"
-            >
-              <div className="mb-8">
-                <Loader2 className="inline-block animate-spin h-16 w-16 text-green-500 mb-4" />
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">กำลังสร้างคำถามด้วย AI</h2>
-                <p className="text-gray-600">กรุณารอสักครู่...</p>
+          <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1 text-left">
+                  <h3 className="font-semibold text-gray-900 mb-2">💡 เคล็ดลับ:</h3>
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={loadingTip}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-gray-700"
+                    >
+                      {tips[selectedSection]?.[loadingTip] || 'กำลังเตรียมข้อสอบ...'}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    )
+  }
 
-              <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <h3 className="font-semibold text-gray-900 mb-2">เคล็ดลับ:</h3>
-                      <AnimatePresence mode="wait">
-                        <motion.p
-                          key={loadingTip}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.3 }}
-                          className="text-gray-700"
-                        >
-                          {tips[selectedSection]?.[loadingTip] || 'กำลังเตรียมข้อสอบ...'}
-                        </motion.p>
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
+  // Error state
+  if (stage === 'error') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-pink-50 flex items-center justify-center p-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md text-center">
+          <div className="text-6xl mb-6">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">เกิดข้อผิดพลาด</h1>
+          <p className="text-gray-600 mb-8">ไม่สามารถสร้างคำถามได้ กรุณาลองใหม่อีกครั้ง</p>
+          <Button onClick={() => router.push('/practice')} className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" size="lg">
+            กลับไปเลือกข้อสอบ
+          </Button>
         </motion.div>
       </div>
     )
@@ -413,7 +356,7 @@ export default function App() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <Button variant="ghost" size="sm" onClick={() => setStage('sectionSelect')}>
+            <Button variant="ghost" size="sm" onClick={() => router.push('/practice')}>
               <X className="w-5 h-5" />
             </Button>
             
@@ -468,6 +411,44 @@ export default function App() {
               </div>
             )}
 
+            {/* Multiple Choice (standalone) */}
+            {currentQuestion.type === 'multiple-choice' && (
+              <div className="space-y-6">
+                {currentQuestion.passage && (
+                  <Card className="bg-white shadow-lg">
+                    <CardContent className="p-6">
+                      <p className="text-gray-700 leading-relaxed">{currentQuestion.passage}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                {currentQuestion.sentence && (
+                  <Card className="bg-blue-50 border-blue-200">
+                    <CardContent className="p-6">
+                      <p className="text-lg text-gray-800">{currentQuestion.sentence}</p>
+                    </CardContent>
+                  </Card>
+                )}
+
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  {currentQuestion.question || 'Choose the best option:'}
+                </h2>
+
+                <div className="space-y-3">
+                  {currentQuestion.options?.map((option, index) => (
+                    <Card key={option.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option.id ? 'border-2 border-blue-500 bg-blue-50' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option.correct ? 'border-green-500 bg-green-50' : showFeedback && selectedAnswer === option.id && !option.correct ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option.id)}>
+                      <CardContent className="p-6 flex items-center">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-green-500 text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
+                          {String.fromCharCode(65 + index)}
+                        </div>
+                        <span className="text-lg">{option.text}</span>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Listening with Audio Player */}
             {currentQuestion.type === 'listening' && (
               <div className="space-y-6">
@@ -487,10 +468,23 @@ export default function App() {
                     </Card>
                   ))}
                 </div>
+
+                {currentQuestion.sentence && !currentQuestion.options && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">คำตอบของคุณ:</label>
+                    <Input 
+                      value={textAnswer} 
+                      onChange={(e) => setTextAnswer(e.target.value)} 
+                      placeholder="พิมพ์คำตอบที่นี่..." 
+                      className="text-lg p-4"
+                      disabled={showFeedback}
+                    />
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Completion / Fill-in-Blank (IELTS Completion or TOEIC Part 5) */}
+            {/* Completion / Fill-in-Blank */}
             {(currentQuestion.type === 'completion' || currentQuestion.type === 'fill-in-blank') && (
               <div className="space-y-6">
                 {currentQuestion.passage && (
@@ -505,11 +499,13 @@ export default function App() {
                   {currentQuestion.question || 'Complete the sentence'}
                 </h2>
                 
-                <Card className="bg-blue-50 border-blue-200">
-                  <CardContent className="p-6">
-                    <p className="text-lg text-gray-800 mb-4 whitespace-pre-wrap">{currentQuestion.sentence}</p>
-                  </CardContent>
-                </Card>
+                {currentQuestion.sentence && (
+                  <Card className="bg-blue-50 border-blue-200">
+                    <CardContent className="p-6">
+                      <p className="text-lg text-gray-800 mb-4 whitespace-pre-wrap">{currentQuestion.sentence}</p>
+                    </CardContent>
+                  </Card>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">คำตอบของคุณ:</label>
@@ -633,7 +629,7 @@ export default function App() {
                     disabled={showFeedback}
                   />
                   <p className="text-sm text-gray-500 mt-2">
-                    จำนวนคำ: {writingAnswer.split(/\\s+/).filter(w => w).length}
+                    จำนวนคำ: {writingAnswer.split(/\s+/).filter(w => w).length}
                   </p>
                 </div>
 
@@ -644,31 +640,24 @@ export default function App() {
                         <h3 className="text-xl font-bold text-gray-900">คะแนน AI</h3>
                         <div className="text-4xl font-bold text-blue-600">{aiScore.score}</div>
                       </div>
-                      
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Feedback:</h4>
                           <p className="text-gray-700">{aiScore.feedback}</p>
                         </div>
-                        
-                        {aiScore.strengths && aiScore.strengths.length > 0 && (
+                        {aiScore.strengths?.length > 0 && (
                           <div>
                             <h4 className="font-semibold text-green-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
-                              {aiScore.strengths.map((s, i) => (
-                                <li key={i} className="text-gray-700">{s}</li>
-                              ))}
+                              {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
                             </ul>
                           </div>
                         )}
-                        
-                        {aiScore.improvements && aiScore.improvements.length > 0 && (
+                        {aiScore.improvements?.length > 0 && (
                           <div>
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
-                              {aiScore.improvements.map((imp, i) => (
-                                <li key={i} className="text-gray-700">{imp}</li>
-                              ))}
+                              {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
                             </ul>
                           </div>
                         )}
@@ -689,7 +678,7 @@ export default function App() {
                       <span className="font-semibold text-orange-900">{currentQuestion.part || 'Speaking Part'}</span>
                     </div>
                     <p className="text-lg text-gray-800 mb-4">{currentQuestion.question}</p>
-                    {currentQuestion.preparationTime && (
+                    {currentQuestion.preparationTime > 0 && (
                       <p className="text-sm text-gray-600">
                         เวลาเตรียม: {currentQuestion.preparationTime} วินาที | เวลาพูด: {currentQuestion.speakingTime} วินาที
                       </p>
@@ -709,31 +698,24 @@ export default function App() {
                         <h3 className="text-xl font-bold text-gray-900">คะแนน AI</h3>
                         <div className="text-4xl font-bold text-orange-600">{aiScore.score}</div>
                       </div>
-                      
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Feedback:</h4>
                           <p className="text-gray-700">{aiScore.feedback}</p>
                         </div>
-                        
-                        {aiScore.strengths && aiScore.strengths.length > 0 && (
+                        {aiScore.strengths?.length > 0 && (
                           <div>
                             <h4 className="font-semibold text-green-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
-                              {aiScore.strengths.map((s, i) => (
-                                <li key={i} className="text-gray-700">{s}</li>
-                              ))}
+                              {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
                             </ul>
                           </div>
                         )}
-                        
-                        {aiScore.improvements && aiScore.improvements.length > 0 && (
+                        {aiScore.improvements?.length > 0 && (
                           <div>
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
-                              {aiScore.improvements.map((imp, i) => (
-                                <li key={i} className="text-gray-700">{imp}</li>
-                              ))}
+                              {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
                             </ul>
                           </div>
                         )}
@@ -758,11 +740,11 @@ export default function App() {
                 scoring ||
                 (currentQuestion.type === 'multiple-choice' && !selectedAnswer) ||
                 (currentQuestion.type === 'reading' && !selectedAnswer) ||
-                (currentQuestion.type === 'listening' && !selectedAnswer) ||
+                (currentQuestion.type === 'listening' && !selectedAnswer && !textAnswer.trim()) ||
                 ((currentQuestion.type === 'fill-in-blank' || currentQuestion.type === 'completion') && !textAnswer.trim()) ||
                 (currentQuestion.type === 'true-false-notgiven' && !selectedAnswer) ||
                 (currentQuestion.type === 'short-answer' && !textAnswer.trim()) ||
-                (currentQuestion.type === 'writing' && writingAnswer.split(/\\s+/).filter(w => w).length < 50) ||
+                (currentQuestion.type === 'writing' && writingAnswer.split(/\s+/).filter(w => w).length < 50) ||
                 (currentQuestion.type === 'speaking' && !recordedAudio)
               }
               className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50" 

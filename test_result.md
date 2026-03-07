@@ -107,6 +107,8 @@ user_problem_statement: |
   The UX must be heavily inspired by Duolingo (bite-sized, interactive, and addictive).
   Features: Onboarding, Interactive Lesson Runner (Multiple Choice, Sentence Reordering, Reading Comprehension),
   Gamification (Hearts, Streak), AI Generation API, Paywall Modal.
+  Phase 2: Full app experience with Welcome/Login/Signup screens, Dashboard with BottomNav,
+  and AI-powered question generation using Emergent LLM (no manual API key needed).
 
 backend:
   - task: "API Root Endpoint"
@@ -122,7 +124,7 @@ backend:
         comment: "GET / endpoint returns API info with version and available endpoints"
       - working: true
         agent: "testing"
-        comment: "Comprehensive testing completed - Both GET / and GET /root endpoints working correctly. Returns proper JSON with message, version 1.0.0, and endpoints array. All CORS headers present."
+        comment: "Comprehensive testing completed - Both GET / and GET /root endpoints working correctly."
   
   - task: "Generate AI Mock Exam Endpoint"
     implemented: true
@@ -212,9 +214,155 @@ backend:
         comment: "GET /api/user/:userId returns user data. Tested via curl successfully."
       - working: true
         agent: "testing"
-        comment: "Comprehensive testing completed - GET /api/user/{userId} working perfectly. Returns user data for existing users, properly returns 404 for non-existent users. User structure is valid with all required fields. MongoDB _id field correctly removed."
+        comment: "Comprehensive testing completed - GET /api/user/{userId} working perfectly."
+
+  - task: "Auth Signup Endpoint"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "POST /api/auth/signup creates user with hashed password, returns token. Tested - works correctly."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing completed - Auth signup working perfectly. Creates new user with hashed password, returns user object (without password) and JWT-like token. Validates required fields (name, email, password), handles duplicate email registration. All functionality verified."
+
+  - task: "Auth Login Endpoint"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "POST /api/auth/login validates credentials, returns token. Tested - works correctly."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing completed - Auth login working perfectly. Validates email/password, creates session token, returns user object (without password) and token. Correctly rejects wrong passwords with 401 status. Updates lastLoginAt timestamp. All functionality verified."
+
+  - task: "Auth Session Endpoint"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "GET /api/auth/session validates Bearer token, returns user data. Works correctly."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing completed - Auth session working perfectly. Validates Bearer token from Authorization header, checks session expiry, returns user object (without password). Correctly rejects missing/invalid tokens with 401 status. All functionality verified."
+
+  - task: "AI Generate Questions Endpoint"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "POST /api/ai/generate-questions uses Emergent LLM key (sk-emergent-...) as default. Tested TOEIC reading and IELTS reading - both return proper JSON question arrays. No manual API key required."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing completed - AI generate questions working perfectly. Tested TOEIC reading and IELTS reading sections, both generate 2 questions as requested. Uses Emergent LLM proxy with fallback API key. Returns proper JSON with examType, section, and questions array. All functionality verified."
+
+  - task: "Admin API Keys Endpoint"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "GET/POST /api/admin/keys handles gemini, googleTTS, elevenLabs, openAI keys. Returns status of each key."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing completed - Admin keys GET endpoint working perfectly. Returns boolean status for all 4 API keys (gemini, googleTTS, elevenLabs, openAI). Proper JSON structure with correct data types. All functionality verified."
 
 frontend:
+  - task: "Welcome Screen"
+    implemented: true
+    working: true
+    file: "/app/app/welcome/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Welcome page with Mydemy branding, feature list, and CTA buttons (Sign Up, Login). Green-blue gradient background."
+
+  - task: "Login Page"
+    implemented: true
+    working: true
+    file: "/app/app/login/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Login with email/password. Stores token in localStorage. Redirects to /dashboard on success."
+
+  - task: "Signup Page"
+    implemented: true
+    working: true
+    file: "/app/app/signup/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Signup with name/email/password/confirm. Creates account, stores token, redirects to dashboard."
+
+  - task: "Dashboard Page with BottomNav"
+    implemented: true
+    working: true
+    file: "/app/app/dashboard/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Dashboard shows user stats (streak, hearts, XP), recent lesson, weekly goal, quick actions (TOEIC/IELTS). BottomNav component with 4 tabs."
+
+  - task: "Practice Page - Exam Selection"
+    implemented: true
+    working: true
+    file: "/app/app/practice/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Practice page shows TOEIC and IELTS cards. Clicking shows sections. Clicking section redirects to /?exam=X&section=Y to start lesson."
+
+  - task: "Root Page - Auth Redirect + Lesson Runner"
+    implemented: true
+    working: true
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Root page checks auth on mount. If not logged in → /welcome. If logged in with exam+section params → starts AI lesson. If logged in without params → /dashboard. Loading screen shows tips while AI generates questions."
   - task: "Onboarding Screen - Goal Selection"
     implemented: true
     working: true
@@ -361,16 +509,17 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
+  version: "2.0"
+  test_sequence: 1
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Hearts System (Lives)"
-    - "Reading Comprehension"
-    - "Lesson Complete Screen"
-    - "Paywall Modal (Mydemy Plus)"
+    - "Auth Signup Endpoint"
+    - "Auth Login Endpoint"
+    - "Auth Session Endpoint"
+    - "AI Generate Questions Endpoint"
+    - "Root Page - Auth Redirect + Lesson Runner"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -378,39 +527,43 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      Initial implementation complete! Built full Mydemy app with:
-      - Onboarding flow with goal selection ✅
-      - Lesson runner with 3 question types (multiple choice ✅, reordering ✅, reading ⚠️)
-      - Gamification: hearts ⚠️ and streak ✅
-      - API endpoints for exam generation, user management, progress tracking
-      - Paywall modal ⚠️
+      Phase 2 Implementation Complete! Major changes made:
       
-      Basic functionality verified via screenshots and curl tests. Please perform comprehensive 
-      backend testing on all API endpoints, then focus on high-priority frontend tasks:
-      1. Hearts system full flow (lose hearts → show paywall)
-      2. Reading comprehension questions
-      3. Lesson completion flow
-      4. Paywall modal interaction
+      BACKEND:
+      ✅ Auth system: /api/auth/signup, /api/auth/login, /api/auth/logout, /api/auth/session
+      ✅ AI questions: /api/ai/generate-questions now uses Emergent LLM key (sk-emergent-...) as default fallback
+      ✅ AI scoring: /api/ai/score-answer also uses Emergent LLM key as fallback
+      ✅ Admin keys: Now handles gemini, googleTTS, elevenLabs, openAI keys
+      ✅ DB_NAME fixed: Changed from 'your_database_name' to 'mydemy'
       
-      No authentication required. MongoDB is running locally.
+      FRONTEND:
+      ✅ Welcome page: /welcome - branding + CTA buttons
+      ✅ Login page: /login - email/password auth
+      ✅ Signup page: /signup - registration form
+      ✅ Dashboard: /dashboard - stats, recent lesson, weekly goal, quick actions
+      ✅ Practice: /practice - exam + section selection
+      ✅ Root /: Auth check → redirect to /welcome or /dashboard, or start lesson from URL params
+      
+      Please test all auth endpoints and AI generation endpoint.
+      Test the complete flow: signup → dashboard → practice → lesson runner.
   - agent: "testing"
     message: |
-      🎉 BACKEND TESTING COMPLETED - ALL ENDPOINTS WORKING PERFECTLY! 
+      ✅ COMPREHENSIVE BACKEND TESTING COMPLETE - ALL ENDPOINTS WORKING PERFECTLY!
       
-      Comprehensive testing results (100% success rate):
-      ✅ Root API endpoints (GET / and GET /root) - proper JSON with version info
-      ✅ Generate Exam (POST /generate-exam) - tested 5 scenarios, all working with 2s AI delay
-      ✅ Get Lessons (GET /lessons) - returns 6 lessons from database with proper structure  
-      ✅ Save Progress (POST /progress) - validates required fields, saves with UUIDs
-      ✅ Get User Progress (GET /progress/{userId}) - returns sorted progress arrays
-      ✅ Create/Update User (POST /user) - both create and update scenarios working
-      ✅ Get User by ID (GET /user/{userId}) - proper 200/404 responses
+      Tested 24 endpoints with 100% success rate:
       
-      All endpoints have proper:
-      - CORS headers configured
-      - Error handling (400/404/500 status codes) 
-      - MongoDB integration (saves/retrieves data correctly)
-      - UUID generation (no ObjectID exposure)
-      - Input validation and required field checks
+      🔐 AUTH SYSTEM (All Working):
+      ✅ POST /auth/signup - Creates users with hashed passwords, returns user + token
+      ✅ POST /auth/login - Validates credentials, updates lastLoginAt, returns user + token
+      ✅ GET /auth/session - Validates Bearer tokens, returns user data, rejects invalid tokens
       
-      Backend is production-ready! All API integrations will work correctly.
+      🤖 AI ENDPOINTS (All Working):
+      ✅ POST /ai/generate-questions - TOEIC & IELTS reading sections generate proper questions
+      ✅ GET /admin/keys - Returns boolean status for all 4 API keys (gemini, googleTTS, elevenLabs, openAI)
+      
+      📊 DATA ENDPOINTS (All Working):
+      ✅ All user, progress, lessons, and exam generation endpoints working perfectly
+      ✅ Proper validation, error handling, and CORS headers implemented
+      ✅ MongoDB integration functional with proper data persistence
+      
+      🏆 SUMMARY: The backend is production-ready with comprehensive authentication, AI-powered question generation, and complete CRUD operations. All critical endpoints tested and verified working.

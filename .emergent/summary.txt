@@ -1,0 +1,213 @@
+<analysis>
+
+**original_problem_statement**: The user wants to build 'Mydemy', a mobile-first, Duolingo-inspired web application for AI-powered mock exams (TOEIC, IELTS, etc.).
+
+**PRODUCT REQUIREMENTS:**
+-   **Core App:** A lesson-runner with a progress bar, question cards, and instant feedback.
+-   **Question Types:** Multiple Choice, Sentence Reordering (Drag & Drop), Reading Comprehension, Fill-in-the-blank, True/False/Not Given, etc.
+-   **Gamification:** Hearts (lives) system and a daily streak counter.
+-   **AI Integration:** Dynamically generate exam questions for various formats (Reading, Listening, Writing, Speaking) using an AI model. Implement AI-based scoring for speaking and writing.
+-   **Monetization:** Placeholders for a Mydemy Plus subscription.
+-   **UX/UI:**
+    -   Must be in the **Thai language**.
+    -   Needs a full-screen preloader with tips and tricks.
+    -   Requires a full app experience including Welcome, Login, and Sign Up screens.
+    -   A native-app feel with a bottom navigation bar and a user dashboard.
+-   **Tech Stack:** Next.js 15, Tailwind CSS, Framer Motion, Shadcn/UI.
+-   **Integrations:**
+    -   Initially used Google Gemini for question generation.
+    -   User requested to switch to **ElevenLabs** for Text-to-Speech (TTS) and **OpenAI Whisper** for Speech-to-Text (STT) for better quality.
+
+**User's preferred language**: The user communicates in both **Thai** and English. The UI and user-facing copy MUST be in **Thai**. The next agent should primarily respond in Thai, especially for UI/UX-related discussions, but can use English for technical explanations.
+
+**what currently exists?**
+The project is a Next.js application.
+- A single, very large  file attempts to handle user onboarding, exam selection, a buggy loading screen, and the lesson runner for all question types.
+- The UI has been partially translated to Thai.
+- An API route  exists, which uses the Google Gemini AI model () to generate questions.
+- A complete backend authentication system has been built () with endpoints for signup, login, logout, and session management using JWT and cookies. User and ApiKey models are defined.
+- Placeholders for new question types (like text completion) and AI scoring endpoints (, ) have been added to the backend API route file.
+
+**Last working item**:
+-   **Last item agent was working**: The agent had just finished Phase 1 which was building the backend authentication system (user model, password hashing, JWT session management, and API endpoints for signup/login/logout). It was about to start Phase 2: creating the new UI, including a Dashboard and a Bottom Navigation bar.
+-   **Status**: NOT STARTED (for Phase 2 - UI work).
+-   **Agent Testing Done**: N (The new auth backend has not been tested).
+-   **Which testing method agent to use?**: backend testing agent (to validate all new  endpoints) followed by manual testing of the full login/signup flow once the UI is built.
+-   **User Testing Done**: N
+
+**All Pending/In progress Issue list**:
+-   **Issue 1**: App is blocked by a faulty loading screen (P0)
+-   **Issue 2**: Speaking module is non-functional (P1)
+-   **Issue 3**: Exam question formats are not accurate (P2)
+
+**Issues Detail**:
+-   **Issue 1: App is blocked by a faulty loading screen**
+    -   **Description**: The user reported that after selecting an exam section, the app shows a loading screen but never proceeds to the lesson, effectively blocking all functionality. The agent confirmed the  API call succeeds (HTTP 200), but the frontend state () does not seem to update to 'lesson'.
+    -   **Attempted fixes**:
+        1.  Refactored the  into a separate component. This failed due to dynamic Tailwind classes and a missing  import.
+        2.  Fixed the import and replaced dynamic classes with static ones. The issue persisted.
+        3.  Removed the separate  component and implemented a simplified, inline loading state directly within . The app still gets stuck.
+    -   **Next debug checklist**:
+        1.  In , inside the  function, add  statements immediately before and after the  call.
+        2.  In the  block after the fetch, log the received  to ensure questions are actually present in the response.
+        3.  Log the value of  right before and after  is called to confirm the state update is being triggered.
+        4.  Check the browser's developer console for any client-side errors that might be occurring after the API call returns but before the component re-renders.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical, app-breaking bug. Fixing it will unblock all core functionality and allow the user to actually take exams.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on other issue**: None
+
+-   **Issue 2: Speaking module is non-functional**
+    -   **Description**: The user reported that the speaking question type is broken. Clicking record does not seem to capture audio, and clicking the button again just resets the UI to a blank state. There is no AI evaluation.
+    -   **Attempted fixes**: The agent created a  component and updated  to manage a  state. It's unclear if this fix was effective.
+    -   **Next debug checklist**:
+        1.  Verify the  component's  callback is correctly passing the audio data (or blob) back to the parent .
+        2.  Check the state management in  for handling the recording status (, , ).
+        3.  Implement the logic to send the recorded audio to the  endpoint. Currently, this is not implemented.
+        4.  Wire up the planned ElevenLabs/Whisper integration for STT.
+    -   **Why fix this issue and what will be achieved with the fix?**: This will make one of the key IELTS exam features functional and enable AI scoring.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Both
+    -   **Blocked on other issue**: Blocked by the planned **ElevenLabs/Whisper Integration**.
+
+-   **Issue 3: Exam question formats are not accurate**
+    -   **Description**: The user pointed out that some generated question types (e.g., a standalone fill-in-the-blank) are not authentic to real exams like TOEIC.
+    -   **Attempted fixes**: The agent researched correct formats and updated the AI generation prompts in .
+    -   **Next debug checklist**:
+        1.  Thoroughly test the  endpoint for both TOEIC and IELTS.
+        2.  Review the generated JSON to confirm it matches the updated, more accurate prompts.
+        3.  Ensure the frontend  can correctly render the new/updated question formats (e.g., Text Completion for TOEIC Part 6).
+    -   **Why fix this issue and what will be achieved with the fix?**: This will improve the core value of the app by providing realistic exam practice.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: Both
+    -   **Blocked on other issue**: None
+
+**In progress Task List**:
+-   **Task 1: Implement New Application UI (Phase 2)**
+    -   **Description**: The user requested a complete UI overhaul to give the app a more polished, native-app experience, moving away from the single-page MVP. This was broken down into phases, and Phase 2 is the UI implementation.
+    -   **Where to resume**: Start by creating the main layout file () to include a new  component. Then create a  component which will serve as the new home page after login.
+    -   **What will be achieved with this?**: A modern, multi-screen application structure with proper user navigation and a central dashboard.
+    -   **Status**: NOT STARTED
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on something**: Authentication UI (Login/Signup pages) needs to be built first.
+
+**Upcoming and Future Tasks**
+-   **Upcoming Tasks**:
+    -   **P0: Build Authentication UI**: Create Login and Sign Up pages that use the already-built backend authentication endpoints. This is the first step of Phase 2.
+    -   **P1: Build Dashboard & Bottom Navigation**: Implement the main app shell with a dashboard and a persistent bottom navigation bar (e.g., for Home, Profile, Exams).
+    -   **P2: Refactor **: Break down the monolithic  into smaller, reusable components (e.g., , , ). The  itself should be moved to a dynamic route like .
+-   **Future Tasks**:
+    -   **P1: Implement ElevenLabs and Whisper Integration**: Create new API endpoints to act as a proxy to ElevenLabs (for TTS in listening questions) and OpenAI Whisper (for STT in speaking questions). This requires getting API keys from the user.
+    -   **P2: Build Admin Console for API Keys**: The user deferred this, but a proper UI is needed for the admin to input and manage third-party API keys (Gemini, ElevenLabs, etc.).
+    -   **P2: Implement Full AI Scoring**: The endpoints for scoring exist but contain no logic. They need to be implemented to take user input (text or audio) and use an AI model to return a score and feedback.
+
+**Completed work in this session**
+-   **Initial App Scaffolding**: Created the initial Duolingo-style lesson runner with mock data.
+-   **Thai Language UI**: Translated most of the UI text to Thai.
+-   **Gemini AI Integration**: Implemented  endpoint using  to create dynamic questions. Updated the model to  after the previous one was deprecated.
+-   **Backend Authentication System**:
+    -   Created  model with  for password hashing ().
+    -   Implemented JWT-based session management ().
+    -   Added API endpoints: , , , .
+-   **New Exam Formats**: Added prompts for new TOEIC/IELTS question types to the AI generation logic.
+
+**Earlier issues found/mentioned but not fixed**
+All known issues have been captured in the **All Pending/In progress Issue list** section. The primary ones are the blocking loading screen and the broken speaking module.
+
+**Known issue recurrence from previous fork**
+-   No previous fork summary was provided.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+-   **Frontend**: Next.js 15 (App Router), React, Tailwind CSS, Shadcn/UI, Framer Motion
+-   **Backend**: Next.js API Routes (Serverless Functions)
+-   **Database**: MongoDB with Mongoose ODM
+-   **Authentication**: JWT (JSON Web Tokens) stored in HTTP-only cookies, password hashing with .
+-   **AI**: Google Generative AI (Gemini) for dynamic content generation.
+
+**key DB schema**
+-   **users**: 
+-   **apikeys**: 
+
+**changes in tech stack**
+-   : Added for UI animations.
+-   , : Added for drag-and-drop question types.
+-   : Added for Gemini integration.
+-   , , , : Added for the authentication system and database interaction.
+
+**All files of reference**
+-   : The main application frontend file. It is currently a monolith and the source of the critical loading bug.
+-   : The main backend API file. It handles all API logic, including auth, AI, and admin functions.
+-   : The component for the speaking module, which is currently not working correctly.
+-   : Contains helper functions for creating, verifying, and serializing JWTs for session management.
+-   : Mongoose schema for the  collection.
+-   : Mongoose schema for storing third-party API keys.
+
+**Areas that need refactoring**
+-   ****: This file is critically oversized and complex. It manages the state for the entire application flow, contains the UI for multiple screens (onboarding, selection, loading, lesson), and handles API calls. It MUST be broken down into smaller, single-responsibility components (e.g., , , ) and use Next.js's file-based routing for different pages (e.g., , , ).
+-   ****: This is a monolithic API route handler. While functional for a small MVP, it should be split into separate files based on domain (e.g., , ) for better organization and maintainability as the application grows.
+
+**key api endpoints**
+-    (POST)
+-    (POST)
+-    (POST)
+-    (GET)
+-    (POST)
+-    (POST)
+-    (POST)
+-    (GET, POST)
+
+**Critical Info for New Agent**
+-   **PRIORITY #1**: The app is currently unusable because it gets stuck on the loading screen. You must fix this bug in  before doing anything else.
+-   **Refactor **: Do not add more logic to the monolithic . The next major task, after fixing the loading bug, should be to start refactoring it as part of building the new Dashboard and Auth UI.
+-   **Authentication is Backend-Only**: The backend for auth is complete, but no UI (Login/Signup pages) exists yet. You need to build this.
+-   **API Keys Deferred**: The user has postponed providing API keys for ElevenLabs/Whisper and decided against building the admin console for them right now. Focus on the UI/UX and bug fixes first.
+
+**documents created in this job**
+-   
+-   
+
+**Last 10 User Messages and any pending HUMAN messages**
+1.  **user**:  - Acknowledged agent's summary and readiness to start Phase 2.
+2.  **user**:  - Gave the final go-ahead to start implementing the authentication system.
+3.  **user**:  (Admin console later. Now we need more screens like welcome, login, sign up... and better UX design...) - User pivoted from integrating ElevenLabs to a major UI/UX overhaul, requesting a full app experience with auth and navigation.
+4.  **user**:  - Chose to use ElevenLabs for TTS and OpenAI Whisper for STT.
+5.  **user**:  (For TTS/STT, wouldn't ElevenLabs be more natural and cheaper?) - Initiated the request to switch from Google services to ElevenLabs.
+6.  **user**:  (Next, I need: 1. Check if exam formats are correct... 2. The speaking exam only lets me record but doesn't work...) - Reported two key issues: incorrect exam formats and a broken speaking module.
+7.  **user**:  (No, it's still stuck. Should you delete the code and rewrite it?) - Confirmed that the agent's fix for the preloader did not work and suggested a rewrite.
+8.  **user**:  - Reported the critical bug where the preloader blocks the entire application flow.
+9.  **user**:  - A short, possibly accidental message. The agent interpreted it as a cue to proceed.
+10. **user**:  (Excellent, it works now! But stability is not good at all! e.g., the speaking module doesn't record... we also need a preloader...) - Confirmed the Gemini model fix worked but immediately reported major new issues regarding stability, the speaking module, and requested a full-screen preloader.
+
+**Project Health Check:**
+-   **Broken**:
+    -   Core user flow (The app gets stuck on the loading screen).
+    -   Speaking question module.
+    -    is a monolithic component that is difficult to maintain and is the source of the main bug.
+-   **Mocked**:
+    -   AI scoring for writing and speaking is not implemented.
+
+**3rd Party Integrations**
+-   **Google Gemini ()**: Used for dynamic question generation. Requires a user-provided API key (currently not set up in a robust way). Uses Emergent LLM Key.
+-   **ElevenLabs (Planned)**: For Text-to-Speech. Will require a User API Key.
+-   **OpenAI Whisper (Planned)**: For Speech-to-Text. Will require a User API Key.
+
+**Testing status**
+-   **Testing agent used after significant changes**: NO. The agent did an initial backend test run early on but has not re-tested after adding numerous features (Thai UI, new question types, Gemini integration, Auth system).
+-   **Troubleshoot agent used after agent stuck in loop**: NO.
+-   **Test files created**: None.
+-   **Known regressions**: The main lesson runner was working in the initial MVP but is now inaccessible due to the loading screen bug.
+
+**Credentials to test flow:**
+N/A - The signup/login UI has not been built yet. The agent needs to build this first.
+
+**What agent forgot to execute**
+-   **Consistent Testing**: The agent failed to run tests after major changes, leading to the accumulation of bugs like the loading screen and speaking module issues.
+-   **Refactoring**: The agent acknowledged  was too large multiple times but continued to add more code to it instead of refactoring it.
+-   **Follow-up on Playbook**: The agent received a Python playbook for ElevenLabs but didn't request a Next.js-specific one. It decided on its own architecture (serverless function wrapper), which might be fine, but it didn't exhaust the expert agent's capabilities first.
+
+</analysis>
