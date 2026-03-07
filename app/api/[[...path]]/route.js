@@ -3,16 +3,40 @@ import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
 
-// MongoDB connection
+// MongoDB connection - with race condition protection
 let client
 let db
+let connectPromise = null
 
 async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME)
+  // If already connected and db exists, return it
+  if (db) return db
+  
+  // If connection is in progress, wait for it
+  if (connectPromise) {
+    await connectPromise
+    return db
   }
+  
+  // Start new connection
+  connectPromise = (async () => {
+    try {
+      if (!client) {
+        client = new MongoClient(process.env.MONGO_URL)
+      }
+      await client.connect()
+      db = client.db(process.env.DB_NAME)
+    } catch (err) {
+      // Reset on error so next request retries
+      client = null
+      db = null
+      connectPromise = null
+      throw err
+    }
+    connectPromise = null
+  })()
+  
+  await connectPromise
   return db
 }
 

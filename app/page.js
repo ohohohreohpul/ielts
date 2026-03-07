@@ -84,33 +84,50 @@ function AppInner() {
       setLoadingTip(prev => (prev + 1) % 4)
     }, 2000)
     
-    try {
-      const response = await fetch('/api/ai/generate-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          examType: goalId === 'toeic' ? 'TOEIC' : 'IELTS',
-          section: section,
-          count: 5
+    // Retry logic for transient errors
+    let lastError = null
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt > 0) {
+          await new Promise(r => setTimeout(r, 1000)) // Wait 1s before retry
+        }
+        
+        const response = await fetch('/api/ai/generate-questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            examType: goalId === 'toeic' ? 'TOEIC' : 'IELTS',
+            section: section,
+            count: 5
+          })
         })
-      })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to generate questions')
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(error.error || 'Failed to generate questions')
+        }
+
+        const data = await response.json()
+        
+        if (!data.questions || data.questions.length === 0) {
+          throw new Error('No questions generated')
+        }
+        
+        clearInterval(tipInterval)
+        setQuestions(data.questions)
+        setStage('lesson')
+        return // Success - exit
+      } catch (error) {
+        lastError = error
+        console.error(`Attempt ${attempt + 1} failed:`, error)
       }
-
-      const data = await response.json()
-      clearInterval(tipInterval)
-      setQuestions(data.questions || [])
-      setStage('lesson')
-    } catch (error) {
-      clearInterval(tipInterval)
-      setStage('error')
-      console.error('startLesson error:', error)
-    } finally {
-      setLoading(false)
     }
+    
+    // All retries failed
+    clearInterval(tipInterval)
+    setStage('error')
+    console.error('startLesson error after retries:', lastError)
+    setLoading(false)
   }
 
   const checkAnswer = async () => {
