@@ -10,13 +10,13 @@ export const viewport = {
 }
 
 export const metadata = {
-  title: 'Mydemy - AI Mock Exams',
+  title: 'Carrot School - AI Mock Exams',
   description: 'ฝึกสอบ TOEIC และ IELTS ด้วย AI - ทีละข้อ สนุกเหมือน Duolingo',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Mydemy',
+    title: 'Carrot School',
     startupImage: ['/icons/icon-512.png'],
   },
   icons: {
@@ -33,7 +33,7 @@ export const metadata = {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'apple-mobile-web-app-title': 'Mydemy',
+    'apple-mobile-web-app-title': 'Carrot School',
     'msapplication-TileColor': '#FF6500',
     'msapplication-TileImage': '/icons/icon-144.png',
   },
@@ -51,7 +51,7 @@ export default function RootLayout({ children }) {
         {/* Splash screens for iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Mydemy" />
+        <meta name="apple-mobile-web-app-title" content="Carrot School" />
 
         {/* Prevent scroll bounce on iOS */}
         <style dangerouslySetInnerHTML={{__html: `

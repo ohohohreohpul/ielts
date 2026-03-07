@@ -3,21 +3,33 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Headphones, PenTool, Mic, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react'
+import { BookOpen, Headphones, PenTool, Mic, ChevronDown, ChevronUp, Lock, Crown, Check } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 const EXAMS = [
+  // FREE TIER
   {
-    id: 'toeic', name: 'TOEIC',
+    id: 'toeic', name: 'TOEIC', free: true,
     desc: 'Test of English for International Communication',
+    emoji: '📘',
     sections: [
       { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Part 5–7: Grammar & Comprehension' },
       { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Part 1–4: Photos & Conversations' },
     ]
   },
   {
-    id: 'ielts', name: 'IELTS',
+    id: 'grammar', name: 'Grammar', free: true,
+    desc: 'ไวยากรณ์ภาษาอังกฤษ พื้นฐาน - ขั้นสูง',
+    emoji: '📝',
+    sections: [
+      { id: 'reading',   icon: BookOpen,   label: 'Grammar Practice',   sub: 'Tenses, Prepositions, Vocabulary' },
+    ]
+  },
+  // PREMIUM TIER
+  {
+    id: 'ielts', name: 'IELTS', free: false,
     desc: 'International English Language Testing System',
+    emoji: '🇬🇧',
     sections: [
       { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Academic & General Training' },
       { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Conversations & Monologues' },
@@ -25,82 +37,110 @@ const EXAMS = [
       { id: 'speaking',  icon: Mic,        label: 'Speaking',   sub: 'Part 1–3 Interview' },
     ]
   },
+  {
+    id: 'toefl', name: 'TOEFL', free: false,
+    desc: 'Test of English as a Foreign Language',
+    emoji: '🇺🇸',
+    sections: [
+      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Academic Passages' },
+      { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Lectures & Conversations' },
+      { id: 'writing',   icon: PenTool,    label: 'Writing',    sub: 'Integrated & Independent' },
+      { id: 'speaking',  icon: Mic,        label: 'Speaking',   sub: 'Tasks 1–4' },
+    ]
+  },
+  {
+    id: 'cutep', name: 'CU-TEP', free: false,
+    desc: 'Chulalongkorn University Test of English Proficiency',
+    emoji: '🏛️',
+    sections: [
+      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Reading Comprehension' },
+      { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Listening Comprehension' },
+    ]
+  },
+  {
+    id: 'tuget', name: 'TU-GET', free: false,
+    desc: 'Thammasat University General English Test',
+    emoji: '🎓',
+    sections: [
+      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Grammar, Vocabulary, Reading' },
+    ]
+  },
+  {
+    id: 'onet', name: 'O-NET', free: false,
+    desc: 'ข้อสอบภาษาอังกฤษ O-NET ม.6',
+    emoji: '📖',
+    sections: [
+      { id: 'reading',   icon: BookOpen,   label: 'ภาษาอังกฤษ',   sub: 'Grammar, Vocabulary, Reading' },
+    ]
+  },
+  {
+    id: 'ocsc', name: 'กพ. ภาษาอังกฤษ', free: false,
+    desc: 'ข้อสอบ กพ. ภาค ก. วิชาภาษาอังกฤษ',
+    emoji: '🏢',
+    sections: [
+      { id: 'reading',   icon: BookOpen,   label: 'ภาษาอังกฤษ',   sub: 'Grammar, Vocabulary, Comprehension' },
+    ]
+  },
 ]
 
 export default function PracticePage() {
   const router = useRouter()
   const [expanded, setExpanded] = useState('toeic')
+  const [showPricing, setShowPricing] = useState(false)
+
+  const freeExams = EXAMS.filter(e => e.free)
+  const premiumExams = EXAMS.filter(e => !e.free)
+
+  const handleExamClick = (exam) => {
+    if (!exam.free) {
+      setShowPricing(true)
+      return
+    }
+    setExpanded(expanded === exam.id ? null : exam.id)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-14 pb-6 px-5">
+      <div className="bg-orange-500 pt-12 pb-5 px-5">
         <h1 className="text-2xl font-black text-white">เลือกข้อสอบ</h1>
         <p className="text-white/70 text-sm font-medium mt-1">ฝึกทีละพาร์ท ค่อยๆ เก่งขึ้น</p>
       </div>
 
       <div className="px-4 pt-5 space-y-4">
-        {EXAMS.map((exam, ei) => (
+
+        {/* FREE SECTION */}
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">🆓 ฟรี</p>
+        {freeExams.map((exam, ei) => (
+          <ExamCard key={exam.id} exam={exam} expanded={expanded} onToggle={() => setExpanded(expanded === exam.id ? null : exam.id)} router={router} />
+        ))}
+
+        {/* PREMIUM SECTION */}
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">👑 Premium</p>
+          <button onClick={() => setShowPricing(true)} className="text-xs font-bold text-orange-500">ปลดล็อค</button>
+        </div>
+        {premiumExams.map((exam, ei) => (
           <motion.div
             key={exam.id}
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: ei * 0.1 }}
+            transition={{ delay: 0.1 + ei * 0.05 }}
           >
-            {/* Exam Header */}
             <button
-              onClick={() => setExpanded(expanded === exam.id ? null : exam.id)}
-              className={`w-full bg-white rounded-2xl border-2 p-5 flex items-center justify-between transition-colors active:opacity-80 ${expanded === exam.id ? 'border-orange-500' : 'border-gray-100'}`}
+              onClick={() => setShowPricing(true)}
+              className="w-full bg-white rounded-2xl border-2 border-gray-100 p-4 flex items-center gap-4 opacity-60 active:opacity-40 transition-opacity"
             >
-              <div className="text-left">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className={`px-3 py-1 rounded-full text-sm font-black ${expanded === exam.id ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700'}`}>
-                    {exam.name}
-                  </span>
+              <span className="text-2xl">{exam.emoji}</span>
+              <div className="flex-1 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">{exam.name}</span>
+                  <Lock className="w-3.5 h-3.5 text-gray-400" />
                 </div>
-                <p className="text-xs text-gray-400 font-medium">{exam.desc}</p>
+                <p className="text-xs text-gray-400">{exam.desc}</p>
               </div>
-              {expanded === exam.id
-                ? <ChevronUp className="w-5 h-5 text-orange-500 flex-shrink-0" />
-                : <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-              }
             </button>
-
-            {/* Sections */}
-            <AnimatePresence>
-              {expanded === exam.id && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden mt-2 space-y-2 pl-2"
-                >
-                  {exam.sections.map((sec, si) => (
-                    <motion.button
-                      key={sec.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: si * 0.06 }}
-                      onClick={() => router.push(`/?exam=${exam.id}&section=${sec.id}`)}
-                      className="w-full bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
-                    >
-                      <div className="w-11 h-11 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <sec.icon className="w-5 h-5 text-orange-500" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="font-bold text-gray-900">{sec.label}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{sec.sub}</p>
-                      </div>
-                      <div className="bg-orange-500 px-4 py-2 rounded-xl flex-shrink-0">
-                        <p className="text-white text-sm font-bold">เริ่ม</p>
-                      </div>
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
           </motion.div>
         ))}
 
@@ -119,7 +159,144 @@ export default function PracticePage() {
         </motion.div>
       </div>
 
+      {/* Pricing Modal */}
+      <AnimatePresence>
+        {showPricing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+            onClick={() => setShowPricing(false)}
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25 }}
+              className="bg-white rounded-t-3xl w-full max-w-md p-6"
+              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="text-center mb-6">
+                <p className="text-4xl mb-2">🥕</p>
+                <h2 className="text-2xl font-black text-gray-900">Carrot School Plus</h2>
+                <p className="text-gray-500 text-sm mt-1">ปลดล็อคข้อสอบทั้งหมด</p>
+              </div>
+
+              {/* Benefits */}
+              <div className="space-y-2 mb-6">
+                {[
+                  'ข้อสอบ IELTS, TOEFL, CU-TEP, TU-GET, O-NET, กพ.',
+                  'หัวใจไม่จำกัด ฝึกได้ทั้งวัน',
+                  'AI Scoring สำหรับ Writing & Speaking',
+                  'คำถามใหม่ไม่มีซ้ำ',
+                ].map((text, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-green-600" />
+                    </div>
+                    <p className="text-sm text-gray-700">{text}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pricing Plans */}
+              <div className="space-y-3 mb-6">
+                {/* Yearly - Recommended */}
+                <button className="w-full bg-orange-500 rounded-2xl p-4 text-left relative overflow-hidden active:opacity-80">
+                  <div className="absolute top-0 right-0 bg-yellow-400 px-3 py-0.5 rounded-bl-xl">
+                    <span className="text-xs font-black text-black">ประหยัด 45%</span>
+                  </div>
+                  <p className="text-white font-black text-lg">รายปี</p>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className="text-white font-black text-3xl">฿990</span>
+                    <span className="text-white/70 text-sm">/ปี</span>
+                  </div>
+                  <p className="text-white/70 text-xs mt-1">เฉลี่ย ฿83/เดือน</p>
+                </button>
+
+                {/* Monthly */}
+                <button className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 text-left active:opacity-80">
+                  <p className="text-gray-900 font-black text-lg">รายเดือน</p>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className="text-gray-900 font-black text-3xl">฿149</span>
+                    <span className="text-gray-400 text-sm">/เดือน</span>
+                  </div>
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowPricing(false)}
+                className="w-full text-center text-gray-400 text-sm font-medium py-2"
+              >
+                ไว้ทีหลัง
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <BottomNav />
     </div>
+  )
+}
+
+function ExamCard({ exam, expanded, onToggle, router }) {
+  const isOpen = expanded === exam.id
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      {/* Exam Header */}
+      <button
+        onClick={onToggle}
+        className={`w-full bg-white rounded-2xl border-2 p-4 flex items-center gap-4 transition-colors active:opacity-80 ${isOpen ? 'border-orange-500' : 'border-gray-100'}`}
+      >
+        <span className="text-2xl">{exam.emoji}</span>
+        <div className="flex-1 text-left">
+          <span className={`font-bold ${isOpen ? 'text-orange-500' : 'text-gray-900'}`}>{exam.name}</span>
+          <p className="text-xs text-gray-400">{exam.desc}</p>
+        </div>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-orange-500" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+      </button>
+
+      {/* Sections */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden mt-2 space-y-2 pl-2"
+          >
+            {exam.sections.map((sec, si) => (
+              <motion.button
+                key={sec.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: si * 0.06 }}
+                onClick={() => router.push(`/?exam=${exam.id}&section=${sec.id}`)}
+                className="w-full bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
+              >
+                <div className="w-11 h-11 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <sec.icon className="w-5 h-5 text-orange-500" />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-bold text-gray-900">{sec.label}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{sec.sub}</p>
+                </div>
+                <div className="bg-orange-500 px-4 py-2 rounded-xl flex-shrink-0">
+                  <p className="text-white text-sm font-bold">เริ่ม</p>
+                </div>
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }

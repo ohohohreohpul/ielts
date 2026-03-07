@@ -30,10 +30,10 @@ export default function WelcomePage() {
           transition={{ type: 'spring', duration: 0.6 }}
           className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-2xl"
         >
-          <span className="text-5xl font-black text-orange-500">M</span>
+          <span className="text-5xl font-black text-orange-500">🥕</span>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <h1 className="text-4xl font-black text-white text-center mb-2 tracking-tight">Mydemy</h1>
+          <h1 className="text-4xl font-black text-white text-center mb-2 tracking-tight">Carrot School</h1>
           <p className="text-white/70 text-center text-base font-medium">ฝึกสอบให้เชี่ยวชาญ ทีละข้อ</p>
         </motion.div>
       </div>

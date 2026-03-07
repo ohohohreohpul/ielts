@@ -894,45 +894,46 @@ function AppInner() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <div className="w-20 h-20 from-yellow-400 rounded-full flex items-center justify-center">
-                <Crown className="w-10 h-10 text-white" />
-              </div>
+              <p className="text-5xl">🥕</p>
             </div>
-            <DialogTitle className="text-center text-2xl">อัพเกรดเป็น Mydemy Plus</DialogTitle>
-            <DialogDescription className="text-center">หัวใจของคุณหมดแล้ว! อัพเกรดเพื่อฝึกได้ไม่จำกัด</DialogDescription>
+            <DialogTitle className="text-center text-2xl">Carrot School Plus</DialogTitle>
+            <DialogDescription className="text-center">หัวใจหมดแล้ว! อัพเกรดเพื่อฝึกได้ไม่จำกัด</DialogDescription>
           </DialogHeader>
           
           <div className="space-y-3 my-6">
-            <Card className="border-2 border-gray-200 bg-orange-500">
+            <Card className="border-2 border-orange-500 bg-orange-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h4 className="font-bold text-lg">รายเดือน</h4>
-                    <p className="text-sm text-gray-600">$9.99/เดือน</p>
+                    <span className="text-xs font-black text-yellow-300 bg-yellow-300/20 px-2 py-0.5 rounded-full">ประหยัด 45%</span>
+                    <h4 className="font-bold text-lg text-white mt-1">รายปี</h4>
+                    <p className="text-white/70 text-sm">฿990/ปี (฿83/เดือน)</p>
                   </div>
-                  <Zap className="w-6 h-6 text-gray-700" />
+                  <Crown className="w-6 h-6 text-yellow-300" />
                 </div>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />หัวใจไม่จำกัด</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />คะแนนการพูดโดย AI</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />บทเรียนส่วนตัว</li>
+                <ul className="space-y-2 text-sm text-white/90">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-yellow-300 mr-2" />ข้อสอบทั้งหมด IELTS, TOEFL, CU-TEP ฯลฯ</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-yellow-300 mr-2" />หัวใจไม่จำกัด</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-yellow-300 mr-2" />AI Scoring</li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="border-2 border-yellow-300 bg-yellow-50">
+            <Card className="border-2 border-gray-200">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h4 className="font-bold text-lg">รายปี</h4>
-                    <p className="text-sm text-gray-600">$79.99/ปี</p>
-                    <span className="text-xs font-semibold text-orange-600">ประหยัด 33%!</span>
+                    <h4 className="font-bold text-lg">รายเดือน</h4>
+                    <p className="text-sm text-gray-500">฿149/เดือน</p>
                   </div>
-                  <Crown className="w-6 h-6 text-yellow-600" />
+                  <Zap className="w-6 h-6 text-orange-500" />
                 </div>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />ทุกฟีเจอร์รายเดือน</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />การสนับสนุนพิเศษ</li>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />ข้อสอบทั้งหมด</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />หัวใจไม่จำกัด</li>
+                </ul>
+              </CardContent>
+            </Card>
                   <li className="flex items-center"><Check className="w-4 h-4 text-orange-600 mr-2" />เข้าถึงฟีเจอร์ใหม่ก่อนใคร</li>
                 </ul>
               </CardContent>

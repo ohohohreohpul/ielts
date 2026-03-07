@@ -282,7 +282,61 @@ Generate exactly ${count} speaking questions with DIFFERENT topics. Return ONLY 
     }
   }
 
-  return prompts[examType]?.[section] || `Generate ${count} exam questions for ${examType} ${section}`
+  // Grammar exam type
+  if (examType === 'Grammar' || examType === 'grammar') {
+    return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array. Mix different grammar topics (tenses, prepositions, articles, vocabulary, conditionals, reported speech).
+
+Each question should be multiple-choice with 4 options:
+[
+  {
+    "id": "q1",
+    "type": "multiple-choice",
+    "sentence": "She ____ to the office every morning by bus.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "go", "correct": false},
+      {"id": "b", "text": "goes", "correct": true},
+      {"id": "c", "text": "going", "correct": false},
+      {"id": "d", "text": "gone", "correct": false}
+    ]
+  }
+]
+
+Generate exactly ${count} different grammar questions covering various topics. Return ONLY the JSON array.`
+  }
+
+  // Generic prompt for other exam types (TOEFL, CU-TEP, TU-GET, O-NET, กพ.)
+  return `Generate ${count} ${examType} English exam questions. Return ONLY a valid JSON array.
+
+Mix multiple-choice and reading comprehension questions:
+[
+  {
+    "id": "q1",
+    "type": "multiple-choice",
+    "sentence": "The manager ____ the report before the deadline.",
+    "question": "Choose the best answer:",
+    "options": [
+      {"id": "a", "text": "submits", "correct": false},
+      {"id": "b", "text": "submitted", "correct": true},
+      {"id": "c", "text": "submitting", "correct": false},
+      {"id": "d", "text": "submit", "correct": false}
+    ]
+  },
+  {
+    "id": "q2",
+    "type": "reading",
+    "passage": "A short academic or general passage about 50-100 words relevant to the exam type.",
+    "question": "What is the main idea of this passage?",
+    "options": [
+      {"id": "a", "text": "option A", "correct": false},
+      {"id": "b", "text": "option B", "correct": true},
+      {"id": "c", "text": "option C", "correct": false},
+      {"id": "d", "text": "option D", "correct": false}
+    ]
+  }
+]
+
+Make the difficulty appropriate for ${examType} level. Generate exactly ${count} questions. Return ONLY the JSON array.`
 }
 
 // OPTIONS handler for CORS
@@ -355,7 +409,7 @@ async function handleRoute(request, { params }) {
     // Root endpoint
     if ((route === '/root' || route === '/') && method === 'GET') {
       return handleCORS(NextResponse.json({ 
-        message: "Mydemy API",
+        message: "Carrot School API",
         version: "1.0.0",
         endpoints: [
           '/generate-exam',

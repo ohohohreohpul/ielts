@@ -1,6 +1,6 @@
 {
-  "name": "Mydemy - AI Mock Exams",
-  "short_name": "Mydemy",
+  "name": "Carrot School - AI Mock Exams",
+  "short_name": "Carrot School",
   "description": "ฝึกสอบ TOEIC และ IELTS ด้วย AI - ทีละข้อ สนุกเหมือน Duolingo",
   "start_url": "/welcome",
   "scope": "/",

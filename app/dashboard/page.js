@@ -33,10 +33,7 @@ export default function DashboardPage() {
   const quickStart = [
     { exam: 'toeic', section: 'reading',   icon: BookOpen,   label: 'TOEIC Reading',   sub: 'Part 5–7' },
     { exam: 'toeic', section: 'listening', icon: Headphones, label: 'TOEIC Listening',  sub: 'Part 1–4' },
-    { exam: 'ielts', section: 'reading',   icon: BookOpen,   label: 'IELTS Reading',    sub: 'Academic' },
-    { exam: 'ielts', section: 'writing',   icon: PenTool,    label: 'IELTS Writing',    sub: 'Task 1 & 2' },
-    { exam: 'ielts', section: 'speaking',  icon: Mic,        label: 'IELTS Speaking',   sub: 'Part 1–3' },
-    { exam: 'ielts', section: 'listening', icon: Headphones, label: 'IELTS Listening',  sub: 'Monologue' },
+    { exam: 'grammar', section: 'reading', icon: BookOpen,   label: 'Grammar Practice', sub: 'ไวยากรณ์' },
   ]
 
   if (loading) return (
@@ -124,8 +121,8 @@ export default function DashboardPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
           <button className="w-full bg-black rounded-2xl p-5 flex items-center justify-between active:opacity-80 transition-opacity">
             <div className="text-left">
-              <p className="text-white font-black text-base">Mydemy Plus 👑</p>
-              <p className="text-gray-400 text-sm mt-0.5">หัวใจไม่จำกัด · AI Scoring</p>
+              <p className="text-white font-black text-base">Carrot School Plus 👑</p>
+              <p className="text-gray-400 text-sm mt-0.5">ปลดล็อคข้อสอบทั้งหมด · หัวใจไม่จำกัด</p>
             </div>
             <div className="bg-orange-500 px-4 py-2 rounded-xl">
               <p className="text-white font-bold text-sm">อัพเกรด</p>

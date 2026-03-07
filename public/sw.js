@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mydemy-v3';
+const CACHE_NAME = 'carrot-school-v1';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

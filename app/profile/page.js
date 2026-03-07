@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   const menu = [
     { icon: Bell,        label: 'การแจ้งเตือน',     sub: 'เปิดการแจ้งเตือนรายวัน',       orange: false },
-    { icon: Crown,       label: 'Mydemy Plus',       sub: 'หัวใจไม่จำกัด + AI Scoring',    orange: true  },
+    { icon: Crown,       label: 'Carrot School Plus',  sub: 'ปลดล็อคข้อสอบทั้งหมด + หัวใจไม่จำกัด',    orange: true  },
     { icon: Shield,      label: 'ความเป็นส่วนตัว',  sub: 'จัดการข้อมูลของคุณ',            orange: false },
     { icon: HelpCircle,  label: 'ช่วยเหลือ',        sub: 'คำถามที่พบบ่อย',                orange: false },
   ]
