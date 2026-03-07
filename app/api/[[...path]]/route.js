@@ -59,6 +59,102 @@ function handleCORS(response) {
   return response
 }
 
+// Helper function to build lesson prompts for AI content generation
+function buildLessonPrompt(examId, sectionId, lessonId) {
+  const lessonTitles = {
+    // IELTS Reading
+    'ielts-reading-question-types': 'ประเภทคำถาม IELTS Reading ทั้งหมด',
+    'ielts-reading-skimming-scanning': 'เทคนิค Skimming และ Scanning',
+    'ielts-reading-true-false-ng': 'ทริคทำ True/False/Not Given',
+    'ielts-reading-matching-headings': 'วิธีทำ Matching Headings',
+    'ielts-reading-sentence-completion': 'เทคนิค Sentence Completion',
+    'ielts-reading-time-management': 'การบริหารเวลา IELTS Reading',
+    
+    // IELTS Listening
+    'ielts-listening-question-types': 'ประเภทคำถาม IELTS Listening',
+    'ielts-listening-note-taking': 'เทคนิค Note Taking',
+    'ielts-listening-prediction': 'การ Predict คำตอบ',
+    'ielts-listening-spelling-tips': 'Spelling Tips และ Common Mistakes',
+    'ielts-listening-map-diagram': 'ทำข้อ Map และ Diagram',
+    
+    // IELTS Writing
+    'ielts-writing-task1-overview': 'Task 1: Overview และ Structure',
+    'ielts-writing-task1-graphs': 'Task 1: การบรรยาย Graphs',
+    'ielts-writing-task2-structure': 'Task 2: Essay Structure',
+    'ielts-writing-task2-opinion': 'Task 2: Opinion Essay',
+    'ielts-writing-vocabulary': 'Vocabulary for High Score',
+    'ielts-writing-common-mistakes': 'Common Mistakes to Avoid',
+    
+    // IELTS Speaking
+    'ielts-speaking-part1-tips': 'Part 1: Introduction Tips',
+    'ielts-speaking-part2-structure': 'Part 2: Cue Card Strategy',
+    'ielts-speaking-part3-discussion': 'Part 3: Discussion Skills',
+    'ielts-speaking-fluency-tips': 'เพิ่ม Fluency และ Coherence',
+    'ielts-speaking-vocabulary-range': 'Vocabulary Range Tips',
+    
+    // TOEIC Listening
+    'toeic-listening-part1-photos': 'Part 1: Photographs',
+    'toeic-listening-part2-qa': 'Part 2: Question-Response',
+    'toeic-listening-part3-conversations': 'Part 3: Conversations',
+    'toeic-listening-part4-talks': 'Part 4: Talks',
+    'toeic-listening-listening-tricks': 'Listening Tricks และ Traps',
+    
+    // TOEIC Reading
+    'toeic-reading-part5-incomplete': 'Part 5: Incomplete Sentences',
+    'toeic-reading-part6-text-completion': 'Part 6: Text Completion',
+    'toeic-reading-part7-single': 'Part 7: Single Passages',
+    'toeic-reading-part7-multiple': 'Part 7: Multiple Passages',
+    'toeic-reading-time-management': 'Time Management Strategy'
+  }
+
+  const key = `${examId}-${sectionId}-${lessonId}`
+  const title = lessonTitles[key] || `${examId.toUpperCase()} ${sectionId} - ${lessonId}`
+
+  return `สร้างเนื้อหาบทเรียนเตรียมสอบ ${examId.toUpperCase()} สำหรับหัวข้อ: "${title}"
+
+เขียนเป็นภาษาไทย ให้เข้าใจง่าย มีตัวอย่างชัดเจน
+
+ส่งกลับเป็น JSON format ดังนี้:
+{
+  "title": "${title}",
+  "sections": [
+    {
+      "type": "heading",
+      "emoji": "📚",
+      "text": "หัวข้อหลัก"
+    },
+    {
+      "type": "paragraph",
+      "text": "เนื้อหาอธิบาย..."
+    },
+    {
+      "type": "tip",
+      "text": "ทริคสำคัญ..."
+    },
+    {
+      "type": "example",
+      "text": "ตัวอย่าง..."
+    },
+    {
+      "type": "list",
+      "items": ["ข้อ 1", "ข้อ 2", "ข้อ 3"]
+    },
+    {
+      "type": "warning",
+      "text": "ข้อควรระวัง..."
+    }
+  ]
+}
+
+กฎ:
+- เนื้อหาต้องละเอียด 800-1500 คำ
+- มีอย่างน้อย 4-6 sections
+- ใช้ emoji ที่เหมาะสม
+- มี tips และ examples ที่เป็นประโยชน์
+- เขียนเป็นภาษาไทยทั้งหมด (ยกเว้นศัพท์เฉพาะ)
+- ส่งกลับเป็น JSON เท่านั้น`
+}
+
 // Helper function to build Gemini prompts for different exam types
 function buildExamPrompt(examType, section, count) {
   // ===== SECTION-SPECIFIC PROMPTS (works for ALL exam types) =====
@@ -1488,6 +1584,152 @@ Provide a JSON response with ONLY this structure, no extra text:
           { status: 400 }
         ))
       }
+    }
+
+    // ============ LESSONS API ============
+    
+    // Lesson metadata
+    const LESSON_META = {
+      ielts: {
+        name: 'IELTS',
+        sections: {
+          reading: { name: 'Reading' },
+          listening: { name: 'Listening' },
+          writing: { name: 'Writing' },
+          speaking: { name: 'Speaking' }
+        }
+      },
+      toeic: {
+        name: 'TOEIC',
+        sections: {
+          listening: { name: 'Listening' },
+          reading: { name: 'Reading' }
+        }
+      }
+    }
+
+    // Get Lesson Content
+    if (route.match(/^\/lessons\/[^\/]+\/[^\/]+\/[^\/]+$/) && method === 'GET') {
+      const parts = route.split('/')
+      const examId = parts[2]
+      const sectionId = parts[3]
+      const lessonId = parts[4]
+
+      const examMeta = LESSON_META[examId]
+      const sectionMeta = examMeta?.sections[sectionId]
+
+      if (!examMeta || !sectionMeta) {
+        return handleCORS(NextResponse.json(
+          { error: 'Invalid exam or section' },
+          { status: 404 }
+        ))
+      }
+
+      // Check if lesson content exists in database
+      let lesson = await db.collection('lessons').findOne({
+        examId,
+        sectionId,
+        lessonId
+      })
+
+      if (!lesson) {
+        // Generate content with AI
+        console.log(`Generating lesson content for ${examId}/${sectionId}/${lessonId}`)
+
+        const apiKey = process.env.EMERGENT_LLM_KEY
+        if (!apiKey) {
+          return handleCORS(NextResponse.json(
+            { error: 'AI not configured' },
+            { status: 500 }
+          ))
+        }
+
+        const lessonPrompt = buildLessonPrompt(examId, sectionId, lessonId)
+
+        try {
+          // Use Emergent proxy with OpenAI format (same as generate-questions)
+          const isEmergentKey = apiKey.startsWith('sk-emergent-')
+          let generatedText
+
+          if (isEmergentKey) {
+            const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+              },
+              body: JSON.stringify({
+                model: 'gpt-4.1',
+                messages: [
+                  {
+                    role: 'system',
+                    content: 'You are an expert English exam preparation teacher. Generate educational content in Thai language. Return ONLY valid JSON.'
+                  },
+                  { role: 'user', content: lessonPrompt }
+                ],
+                temperature: 0.7,
+                max_tokens: 8192
+              })
+            })
+
+            if (!aiResponse.ok) {
+              const errorData = await aiResponse.json()
+              throw new Error(errorData.error?.message || 'AI API request failed')
+            }
+
+            const aiData = await aiResponse.json()
+            generatedText = aiData.choices[0].message.content
+          } else {
+            // Use direct Gemini API
+            const geminiResponse = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: lessonPrompt }] }],
+                  generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
+                })
+              }
+            )
+
+            if (!geminiResponse.ok) {
+              throw new Error('Gemini API request failed')
+            }
+
+            const geminiData = await geminiResponse.json()
+            generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text
+          }
+
+          // Clean and parse JSON
+          let content = generatedText || ''
+          content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+          const lessonContent = JSON.parse(content)
+
+          // Save to database
+          lesson = {
+            examId,
+            sectionId,
+            lessonId,
+            examName: examMeta.name,
+            sectionName: sectionMeta.name,
+            ...lessonContent,
+            createdAt: new Date()
+          }
+
+          await db.collection('lessons').insertOne(lesson)
+
+        } catch (error) {
+          console.error('Lesson generation error:', error)
+          return handleCORS(NextResponse.json(
+            { error: 'Failed to generate lesson content' },
+            { status: 500 }
+          ))
+        }
+      }
+
+      const { _id, ...safeLesson } = lesson
+      return handleCORS(NextResponse.json(safeLesson))
     }
 
     // Route not found
