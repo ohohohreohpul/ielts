@@ -1,4 +1,4 @@
-const CACHE_NAME = 'carrot-school-v1';
+const CACHE_NAME = 'carrot-school-v3';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

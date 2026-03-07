@@ -308,7 +308,7 @@ function ExamCard({ exam, expanded, onToggle, router }) {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: si * 0.06 }}
-                onClick={() => router.push(`/?exam=${exam.id}&section=${sec.id}`)}
+                onClick={() => router.push(`/?exam=${exam.id}&section=${sec.id}&v=${Date.now()}`)}
                 className="w-full bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
               >
                 <div className="w-11 h-11 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
