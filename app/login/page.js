@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, Loader as Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()

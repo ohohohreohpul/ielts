@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { Loader as Loader2 } from 'lucide-react'
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 export default function AuthCallbackPage() {

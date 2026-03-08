@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { ArrowLeft, Key, CreditCard, Settings, Eye, EyeOff, Save, Check, Loader2 } from 'lucide-react'
+import { ArrowLeft, Key, CreditCard, Settings, Eye, EyeOff, Save, Check, Loader as Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function AdminPage() {

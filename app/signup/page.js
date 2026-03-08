@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Loader as Loader2, ShieldCheck } from 'lucide-react'
 
 export default function SignupPage() {
   const router = useRouter()
