@@ -35,10 +35,32 @@ export default function LoginPage() {
     }
   }
 
-  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  const handleGoogleLogin = () => {
-    const redirectUrl = window.location.origin + '/auth/callback'
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`
+  const handleGoogleLogin = async () => {
+    try {
+      const modeResponse = await fetch('/api/auth/google/mode')
+      const modeData = await modeResponse.json()
+
+      const redirectUrl = window.location.origin + '/auth/callback'
+
+      if (modeData.mode === 'custom' && modeData.clientId) {
+        const callbackUrl = `${window.location.origin}/auth/callback`
+        const state = Math.random().toString(36).substring(7)
+
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `client_id=${encodeURIComponent(modeData.clientId)}&` +
+          `redirect_uri=${encodeURIComponent(callbackUrl)}&` +
+          `response_type=code&` +
+          `scope=openid%20email%20profile&` +
+          `state=${state}`
+
+        window.location.href = authUrl
+      } else {
+        window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`
+      }
+    } catch (err) {
+      console.error('Google login error:', err)
+      setError('ไม่สามารถเข้าสู่ระบบด้วย Google ได้')
+    }
   }
 
   return (

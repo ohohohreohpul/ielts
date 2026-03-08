@@ -18,6 +18,8 @@ export default function AdminPage() {
   const [config, setConfig] = useState({
     geminiKey: '',
     stripeKey: '',
+    googleClientId: '',
+    googleClientSecret: '',
     facebookAppId: '',
     facebookAppSecret: '',
   })
@@ -34,6 +36,8 @@ export default function AdminPage() {
         setConfig({
           geminiKey: data.geminiKey || '',
           stripeKey: data.stripeKey || '',
+          googleClientId: data.googleClientId || '',
+          googleClientSecret: data.googleClientSecret || '',
           facebookAppId: data.facebookAppId || '',
           facebookAppSecret: data.facebookAppSecret || '',
         })
@@ -67,6 +71,16 @@ export default function AdminPage() {
   }
 
   const configSections = [
+    {
+      title: 'Google OAuth Configuration',
+      icon: '🔵',
+      description: 'ตั้งค่า Google OAuth ของคุณเองเพื่อไม่พึ่งพา Emergent Auth',
+      fields: [
+        { key: 'googleClientId', label: 'Google Client ID', placeholder: '123456789-abc...apps.googleusercontent.com' },
+        { key: 'googleClientSecret', label: 'Google Client Secret', placeholder: 'GOCSPX-...' }
+      ],
+      instructions: 'รับ credentials จาก Google Cloud Console > APIs & Services > Credentials'
+    },
     {
       title: 'AI Configuration',
       icon: '🤖',
@@ -119,15 +133,26 @@ export default function AdminPage() {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-        {/* Google OAuth Info */}
-        <Card className="border-green-200 bg-green-50">
+        {/* Google OAuth Status */}
+        <Card className={config.googleClientId ? "border-green-200 bg-green-50" : "border-yellow-200 bg-yellow-50"}>
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
               <span className="text-2xl">🔵</span>
               <div>
-                <h3 className="font-bold text-green-800">Google Login</h3>
-                <p className="text-sm text-green-700">✅ พร้อมใช้งานแล้ว! ไม่ต้องตั้งค่าอะไรเพิ่มเติม</p>
-                <p className="text-xs text-green-600 mt-1">ใช้ Emergent Auth - รองรับ Google OAuth อัตโนมัติ</p>
+                <h3 className={`font-bold ${config.googleClientId ? "text-green-800" : "text-yellow-800"}`}>
+                  Google Login Status
+                </h3>
+                {config.googleClientId ? (
+                  <>
+                    <p className="text-sm text-green-700">✅ ใช้ Custom Google OAuth ของคุณเอง</p>
+                    <p className="text-xs text-green-600 mt-1">อิสระแล้ว - ไม่ขึ้นกับ Emergent Auth</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm text-yellow-700">⚠️ กำลังใช้ Emergent Auth (ตั้งค่า Custom OAuth ด้านล่างเพื่อเป็นอิสระ)</p>
+                    <p className="text-xs text-yellow-600 mt-1">ตั้งค่า Google OAuth ด้านล่างเพื่อใช้ API Key ของคุณเอง</p>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
@@ -152,6 +177,11 @@ export default function AdminPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                {section.instructions && (
+                  <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded-md">
+                    💡 {section.instructions}
+                  </div>
+                )}
                 {section.fields.map(field => (
                   <div key={field.key} className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">{field.label}</label>

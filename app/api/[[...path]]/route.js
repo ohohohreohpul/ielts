@@ -1243,41 +1243,178 @@ Provide a JSON response with ONLY this structure, no extra text:
     }
 
     // ============ ADMIN CONFIG API ============
-    
+
     // Get Admin Config
     if (route === '/admin/config' && method === 'GET') {
-      const config = await db.collection('config').findOne({ type: 'admin_config' })
+      const { getAllAdminConfig } = await import('@/lib/supabase-server')
+      const config = await getAllAdminConfig()
+
       return handleCORS(NextResponse.json({
-        geminiKey: config?.geminiKey ? '***configured***' : '',
-        stripeKey: config?.stripeKey ? '***configured***' : '',
-        facebookAppId: config?.facebookAppId || '',
-        facebookAppSecret: config?.facebookAppSecret ? '***configured***' : '',
+        geminiKey: config.geminiKey ? '***configured***' : '',
+        stripeKey: config.stripeKey ? '***configured***' : '',
+        googleClientId: config.googleClientId ? '***configured***' : '',
+        googleClientSecret: config.googleClientSecret ? '***configured***' : '',
+        facebookAppId: config.facebookAppId || '',
+        facebookAppSecret: config.facebookAppSecret ? '***configured***' : '',
       }))
     }
 
     // Save Admin Config
     if (route === '/admin/config' && method === 'POST') {
       const body = await request.json()
-      const { geminiKey, stripeKey, facebookAppId, facebookAppSecret } = body
+      const { geminiKey, stripeKey, googleClientId, googleClientSecret, facebookAppId, facebookAppSecret } = body
+      const { setAdminConfig } = await import('@/lib/supabase-server')
 
-      const updateData = { type: 'admin_config', updatedAt: new Date() }
-      if (geminiKey && !geminiKey.includes('***')) updateData.geminiKey = geminiKey
-      if (stripeKey && !stripeKey.includes('***')) updateData.stripeKey = stripeKey
-      if (facebookAppId) updateData.facebookAppId = facebookAppId
-      if (facebookAppSecret && !facebookAppSecret.includes('***')) updateData.facebookAppSecret = facebookAppSecret
+      try {
+        if (geminiKey && !geminiKey.includes('***')) {
+          await setAdminConfig('geminiKey', geminiKey)
+        }
+        if (stripeKey && !stripeKey.includes('***')) {
+          await setAdminConfig('stripeKey', stripeKey)
+        }
+        if (googleClientId && !googleClientId.includes('***')) {
+          await setAdminConfig('googleClientId', googleClientId)
+        }
+        if (googleClientSecret && !googleClientSecret.includes('***')) {
+          await setAdminConfig('googleClientSecret', googleClientSecret)
+        }
+        if (facebookAppId) {
+          await setAdminConfig('facebookAppId', facebookAppId)
+        }
+        if (facebookAppSecret && !facebookAppSecret.includes('***')) {
+          await setAdminConfig('facebookAppSecret', facebookAppSecret)
+        }
 
-      await db.collection('config').updateOne(
-        { type: 'admin_config' },
-        { $set: updateData },
-        { upsert: true }
-      )
-
-      return handleCORS(NextResponse.json({ success: true }))
+        return handleCORS(NextResponse.json({ success: true }))
+      } catch (error) {
+        return handleCORS(NextResponse.json(
+          { error: 'Failed to save configuration' },
+          { status: 500 }
+        ))
+      }
     }
 
-    // ============ GOOGLE OAUTH (Emergent Auth) ============
-    
-    // Google OAuth Callback - Exchange session_id for user data
+    // ============ GOOGLE OAUTH ============
+
+    // Check which OAuth mode to use (custom vs Emergent)
+    if (route === '/auth/google/mode' && method === 'GET') {
+      const { getAdminConfig } = await import('@/lib/supabase-server')
+      const googleClientId = await getAdminConfig('googleClientId')
+
+      return handleCORS(NextResponse.json({
+        mode: googleClientId ? 'custom' : 'emergent',
+        clientId: googleClientId || null
+      }))
+    }
+
+    // Custom Google OAuth - Start flow
+    if (route === '/auth/google/start' && method === 'POST') {
+      const body = await request.json()
+      const { redirectUrl } = body
+      const { getAdminConfig } = await import('@/lib/supabase-server')
+
+      const googleClientId = await getAdminConfig('googleClientId')
+
+      if (!googleClientId) {
+        return handleCORS(NextResponse.json(
+          { error: 'Google OAuth not configured' },
+          { status: 400 }
+        ))
+      }
+
+      const callbackUrl = `${redirectUrl.split('/login')[0]}/auth/callback`
+      const state = crypto.randomBytes(32).toString('hex')
+
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${encodeURIComponent(googleClientId)}&` +
+        `redirect_uri=${encodeURIComponent(callbackUrl)}&` +
+        `response_type=code&` +
+        `scope=openid%20email%20profile&` +
+        `state=${state}`
+
+      return handleCORS(NextResponse.json({ authUrl }))
+    }
+
+    // Custom Google OAuth - Callback handler
+    if (route === '/auth/google/custom-callback' && method === 'POST') {
+      const body = await request.json()
+      const { code, redirectUri } = body
+      const { getAdminConfig, createOrUpdateUser, createUserSession } = await import('@/lib/supabase-server')
+
+      const googleClientId = await getAdminConfig('googleClientId')
+      const googleClientSecret = await getAdminConfig('googleClientSecret')
+
+      if (!googleClientId || !googleClientSecret) {
+        return handleCORS(NextResponse.json(
+          { error: 'Google OAuth not configured' },
+          { status: 400 }
+        ))
+      }
+
+      try {
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            code,
+            client_id: googleClientId,
+            client_secret: googleClientSecret,
+            redirect_uri: redirectUri,
+            grant_type: 'authorization_code'
+          })
+        })
+
+        if (!tokenResponse.ok) {
+          throw new Error('Failed to exchange code for token')
+        }
+
+        const tokenData = await tokenResponse.json()
+        const accessToken = tokenData.access_token
+
+        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        })
+
+        if (!userInfoResponse.ok) {
+          throw new Error('Failed to get user info')
+        }
+
+        const userInfo = await userInfoResponse.json()
+
+        const user = await createOrUpdateUser({
+          email: userInfo.email,
+          name: userInfo.name,
+          picture: userInfo.picture,
+          auth_provider: 'google',
+          auth_provider_id: userInfo.id
+        })
+
+        const sessionToken = crypto.randomBytes(32).toString('hex')
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+        await createUserSession(user.id, sessionToken, expiresAt)
+
+        return handleCORS(NextResponse.json({
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            picture: user.picture,
+            subscription_status: user.subscription_status
+          },
+          session_token: sessionToken
+        }))
+
+      } catch (error) {
+        console.error('Custom Google OAuth error:', error)
+        return handleCORS(NextResponse.json(
+          { error: 'Authentication failed: ' + error.message },
+          { status: 401 }
+        ))
+      }
+    }
+
+    // Emergent Auth - Google OAuth Callback (legacy support)
     if (route === '/auth/google-callback' && method === 'POST') {
       const body = await request.json()
       const { sessionId } = body
@@ -1389,7 +1526,9 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
 
       const planData = PAYMENT_PLANS[plan]
-      const stripeApiKey = process.env.STRIPE_API_KEY
+
+      const { getAdminConfig } = await import('@/lib/supabase-server')
+      const stripeApiKey = await getAdminConfig('stripeKey') || process.env.STRIPE_API_KEY
 
       if (!stripeApiKey) {
         return handleCORS(NextResponse.json(
@@ -1471,7 +1610,16 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
 
       try {
-        const stripeApiKey = process.env.STRIPE_API_KEY
+        const { getAdminConfig } = await import('@/lib/supabase-server')
+        const stripeApiKey = await getAdminConfig('stripeKey') || process.env.STRIPE_API_KEY
+
+        if (!stripeApiKey) {
+          return handleCORS(NextResponse.json(
+            { error: 'Payment not configured' },
+            { status: 500 }
+          ))
+        }
+
         const Stripe = (await import('stripe')).default
         const stripe = new Stripe(stripeApiKey)
 
@@ -1534,8 +1682,17 @@ Provide a JSON response with ONLY this structure, no extra text:
       try {
         const body = await request.text()
         const signature = request.headers.get('stripe-signature')
-        
-        const stripeApiKey = process.env.STRIPE_API_KEY
+
+        const { getAdminConfig } = await import('@/lib/supabase-server')
+        const stripeApiKey = await getAdminConfig('stripeKey') || process.env.STRIPE_API_KEY
+
+        if (!stripeApiKey) {
+          return handleCORS(NextResponse.json(
+            { error: 'Payment not configured' },
+            { status: 500 }
+          ))
+        }
+
         const Stripe = (await import('stripe')).default
         const stripe = new Stripe(stripeApiKey)
 
