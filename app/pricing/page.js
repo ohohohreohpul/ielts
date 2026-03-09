@@ -21,12 +21,12 @@ function PricingContent() {
       setUser(JSON.parse(userData))
     }
 
-    // Check if returning from Stripe
+    // Check if returning from Stripe - read directly without dependency
     const sessionId = searchParams.get('session_id')
     if (sessionId) {
       checkPaymentStatus(sessionId)
     }
-  }, [searchParams])
+  }, [])
 
   const checkPaymentStatus = async (sessionId) => {
     setCheckingPayment(true)
