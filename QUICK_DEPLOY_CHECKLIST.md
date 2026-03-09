@@ -14,29 +14,21 @@ Your database at `frlmnzyxeyshqnfnrdyh.supabase.co` has all tables configured:
 
 ## To Deploy to Vercel - Follow These 3 Steps:
 
-### Step 1: Get Your Supabase Service Role Key
-
-1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
-2. Select project `frlmnzyxeyshqnfnrdyh`
-3. Settings → API
-4. Find "service_role" key and click "Reveal"
-5. Copy it (starts with `eyJhbGc...`)
-
-### Step 2: Add Environment Variables in Vercel
+### Step 1: ✅ DONE - Add Environment Variables in Vercel
 
 Go to Vercel Dashboard → Your Project → Settings → Environment Variables
 
-Add these 3 variables:
+Add these 3 variables (you already have the service role key):
 
 | Variable Name | Value | Environments |
 |--------------|-------|--------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://frlmnzyxeyshqnfnrdyh.supabase.co` | ✓ All |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZybG1uenl4ZXlzaHFuZm5yZHloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNTA3ODUsImV4cCI6MjA4ODYyNjc4NX0.C6kVS6mmmab9sao8n-J1s9yM0ACvWMZ5VaLfPI3v3bQ` | ✓ All |
-| `SUPABASE_SERVICE_ROLE_KEY` | `<paste the key from Step 1>` | ✓ All |
+| `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZybG1uenl4ZXlzaHFuZm5yZHloIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzA1MDc4NSwiZXhwIjoyMDg4NjI2Nzg1fQ.CyKx5h22GI68DFkJ99eFOr3cZcHpjJJ400fhmGnXQJ4` | ✓ All |
 
-Make sure to check all 3 environments: Production, Preview, Development
+**IMPORTANT:** Make sure to check all 3 environments for each variable: Production, Preview, Development
 
-### Step 3: Redeploy
+### Step 2: Redeploy on Vercel
 
 1. Go to Deployments tab in Vercel
 2. Click the three dots (...) on latest deployment
@@ -49,16 +41,16 @@ Make sure to check all 3 environments: Production, Preview, Development
 
 Your app should now deploy successfully. The database is ready, and once you add the environment variables, everything will work.
 
-## Optional: Enable AI Features
+## AI Features Status ✅
 
-If you want AI-generated questions and lessons:
+Your Gemini API key is already configured in the Supabase admin_config table!
 
-Add this variable in Vercel:
-- **Variable:** `EMERGENT_LLM_KEY`
-- **Value:** Your Emergent LLM API key
-- **Environments:** All
+The app will automatically use it to generate:
+- AI practice questions
+- Personalized lesson content
+- Adaptive learning experiences
 
-Without this key, the app still works but won't generate AI content.
+No additional environment variables needed for AI features.
 
 ## Optional: Enable Payments
 
