@@ -663,18 +663,23 @@ async function handleRoute(request, context) {
       const apiKey = await getAdminConfig('geminiKey') || process.env.EMERGENT_LLM_KEY
 
       if (!apiKey) {
+        console.error('AI generation error: No API key configured')
         return handleCORS(NextResponse.json(
-          { error: "API key not configured." },
+          { error: "API key not configured. Please add your Gemini API key in the admin settings or set EMERGENT_LLM_KEY environment variable." },
           { status: 400 }
         ))
       }
 
       try {
+        console.log(`Generating questions for ${examType} - ${section} (count: ${count})`)
+        console.log(`Using API key: ${apiKey.substring(0, 10)}...`)
+
         const prompt = buildExamPrompt(examType, section, count)
         const isEmergentKey = apiKey.startsWith('sk-emergent-')
         let generatedText
 
         if (isEmergentKey) {
+          console.log('Using Emergent AI API')
           const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
             method: 'POST',
             headers: {
@@ -690,15 +695,26 @@ async function handleRoute(request, context) {
           })
 
           if (!aiResponse.ok) {
-            const errorData = await aiResponse.json()
-            throw new Error(errorData.error?.message || 'AI API request failed')
+            const errorText = await aiResponse.text()
+            console.error('Emergent AI API error:', aiResponse.status, errorText)
+            let errorData
+            try {
+              errorData = JSON.parse(errorText)
+            } catch (e) {
+              throw new Error(`AI API request failed (${aiResponse.status}): ${errorText}`)
+            }
+            throw new Error(errorData.error?.message || `AI API request failed (${aiResponse.status})`)
           }
 
           const aiData = await aiResponse.json()
           generatedText = aiData.choices[0].message.content
         } else {
+          console.log('Using Google Gemini API')
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`
+          console.log('Gemini API URL:', geminiUrl.replace(apiKey, 'KEY_HIDDEN'))
+
           const geminiResponse = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            geminiUrl,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -710,11 +726,25 @@ async function handleRoute(request, context) {
           )
 
           if (!geminiResponse.ok) {
-            const errorData = await geminiResponse.json()
-            throw new Error(errorData.error?.message || 'Gemini API request failed')
+            const errorText = await geminiResponse.text()
+            console.error('Gemini API error:', geminiResponse.status, errorText)
+            let errorData
+            try {
+              errorData = JSON.parse(errorText)
+            } catch (e) {
+              throw new Error(`Gemini API request failed (${geminiResponse.status}): ${errorText}`)
+            }
+            throw new Error(errorData.error?.message || `Gemini API request failed (${geminiResponse.status})`)
           }
 
           const geminiData = await geminiResponse.json()
+          console.log('Gemini API response received, candidates:', geminiData.candidates?.length)
+
+          if (!geminiData.candidates || !geminiData.candidates[0] || !geminiData.candidates[0].content) {
+            console.error('Invalid Gemini response structure:', JSON.stringify(geminiData))
+            throw new Error('Invalid response from Gemini API - no candidates returned')
+          }
+
           generatedText = geminiData.candidates[0].content.parts[0].text
         }
 
@@ -752,8 +782,9 @@ async function handleRoute(request, context) {
             }
           }
         } catch (parseErr) {
-          console.error('JSON parse error')
-          throw new Error('Failed to parse AI response as JSON')
+          console.error('JSON parse error:', parseErr.message)
+          console.error('Generated text that failed to parse:', generatedText?.substring(0, 500))
+          throw new Error('Failed to parse AI response as JSON: ' + parseErr.message)
         }
 
         let questionsArray
@@ -778,6 +809,8 @@ async function handleRoute(request, context) {
           questionsArray = []
         }
 
+        console.log(`Successfully generated ${questionsArray.length} questions`)
+
         return handleCORS(NextResponse.json({
           examType,
           section,
@@ -786,6 +819,7 @@ async function handleRoute(request, context) {
 
       } catch (error) {
         console.error('AI generation error:', error)
+        console.error('Error stack:', error.stack)
         return handleCORS(NextResponse.json(
           { error: "Failed to generate questions: " + error.message },
           { status: 500 }
