@@ -1,0 +1,118 @@
+VERCEL ENVIRONMENT VARIABLES CONFIGURATION
+==========================================
+
+✅ DATABASE STATUS: Your Supabase database is already configured with all tables!
+   - Tables created: users, user_sessions, exams, lessons, progress, exam_history, payment_transactions, admin_config
+   - All RLS policies are enabled
+
+Copy these environment variables to your Vercel project:
+
+REQUIRED VARIABLES:
+-------------------
+
+NEXT_PUBLIC_SUPABASE_URL=https://frlmnzyxeyshqnfnrdyh.supabase.co
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZybG1uenl4ZXlzaHFuZm5yZHloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNTA3ODUsImV4cCI6MjA4ODYyNjc4NX0.C6kVS6mmmab9sao8n-J1s9yM0ACvWMZ5VaLfPI3v3bQ
+
+SUPABASE_SERVICE_ROLE_KEY=<GET THIS FROM YOUR SUPABASE DASHBOARD - see instructions below>
+
+
+OPTIONAL VARIABLES (for full functionality):
+-------------------
+
+EMERGENT_LLM_KEY=<YOUR API KEY FOR AI FEATURES - provided by Bolt/Emergent>
+
+STRIPE_API_KEY=<YOUR STRIPE SECRET KEY - if you want payment features>
+
+
+HOW TO GET SUPABASE_SERVICE_ROLE_KEY:
+--------------------------------------
+
+1. Go to https://supabase.com/dashboard
+2. Select your project: frlmnzyxeyshqnfnrdyh
+3. Click on "Settings" (gear icon in left sidebar)
+4. Click on "API"
+5. Under "Project API keys", find "service_role" key
+6. Click "Reveal" and copy the key
+7. ⚠️ This is a SECRET key - never share it publicly!
+
+
+HOW TO ADD VARIABLES IN VERCEL:
+--------------------------------
+
+1. Go to https://vercel.com/dashboard
+2. Select your project "ielts"
+3. Go to Settings → Environment Variables
+4. Add each variable ONE BY ONE:
+
+   First variable:
+   - Key: NEXT_PUBLIC_SUPABASE_URL
+   - Value: https://frlmnzyxeyshqnfnrdyh.supabase.co
+   - Environments: ✓ Production ✓ Preview ✓ Development
+   - Click "Save"
+
+   Second variable:
+   - Key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+   - Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZybG1uenl4ZXlzaHFuZm5yZHloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNTA3ODUsImV4cCI6MjA4ODYyNjc4NX0.C6kVS6mmmab9sao8n-J1s9yM0ACvWMZ5VaLfPI3v3bQ
+   - Environments: ✓ Production ✓ Preview ✓ Development
+   - Click "Save"
+
+   Third variable:
+   - Key: SUPABASE_SERVICE_ROLE_KEY
+   - Value: <paste the service_role key you copied from Supabase>
+   - Environments: ✓ Production ✓ Preview ✓ Development
+   - Click "Save"
+
+5. After adding all variables, go to Deployments tab
+6. Click the three dots (...) on the latest deployment
+7. Click "Redeploy"
+8. Select "Use existing Build Cache"
+9. Click "Redeploy"
+
+
+WHAT EACH VARIABLE DOES:
+-------------------------
+
+✅ NEXT_PUBLIC_SUPABASE_URL (REQUIRED)
+   - Your Supabase project URL
+   - Used by both client and server
+   - Safe to expose in browser
+
+✅ NEXT_PUBLIC_SUPABASE_ANON_KEY (REQUIRED)
+   - Public anonymous key for Supabase
+   - Used by client-side code
+   - Safe to expose in browser
+
+✅ SUPABASE_SERVICE_ROLE_KEY (REQUIRED)
+   - Server-side admin key
+   - ⚠️ NEVER expose in browser/client code
+   - Gives full database access
+
+⚡ EMERGENT_LLM_KEY (OPTIONAL)
+   - For AI features: question generation, lesson content
+   - Without this: users can still practice with manually created content
+   - Get from Bolt/Emergent support
+
+💳 STRIPE_API_KEY (OPTIONAL)
+   - For premium subscription payments
+   - Without this: app works, but no payment processing
+   - Get from https://dashboard.stripe.com/apikeys
+
+
+TROUBLESHOOTING:
+----------------
+
+❌ Build still fails after adding variables?
+   → Make sure you clicked "Redeploy" after adding them
+   → Variables are NOT automatically applied to existing builds
+
+❌ "Database not configured" error in production?
+   → Double-check SUPABASE_SERVICE_ROLE_KEY is correct
+   → Make sure you selected all three environments when adding the variable
+
+❌ Users can't sign up?
+   → Verify all 3 Supabase variables are added correctly
+   → Check Supabase project is active (not paused)
+
+❌ AI features not working?
+   → EMERGENT_LLM_KEY needs to be added (optional feature)

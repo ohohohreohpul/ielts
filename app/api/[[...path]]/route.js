@@ -424,6 +424,13 @@ async function handleRoute(request, context) {
         ))
       }
 
+      if (!supabaseServer) {
+        return handleCORS(NextResponse.json(
+          { error: "Database not configured" },
+          { status: 500 }
+        ))
+      }
+
       const user = await supabaseServer
         .from('users')
         .insert({
@@ -1131,6 +1138,13 @@ Provide a JSON response:
         }
 
         const authData = await authResponse.json()
+
+        if (!supabaseServer) {
+          return handleCORS(NextResponse.json(
+            { error: 'Database not configured' },
+            { status: 500 }
+          ))
+        }
 
         let user = await getUserByEmail(authData.email)
 
