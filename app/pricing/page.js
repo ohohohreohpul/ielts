@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { ArrowLeft, Check, Crown, Loader2, Sparkles } from 'lucide-react'
+import { ArrowLeft, Check, Crown, Loader as Loader2, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 function PricingContent() {
@@ -233,6 +233,7 @@ export default function PricingPage() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
       <PricingContent />
+    }
     </Suspense>
   )
 }
