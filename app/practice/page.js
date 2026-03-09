@@ -145,6 +145,7 @@ export default function PracticePage() {
         <div className="flex items-center justify-between pt-2">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
           {!isPremium && <button onClick={() => setShowPricing(true)} className="text-xs font-bold text-orange-500">ปลดล็อค</button>}
+          }
         </div>
         {premiumExams.map((exam, ei) => (
           isPremium ? (

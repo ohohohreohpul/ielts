@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Star, BookOpen, ChevronRight, Bell, Crown, Shield, HelpCircle, LogOut, X, Check, Moon, Sun } from 'lucide-react'
+import { Flame, Star, BookOpen, ChevronRight, Bell, Crown, Shield, CircleHelp as HelpCircle, LogOut, X, Check, Moon, Sun } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 export default function ProfilePage() {

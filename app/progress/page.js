@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trophy, BookOpen, Headphones, PenTool, Mic, CheckCircle2, XCircle, ChevronDown, ChevronUp, Filter, TrendingUp } from 'lucide-react'
+import { Trophy, BookOpen, Headphones, PenTool, Mic, CircleCheck as CheckCircle2, Circle as XCircle, ChevronDown, ChevronUp, ListFilter as Filter, TrendingUp } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 const EXAM_META = {
@@ -184,6 +184,7 @@ export default function ProgressPage() {
                 }`}
               >
                 {f.emoji && <span>{f.emoji}</span>}
+                }
                 {f.label}
               </button>
             ))}
