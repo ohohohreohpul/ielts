@@ -133,16 +133,27 @@ function buildLessonPrompt(examId, sectionId, lessonId) {
 // Helper function to build Gemini prompts for different exam types
 function buildExamPrompt(examType, section, count) {
   if (section === 'grammar') {
-    return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array.
+    return `Generate ${count} English Grammar practice questions for ${examType} exam format. Return ONLY a valid JSON array.
 
-IMPORTANT:
-- Each question MUST have "type": "multiple-choice"
-- MUST include "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining WHY the answer is correct
-- Explanation should be easy to understand with examples
+CRITICAL REQUIREMENTS:
+- Each question MUST have EXACTLY 4 OPTIONS (A, B, C, D)
+- MUST have "type": "multiple-choice"
+- MUST include "explanation" field IN THAI LANGUAGE explaining the answer
+- Questions should match ${examType} difficulty and style
 
-Mix different grammar topics: tenses, prepositions, articles, vocabulary, conditionals, reported speech, subject-verb agreement.
+Grammar Topics to Cover:
+- Verb tenses (present, past, future, perfect)
+- Prepositions (in, on, at, by, for, with)
+- Articles (a, an, the)
+- Subject-verb agreement
+- Conditionals (if clauses)
+- Reported speech
+- Modal verbs
+- Relative clauses
+- Passive voice
+- Conjunctions
 
-Format:
+JSON Format:
 [
   {
     "id": "q1",
@@ -155,42 +166,70 @@ Format:
       {"id": "c", "text": "going", "correct": false},
       {"id": "d", "text": "gone", "correct": false}
     ],
-    "explanation": "คำตอบที่ถูกคือ 'goes' เพราะประธาน 'She' เป็นเอกพจน์บุรุษที่ 3 ในรูป Present Simple Tense เราต้องเติม -s/-es ที่ท้ายกริยา"
+    "explanation": "คำตอบที่ถูกคือ 'goes' เพราะประธาน 'She' เป็นเอกพจน์บุรุษที่ 3 ในรูป Present Simple Tense เราต้องเติม -s/-es ที่ท้ายกริยา ตัวอย่างเพิ่มเติม: He works, She studies"
   }
 ]
 
-Rules:
-- "type" MUST be "multiple-choice"
-- "explanation" MUST be in THAI language
-- Cover various grammar topics
-- Generate exactly ${count} grammar questions. Return ONLY the JSON array.`
+STRICT RULES:
+- MUST have exactly 4 options per question
+- ONE option must be correct, THREE must be incorrect but plausible
+- Explanation MUST be in Thai language with examples
+- Return ONLY the JSON array, no other text`
   }
 
   if (section === 'listening') {
-    return `Generate ${count} ${examType} Listening questions. Return ONLY a valid JSON array.
+    const formatGuide = examType === 'TOEIC'
+      ? `TOEIC LISTENING FORMAT:
+- Part 1 (Photos): 4 statements describing an image
+- Part 2 (Question-Response): Question + 3 response options
+- Part 3 (Conversations): Dialogue + 3 questions with 4 options each
+- Part 4 (Talks): Monologue + 3 questions with 4 options each`
+      : `IELTS LISTENING FORMAT:
+- Section 1: Conversation (booking, arrangements) - form/note completion or multiple choice (4 options)
+- Section 2: Monologue (facilities, services) - multiple choice (4 options), matching, map labeling
+- Section 3: Academic conversation - multiple choice (4 options) or matching
+- Section 4: Academic lecture - completion, multiple choice (4 options)`
 
-IMPORTANT:
-- Each question MUST have "type": "listening"
-- MUST have "audioText" field containing the English text to be spoken
+    const optionCount = examType === 'TOEIC' ?
+      'TOEIC: Part 1 has 4 options, Part 2 has 3 options, Part 3&4 have 4 options each' :
+      'IELTS: Most questions have 4 options (A, B, C, D)'
+
+    return `Generate ${count} ${examType} Listening questions following official ${examType} format. Return ONLY a valid JSON array.
+
+${formatGuide}
+
+CRITICAL REQUIREMENTS:
+- Follow ${examType} exam format exactly
+- ${optionCount}
+- MUST have "type": "listening"
+- MUST have "audioText" field (50-150 words of natural English dialogue/monologue)
 - MUST have "explanation" field IN THAI LANGUAGE
+- Questions should test: main idea, specific details, inference, speaker purpose
 
-Format for listening questions:
+JSON Format:
 [
   {
     "id": "q1",
     "type": "listening",
-    "audioText": "Good morning everyone. Today I'd like to discuss our quarterly sales figures.",
-    "question": "What is the main topic?",
+    "part": "${examType === 'TOEIC' ? 'Part 3' : 'Section 2'}",
+    "audioText": "Good morning everyone. I'm pleased to announce that our quarterly sales have exceeded expectations. We've seen a 15% increase compared to last quarter, primarily driven by our new product line launched in March.",
+    "question": "What is the main topic of the announcement?",
     "options": [
       {"id": "a", "text": "Product launch", "correct": false},
-      {"id": "b", "text": "Quarterly sales", "correct": true},
-      {"id": "c", "text": "Employee promotions", "correct": false}
+      {"id": "b", "text": "Quarterly sales results", "correct": true},
+      {"id": "c", "text": "Employee promotions", "correct": false},
+      {"id": "d", "text": "Company expansion", "correct": false}
     ],
-    "explanation": "ผู้พูดกล่าวว่า 'quarterly sales figures' คำสำคัญคือ sales figures = ตัวเลขยอดขาย"
+    "explanation": "ผู้พูดเริ่มต้นด้วยการพูดถึง 'quarterly sales' และกล่าวว่ายอดขายเกินความคาดหมาย (exceeded expectations) คำสำคัญ: quarterly sales, 15% increase"
   }
 ]
 
-Generate exactly ${count} questions. Return ONLY the JSON array.`
+STRICT RULES:
+- Audio text must be realistic workplace/academic English
+- Questions must be clear and test listening comprehension
+- Include workplace topics: meetings, announcements, phone calls, presentations
+- Explanation in Thai with key vocabulary highlighted
+- Return ONLY the JSON array`
   }
 
   if (section === 'writing') {
@@ -269,57 +308,133 @@ Generate exactly ${count} speaking questions. Return ONLY the JSON array.`
 
   if (section === 'reading') {
     if (examType === 'IELTS') {
-      return `Generate ${count} IELTS Reading questions. Return ONLY a valid JSON array.
+      return `Generate ${count} IELTS Reading questions following official IELTS format. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST include "explanation" IN THAI LANGUAGE.
+IELTS READING QUESTION TYPES:
+1. Multiple Choice (4 options: A, B, C, D)
+2. True/False/Not Given (3 options only)
+3. Yes/No/Not Given (3 options only)
+4. Matching Headings
+5. Sentence Completion
+6. Summary Completion
 
-Mix these types:
-1. TRUE/FALSE/NOT GIVEN
-2. Multiple Choice
-3. Completion
+CRITICAL REQUIREMENTS:
+- MULTIPLE CHOICE questions MUST have EXACTLY 4 OPTIONS (A, B, C, D)
+- TRUE/FALSE/NOT GIVEN questions have exactly 3 options
+- Each question needs a 150-250 word passage (academic or general training text)
+- MUST include "explanation" IN THAI LANGUAGE
+- Passage topics: science, history, society, environment, technology, education
 
-Each must have Thai explanation. Generate exactly ${count} questions. Return ONLY the JSON array.`
+JSON Format Examples:
+
+MULTIPLE CHOICE (4 options):
+{
+  "id": "q1",
+  "type": "reading",
+  "questionType": "multiple-choice",
+  "passage": "Climate change is one of the most pressing issues facing humanity today. Scientists worldwide agree that global temperatures have risen by approximately 1.1 degrees Celsius since pre-industrial times. This warming is primarily caused by human activities, particularly the burning of fossil fuels which releases greenhouse gases into the atmosphere. The consequences include rising sea levels, extreme weather events, and disruptions to ecosystems.",
+  "question": "According to the passage, what is the primary cause of global temperature rise?",
+  "options": [
+    {"id": "a", "text": "Natural climate cycles", "correct": false},
+    {"id": "b", "text": "Burning of fossil fuels", "correct": true},
+    {"id": "c", "text": "Rising sea levels", "correct": false},
+    {"id": "d", "text": "Extreme weather events", "correct": false}
+  ],
+  "explanation": "บทความระบุชัดเจนว่า 'primarily caused by human activities, particularly the burning of fossil fuels' คำตอบที่ถูกคือ B เพราะการเผาเชื้อเพลิงฟอสซิลเป็นสาเหตุหลัก"
+}
+
+TRUE/FALSE/NOT GIVEN (3 options):
+{
+  "id": "q2",
+  "type": "reading",
+  "questionType": "true-false-notgiven",
+  "passage": "The Great Wall of China stretches over 13,000 miles and was built over many centuries. Construction began in the 7th century BC and continued until the 17th century AD. While many believe it can be seen from space, this is actually a myth.",
+  "statement": "The Great Wall of China is visible from space.",
+  "options": [
+    {"id": "true", "text": "True", "correct": false},
+    {"id": "false", "text": "False", "correct": true},
+    {"id": "notgiven", "text": "Not Given", "correct": false}
+  ],
+  "explanation": "บทความระบุชัดเจนว่า 'this is actually a myth' (นี่เป็นเรื่องเท็จ) ดังนั้นคำตอบคือ False"
+}
+
+STRICT RULES:
+- Multiple Choice = 4 options (A, B, C, D)
+- True/False/Not Given = 3 options only
+- Academic vocabulary and complex sentence structures
+- Explanation must reference specific text from passage
+- Return ONLY the JSON array`
     }
 
-    return `Generate ${count} ${examType} Reading questions. Return ONLY a valid JSON array.
+    return `Generate ${count} ${examType} Reading questions following official ${examType} format. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST include "explanation" IN THAI LANGUAGE.
+TOEIC READING FORMAT:
+- Part 5: Incomplete Sentences (grammar/vocabulary) - 4 options
+- Part 6: Text Completion (emails, letters) - 4 options
+- Part 7: Reading Comprehension (passages) - 4 options
 
-Format:
+CRITICAL REQUIREMENTS:
+- ALL questions MUST have EXACTLY 4 OPTIONS (A, B, C, D)
+- Include realistic business contexts: emails, memos, articles, advertisements
+- MUST include "explanation" IN THAI LANGUAGE
+- Passage length: 100-200 words
+- Test: main idea, details, vocabulary, inference
+
+JSON Format:
 [
   {
     "id": "q1",
     "type": "reading",
-    "passage": "A 100-150 word passage...",
-    "question": "What is the main idea?",
+    "passage": "TO: All Staff\nFROM: Human Resources\nDATE: March 15\nSUBJECT: Annual Performance Reviews\n\nPlease be reminded that annual performance reviews will take place during the week of April 3-7. Each employee should schedule a 30-minute meeting with their direct supervisor. Review forms must be completed by March 29 and submitted to HR.",
+    "question": "When should employees submit their review forms?",
     "options": [
-      {"id": "a", "text": "option A", "correct": false},
-      {"id": "b", "text": "option B", "correct": true}
+      {"id": "a", "text": "March 15", "correct": false},
+      {"id": "b", "text": "March 29", "correct": true},
+      {"id": "c", "text": "April 3", "correct": false},
+      {"id": "d", "text": "April 7", "correct": false}
     ],
-    "explanation": "ใจความหลักอยู่ในย่อหน้าแรก"
+    "explanation": "ในข้อความระบุว่า 'Review forms must be completed by March 29' (แบบฟอร์มต้องส่งภายในวันที่ 29 มีนาคม) คำว่า 'by' หมายถึงไม่เกินวันนั้น"
   }
 ]
 
-Generate exactly ${count} reading questions. Return ONLY the JSON array.`
+STRICT RULES:
+- MUST have exactly 4 options per question
+- Use realistic workplace/business documents
+- Questions test reading comprehension skills
+- Explanation in Thai with grammar notes if applicable
+- Return ONLY the JSON array`
   }
 
   return `Generate ${count} ${examType} English exam questions. Return ONLY a valid JSON array.
 
-Format:
+CRITICAL REQUIREMENTS:
+- ALL questions MUST have EXACTLY 4 OPTIONS (A, B, C, D)
+- MUST include "explanation" field IN THAI LANGUAGE
+- Follow ${examType} exam format and difficulty
+- Questions should be realistic and practical
+
+JSON Format:
 [
   {
     "id": "q1",
     "type": "multiple-choice",
-    "sentence": "The manager ____ the report.",
+    "sentence": "The manager ____ the report before the deadline.",
     "question": "Choose the best answer:",
     "options": [
-      {"id": "a", "text": "submits", "correct": false},
-      {"id": "b", "text": "submitted", "correct": true}
-    ]
+      {"id": "a", "text": "submit", "correct": false},
+      {"id": "b", "text": "submitted", "correct": true},
+      {"id": "c", "text": "submitting", "correct": false},
+      {"id": "d", "text": "will submit", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'submitted' เพราะมีการใช้ Past Simple Tense บอกเล่าเหตุการณ์ที่เกิดขึ้นและสิ้นสุดแล้วในอดีต (ก่อนถึง deadline)"
   }
 ]
 
-Generate exactly ${count} questions. Return ONLY the JSON array.`
+STRICT RULES:
+- MUST have exactly 4 options (A, B, C, D) per question
+- Each option must be plausible but only one correct
+- Explanation in Thai with clear reasoning
+- Return ONLY the JSON array`
 }
 
 // OPTIONS handler for CORS
