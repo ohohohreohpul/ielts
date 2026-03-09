@@ -17,6 +17,8 @@ export default function AdminPage() {
   
   const [config, setConfig] = useState({
     geminiKey: '',
+    openAIKey: '',
+    llmProvider: 'gemini',
     stripeKey: '',
     googleClientId: '',
     googleClientSecret: '',
@@ -35,6 +37,8 @@ export default function AdminPage() {
         const data = await res.json()
         setConfig({
           geminiKey: data.geminiKey || '',
+          openAIKey: data.openAIKey || '',
+          llmProvider: data.llmProvider || 'gemini',
           stripeKey: data.stripeKey || '',
           googleClientId: data.googleClientId || '',
           googleClientSecret: data.googleClientSecret || '',
@@ -84,10 +88,16 @@ export default function AdminPage() {
     {
       title: 'AI Configuration',
       icon: '🤖',
-      description: 'ตั้งค่า API key สำหรับ AI (Gemini)',
+      description: 'ตั้งค่า API key สำหรับ AI (Gemini หรือ OpenAI)',
       fields: [
-        { key: 'geminiKey', label: 'Gemini API Key', placeholder: 'AIza...' }
-      ]
+        { key: 'llmProvider', label: 'AI Provider', type: 'select', options: [
+          { value: 'gemini', label: 'Google Gemini' },
+          { value: 'openai', label: 'OpenAI (GPT-4)' }
+        ]},
+        { key: 'geminiKey', label: 'Gemini API Key', placeholder: 'AIza...' },
+        { key: 'openAIKey', label: 'OpenAI API Key', placeholder: 'sk-...' }
+      ],
+      instructions: 'เลือก AI provider และใส่ API key ที่ต้องการใช้'
     },
     {
       title: 'Payment (Stripe)',
@@ -185,22 +195,34 @@ export default function AdminPage() {
                 {section.fields.map(field => (
                   <div key={field.key} className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">{field.label}</label>
-                    <div className="relative">
-                      <Input
-                        type={showKeys[field.key] ? 'text' : 'password'}
+                    {field.type === 'select' ? (
+                      <select
                         value={config[field.key]}
                         onChange={(e) => setConfig(prev => ({ ...prev, [field.key]: e.target.value }))}
-                        placeholder={field.placeholder}
-                        className="pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => toggleShowKey(field.key)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                       >
-                        {showKeys[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
+                        {field.options.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="relative">
+                        <Input
+                          type={showKeys[field.key] ? 'text' : 'password'}
+                          value={config[field.key]}
+                          onChange={(e) => setConfig(prev => ({ ...prev, [field.key]: e.target.value }))}
+                          placeholder={field.placeholder}
+                          className="pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => toggleShowKey(field.key)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          {showKeys[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </CardContent>

@@ -635,19 +635,21 @@ async function handleRoute(request, context) {
         gemini: !!config.geminiKey,
         googleTTS: !!config.googleTTSKey,
         elevenLabs: !!config.elevenLabsKey,
-        openAI: !!config.openAIKey
+        openAI: !!config.openAIKey,
+        llmProvider: config.llmProvider || 'gemini'
       }))
     }
 
     // Admin: Save API Keys
     if (route === '/admin/keys' && method === 'POST') {
       const body = await request.json()
-      const { geminiKey, googleTTSKey, elevenLabsKey, openAIKey } = body
+      const { geminiKey, googleTTSKey, elevenLabsKey, openAIKey, llmProvider } = body
 
       if (geminiKey) await setAdminConfig('geminiKey', geminiKey)
       if (googleTTSKey) await setAdminConfig('googleTTSKey', googleTTSKey)
       if (elevenLabsKey) await setAdminConfig('elevenLabsKey', elevenLabsKey)
       if (openAIKey) await setAdminConfig('openAIKey', openAIKey)
+      if (llmProvider) await setAdminConfig('llmProvider', llmProvider)
 
       return handleCORS(NextResponse.json({
         success: true,
@@ -660,29 +662,55 @@ async function handleRoute(request, context) {
       const body = await request.json()
       const { examType, section, count = 5 } = body
 
-      const apiKey = await getAdminConfig('geminiKey') || process.env.EMERGENT_LLM_KEY
+      const llmProvider = await getAdminConfig('llmProvider') || 'gemini'
+      const geminiKey = await getAdminConfig('geminiKey')
+      const openAIKey = await getAdminConfig('openAIKey')
+      const emergentKey = process.env.EMERGENT_LLM_KEY
+
+      let apiKey = null
+      let useProvider = llmProvider
+
+      if (llmProvider === 'openai' && openAIKey) {
+        apiKey = openAIKey
+        useProvider = 'openai'
+      } else if (llmProvider === 'gemini' && geminiKey) {
+        apiKey = geminiKey
+        useProvider = 'gemini'
+      } else if (openAIKey) {
+        apiKey = openAIKey
+        useProvider = 'openai'
+      } else if (geminiKey) {
+        apiKey = geminiKey
+        useProvider = 'gemini'
+      } else if (emergentKey) {
+        apiKey = emergentKey
+        useProvider = emergentKey.startsWith('sk-emergent-') ? 'emergent' : 'openai'
+      }
 
       if (!apiKey) {
         return handleCORS(NextResponse.json(
-          { error: "API key not configured." },
+          { error: "API key not configured. Please configure Gemini or OpenAI API key in Admin Console." },
           { status: 400 }
         ))
       }
 
       try {
         const prompt = buildExamPrompt(examType, section, count)
-        const isEmergentKey = apiKey.startsWith('sk-emergent-')
         let generatedText
 
-        if (isEmergentKey) {
-          const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
+        if (useProvider === 'openai' || useProvider === 'emergent') {
+          const apiUrl = useProvider === 'emergent'
+            ? 'https://integrations.emergentagent.com/llm/chat/completions'
+            : 'https://api.openai.com/v1/chat/completions'
+
+          const aiResponse = await fetch(apiUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-              model: 'gpt-4.1',
+              model: useProvider === 'emergent' ? 'gpt-4.1' : 'gpt-4o-mini',
               messages: [{ role: 'user', content: prompt }],
               temperature: 0.9,
               max_tokens: 8192,
@@ -691,7 +719,7 @@ async function handleRoute(request, context) {
 
           if (!aiResponse.ok) {
             const errorData = await aiResponse.json()
-            throw new Error(errorData.error?.message || 'AI API request failed')
+            throw new Error(errorData.error?.message || 'OpenAI API request failed')
           }
 
           const aiData = await aiResponse.json()
@@ -798,11 +826,34 @@ async function handleRoute(request, context) {
       const body = await request.json()
       const { type, question, answer, rubric } = body
 
-      const apiKey = await getAdminConfig('geminiKey') || process.env.EMERGENT_LLM_KEY
+      const llmProvider = await getAdminConfig('llmProvider') || 'gemini'
+      const geminiKey = await getAdminConfig('geminiKey')
+      const openAIKey = await getAdminConfig('openAIKey')
+      const emergentKey = process.env.EMERGENT_LLM_KEY
+
+      let apiKey = null
+      let useProvider = llmProvider
+
+      if (llmProvider === 'openai' && openAIKey) {
+        apiKey = openAIKey
+        useProvider = 'openai'
+      } else if (llmProvider === 'gemini' && geminiKey) {
+        apiKey = geminiKey
+        useProvider = 'gemini'
+      } else if (openAIKey) {
+        apiKey = openAIKey
+        useProvider = 'openai'
+      } else if (geminiKey) {
+        apiKey = geminiKey
+        useProvider = 'gemini'
+      } else if (emergentKey) {
+        apiKey = emergentKey
+        useProvider = emergentKey.startsWith('sk-emergent-') ? 'emergent' : 'openai'
+      }
 
       if (!apiKey) {
         return handleCORS(NextResponse.json(
-          { error: "API key not configured." },
+          { error: "API key not configured. Please configure Gemini or OpenAI API key in Admin Console." },
           { status: 400 }
         ))
       }
@@ -846,25 +897,28 @@ Provide a JSON response:
 }`
         }
 
-        const isEmergentKey = apiKey.startsWith('sk-emergent-')
         let generatedText
 
-        if (isEmergentKey) {
-          const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
+        if (useProvider === 'openai' || useProvider === 'emergent') {
+          const apiUrl = useProvider === 'emergent'
+            ? 'https://integrations.emergentagent.com/llm/chat/completions'
+            : 'https://api.openai.com/v1/chat/completions'
+
+          const aiResponse = await fetch(apiUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-              model: 'gpt-4.1',
+              model: useProvider === 'emergent' ? 'gpt-4.1' : 'gpt-4o-mini',
               messages: [{ role: 'user', content: scoringPrompt }],
               temperature: 0.7,
               max_tokens: 2048,
             })
           })
 
-          if (!aiResponse.ok) throw new Error('AI scoring failed')
+          if (!aiResponse.ok) throw new Error('OpenAI scoring failed')
           const aiData = await aiResponse.json()
           generatedText = aiData.choices[0].message.content
         } else {
@@ -956,6 +1010,8 @@ Provide a JSON response:
 
       return handleCORS(NextResponse.json({
         geminiKey: config.geminiKey ? '***configured***' : '',
+        openAIKey: config.openAIKey ? '***configured***' : '',
+        llmProvider: config.llmProvider || 'gemini',
         stripeKey: config.stripeKey ? '***configured***' : '',
         googleClientId: config.googleClientId ? '***configured***' : '',
         googleClientSecret: config.googleClientSecret ? '***configured***' : '',
@@ -967,11 +1023,17 @@ Provide a JSON response:
     // Save Admin Config
     if (route === '/admin/config' && method === 'POST') {
       const body = await request.json()
-      const { geminiKey, stripeKey, googleClientId, googleClientSecret, facebookAppId, facebookAppSecret } = body
+      const { geminiKey, openAIKey, llmProvider, stripeKey, googleClientId, googleClientSecret, facebookAppId, facebookAppSecret } = body
 
       try {
         if (geminiKey && !geminiKey.includes('***')) {
           await setAdminConfig('geminiKey', geminiKey)
+        }
+        if (openAIKey && !openAIKey.includes('***')) {
+          await setAdminConfig('openAIKey', openAIKey)
+        }
+        if (llmProvider) {
+          await setAdminConfig('llmProvider', llmProvider)
         }
         if (stripeKey && !stripeKey.includes('***')) {
           await setAdminConfig('stripeKey', stripeKey)
@@ -1440,10 +1502,34 @@ Provide a JSON response:
       if (!lesson) {
         console.log(`Generating lesson content for ${examId}/${sectionId}/${lessonId}`)
 
-        const apiKey = process.env.EMERGENT_LLM_KEY
+        const llmProvider = await getAdminConfig('llmProvider') || 'gemini'
+        const geminiKey = await getAdminConfig('geminiKey')
+        const openAIKey = await getAdminConfig('openAIKey')
+        const emergentKey = process.env.EMERGENT_LLM_KEY
+
+        let apiKey = null
+        let useProvider = llmProvider
+
+        if (llmProvider === 'openai' && openAIKey) {
+          apiKey = openAIKey
+          useProvider = 'openai'
+        } else if (llmProvider === 'gemini' && geminiKey) {
+          apiKey = geminiKey
+          useProvider = 'gemini'
+        } else if (openAIKey) {
+          apiKey = openAIKey
+          useProvider = 'openai'
+        } else if (geminiKey) {
+          apiKey = geminiKey
+          useProvider = 'gemini'
+        } else if (emergentKey) {
+          apiKey = emergentKey
+          useProvider = emergentKey.startsWith('sk-emergent-') ? 'emergent' : 'openai'
+        }
+
         if (!apiKey) {
           return handleCORS(NextResponse.json(
-            { error: 'AI not configured' },
+            { error: 'AI not configured. Please configure Gemini or OpenAI API key in Admin Console.' },
             { status: 500 }
           ))
         }
@@ -1451,18 +1537,21 @@ Provide a JSON response:
         const lessonPrompt = buildLessonPrompt(examId, sectionId, lessonId)
 
         try {
-          const isEmergentKey = apiKey.startsWith('sk-emergent-')
           let generatedText
 
-          if (isEmergentKey) {
-            const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
+          if (useProvider === 'openai' || useProvider === 'emergent') {
+            const apiUrl = useProvider === 'emergent'
+              ? 'https://integrations.emergentagent.com/llm/chat/completions'
+              : 'https://api.openai.com/v1/chat/completions'
+
+            const aiResponse = await fetch(apiUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${apiKey}`
               },
               body: JSON.stringify({
-                model: 'gpt-4.1',
+                model: useProvider === 'emergent' ? 'gpt-4.1' : 'gpt-4o-mini',
                 messages: [
                   {
                     role: 'system',
@@ -1477,7 +1566,7 @@ Provide a JSON response:
 
             if (!aiResponse.ok) {
               const errorData = await aiResponse.json()
-              throw new Error(errorData.error?.message || 'AI API request failed')
+              throw new Error(errorData.error?.message || 'OpenAI API request failed')
             }
 
             const aiData = await aiResponse.json()
