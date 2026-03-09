@@ -327,51 +327,65 @@ export async function OPTIONS() {
   return handleCORS(new NextResponse(null, { status: 200 }))
 }
 
-// Mock AI-generated questions
-const generateMockQuestions = (examType = 'TOEIC', count = 10) => {
-  const questionTypes = ['multiple-choice', 'reorder', 'reading']
+// Mock AI-generated questions with better variety
+const generateMockQuestions = (examType = 'TOEIC', count = 10, section = 'reading') => {
   const questions = []
 
-  for (let i = 0; i < count; i++) {
-    const type = questionTypes[Math.floor(Math.random() * questionTypes.length)]
+  const readingPassages = [
+    'The annual conference will be held in Singapore this year. Over 500 delegates from around the world are expected to attend.',
+    'Our company has been recognized as one of the best places to work for the third consecutive year.',
+    'The new product launch has exceeded expectations, with sales reaching $1 million in the first week.'
+  ]
 
-    if (type === 'multiple-choice') {
-      questions.push({
-        id: `q${i + 1}`,
-        type: 'multiple-choice',
-        question: `${examType} Question ${i + 1}`,
-        text: 'The company ____ a new product next month.',
-        options: [
-          { id: 'a', text: 'launch', correct: false },
-          { id: 'b', text: 'will launch', correct: true },
-          { id: 'c', text: 'launching', correct: false },
-          { id: 'd', text: 'launched', correct: false }
-        ]
-      })
-    } else if (type === 'reorder') {
-      questions.push({
-        id: `q${i + 1}`,
-        type: 'reorder',
-        question: 'Arrange the words to form a correct sentence:',
-        words: [
-          { id: 'w1', text: 'carefully', order: 3 },
-          { id: 'w2', text: 'The', order: 1 },
-          { id: 'w3', text: 'document', order: 2 },
-          { id: 'w4', text: 'review', order: 4 }
-        ],
-        correctOrder: ['w2', 'w3', 'w1', 'w4']
-      })
-    } else {
+  const grammarSentences = [
+    { text: 'The company ____ a new product next month.', answer: 'will launch', options: ['launch', 'will launch', 'launching', 'launched'] },
+    { text: 'She ____ to the office every day.', answer: 'goes', options: ['go', 'goes', 'going', 'gone'] },
+    { text: 'They ____ the meeting yesterday.', answer: 'attended', options: ['attend', 'attends', 'attending', 'attended'] }
+  ]
+
+  for (let i = 0; i < count; i++) {
+    if (section === 'reading') {
+      const passage = readingPassages[i % readingPassages.length]
       questions.push({
         id: `q${i + 1}`,
         type: 'reading',
-        passage: 'The annual conference will be held in Singapore this year.',
-        question: 'Where will the conference be held?',
+        passage: passage,
+        question: 'What is the main topic of this passage?',
         options: [
-          { id: 'a', text: 'Thailand', correct: false },
-          { id: 'b', text: 'Singapore', correct: true },
-          { id: 'c', text: 'Malaysia', correct: false }
-        ]
+          { id: 'a', text: 'Company performance', correct: i % 2 === 0 },
+          { id: 'b', text: 'Conference details', correct: i % 2 === 1 },
+          { id: 'c', text: 'Product information', correct: false },
+          { id: 'd', text: 'Employee benefits', correct: false }
+        ],
+        explanation: 'The passage discusses specific information about the topic mentioned.'
+      })
+    } else if (section === 'listening') {
+      questions.push({
+        id: `q${i + 1}`,
+        type: 'listening',
+        audioText: 'Good morning. This is an announcement about today\'s schedule.',
+        question: 'What is this audio about?',
+        options: [
+          { id: 'a', text: 'Daily schedule', correct: true },
+          { id: 'b', text: 'Weather forecast', correct: false },
+          { id: 'c', text: 'Traffic report', correct: false },
+          { id: 'd', text: 'News update', correct: false }
+        ],
+        explanation: 'The speaker mentions the daily schedule.'
+      })
+    } else {
+      const sentence = grammarSentences[i % grammarSentences.length]
+      questions.push({
+        id: `q${i + 1}`,
+        type: 'multiple-choice',
+        question: 'Choose the correct form:',
+        sentence: sentence.text,
+        options: sentence.options.map((opt, idx) => ({
+          id: String.fromCharCode(97 + idx),
+          text: opt,
+          correct: opt === sentence.answer
+        })),
+        explanation: `The correct answer is "${sentence.answer}" because of the grammatical context.`
       })
     }
   }
@@ -657,10 +671,24 @@ async function handleRoute(request, context) {
 
     // Generate AI questions using LLM
     if (route === '/ai/generate-questions' && method === 'POST') {
+      console.log('=== AI Generation Request Started ===')
+      console.log('Route:', route)
+      console.log('Method:', method)
+
       const body = await request.json()
       const { examType, section, count = 5 } = body
+      console.log('Request body:', { examType, section, count })
 
-      const apiKey = await getAdminConfig('geminiKey') || process.env.EMERGENT_LLM_KEY
+      console.log('Attempting to fetch API key from database...')
+      const dbApiKey = await getAdminConfig('geminiKey')
+      console.log('Database API key:', dbApiKey ? `${dbApiKey.substring(0, 10)}... (length: ${dbApiKey.length})` : 'null')
+
+      console.log('Checking environment variable...')
+      const envApiKey = process.env.EMERGENT_LLM_KEY
+      console.log('Environment API key:', envApiKey ? `${envApiKey.substring(0, 10)}... (length: ${envApiKey.length})` : 'null')
+
+      const apiKey = dbApiKey || envApiKey
+      console.log('Final API key selected:', apiKey ? `${apiKey.substring(0, 10)}... (length: ${apiKey.length})` : 'null')
 
       if (!apiKey) {
         console.error('AI generation error: No API key configured')
@@ -710,7 +738,8 @@ async function handleRoute(request, context) {
           generatedText = aiData.choices[0].message.content
         } else {
           console.log('Using Google Gemini API')
-          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`
+          // Use stable model instead of experimental
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`
           console.log('Gemini API URL:', geminiUrl.replace(apiKey, 'KEY_HIDDEN'))
 
           const geminiResponse = await fetch(
@@ -820,10 +849,18 @@ async function handleRoute(request, context) {
       } catch (error) {
         console.error('AI generation error:', error)
         console.error('Error stack:', error.stack)
-        return handleCORS(NextResponse.json(
-          { error: "Failed to generate questions: " + error.message },
-          { status: 500 }
-        ))
+
+        // Fallback to mock questions if AI fails
+        console.log('Falling back to mock questions due to AI error')
+        const mockQuestions = generateMockQuestions(examType, count, section)
+
+        return handleCORS(NextResponse.json({
+          examType,
+          section,
+          questions: mockQuestions,
+          fallback: true,
+          error_message: error.message
+        }))
       }
     }
 

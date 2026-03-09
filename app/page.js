@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader2 } from 'lucide-react'
+import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader as Loader2 } from 'lucide-react'
 import AudioPlayer from '@/components/AudioPlayer'
 import VoiceRecorder from '@/components/VoiceRecorder'
 import dynamic from 'next/dynamic'
@@ -51,6 +51,7 @@ function AppInner() {
   const [scoring, setScoring] = useState(false)
   const [recordedAudio, setRecordedAudio] = useState(null)
   const [answerHistory, setAnswerHistory] = useState([]) // Track answers for history
+  const [errorMessage, setErrorMessage] = useState('') // Detailed error message
 
   const currentQuestion = questions[currentQuestionIndex]
   const progress = questions.length > 0 ? (completedQuestions / questions.length) * 100 : 0
@@ -121,11 +122,13 @@ function AppInner() {
 
         if (!response.ok) {
           const error = await response.json()
+          console.error('API Error:', error)
           throw new Error(error.error || 'Failed to generate questions')
         }
 
         const data = await response.json()
-        
+        console.log('API Response:', data)
+
         if (!data.questions || data.questions.length === 0) {
           throw new Error('No questions generated')
         }
@@ -143,6 +146,7 @@ function AppInner() {
     // All retries failed
     clearInterval(tipInterval)
     setStage('error')
+    setErrorMessage(lastError?.message || 'Unknown error occurred')
     console.error('startLesson error after retries:', lastError)
     setLoading(false)
   }
@@ -484,7 +488,13 @@ function AppInner() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md text-center">
           <div className="text-6xl mb-6">⚠️</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">เกิดข้อผิดพลาด</h1>
-          <p className="text-gray-600 mb-8">ไม่สามารถสร้างคำถามได้ กรุณาลองใหม่อีกครั้ง</p>
+          <p className="text-gray-600 mb-2">ไม่สามารถสร้างคำถามได้</p>
+          {errorMessage && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
+              <p className="text-xs font-bold text-red-600 uppercase mb-2">รายละเอียดข้อผิดพลาด:</p>
+              <p className="text-sm text-red-700 font-mono">{errorMessage}</p>
+            </div>
+          )}
           <Button onClick={() => router.push('/practice')} className="w-full h-12 hover:hover:" size="lg">
             กลับไปเลือกข้อสอบ
           </Button>
@@ -868,6 +878,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
@@ -876,6 +888,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
@@ -926,6 +940,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
@@ -934,6 +950,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
