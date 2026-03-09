@@ -126,12 +126,14 @@ export default function PracticePage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-12 pb-5 px-5">
-        <h1 className="text-2xl font-black text-white">เลือกข้อสอบ</h1>
-        <p className="text-white/70 text-sm font-medium mt-1">ฝึกทีละพาร์ท ค่อยๆ เก่งขึ้น</p>
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 pt-12 pb-8 lg:pb-12 px-5 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl lg:text-4xl font-black text-white">เลือกข้อสอบ</h1>
+          <p className="text-white/70 text-sm lg:text-base font-medium mt-1 lg:mt-2">ฝึกทีละพาร์ท ค่อยๆ เก่งขึ้น</p>
+        </div>
       </div>
 
-      <div className="px-4 pt-5 space-y-4">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 pt-5 lg:pt-8 space-y-4 lg:space-y-6">
 
         {/* FREE SECTION */}
         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">🆓 ฟรี</p>
@@ -282,14 +284,14 @@ function ExamCard({ exam, expanded, onToggle, router }) {
       {/* Exam Header */}
       <button
         onClick={onToggle}
-        className={`w-full bg-white rounded-2xl border-2 p-4 flex items-center gap-4 transition-colors active:opacity-80 ${isOpen ? 'border-orange-500' : 'border-gray-100'}`}
+        className={`w-full bg-white rounded-2xl border-2 p-4 lg:p-5 flex items-center gap-4 transition-colors hover:shadow-md active:opacity-80 ${isOpen ? 'border-orange-500 shadow-lg' : 'border-gray-100'}`}
       >
-        <span className="text-2xl">{exam.emoji}</span>
+        <span className="text-2xl lg:text-3xl">{exam.emoji}</span>
         <div className="flex-1 text-left">
-          <span className={`font-bold ${isOpen ? 'text-orange-500' : 'text-gray-900'}`}>{exam.name}</span>
-          <p className="text-xs text-gray-400">{exam.desc}</p>
+          <span className={`font-bold lg:text-lg ${isOpen ? 'text-orange-500' : 'text-gray-900'}`}>{exam.name}</span>
+          <p className="text-xs lg:text-sm text-gray-400 mt-0.5">{exam.desc}</p>
         </div>
-        {isOpen ? <ChevronUp className="w-5 h-5 text-orange-500" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+        {isOpen ? <ChevronUp className="w-5 h-5 lg:w-6 lg:h-6 text-orange-500" /> : <ChevronDown className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400" />}
       </button>
 
       {/* Sections */}
@@ -300,7 +302,7 @@ function ExamCard({ exam, expanded, onToggle, router }) {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden mt-2 space-y-2 pl-2"
+            className="overflow-hidden mt-2 lg:mt-3 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2 lg:gap-3 pl-2"
           >
             {exam.sections.map((sec, si) => (
               <motion.button
