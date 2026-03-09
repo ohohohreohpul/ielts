@@ -878,8 +878,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -888,8 +886,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -940,8 +936,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -950,8 +944,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
