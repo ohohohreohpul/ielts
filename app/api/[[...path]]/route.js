@@ -1,44 +1,30 @@
-import { MongoClient } from 'mongodb'
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
-
-// MongoDB connection - with race condition protection
-let client
-let db
-let connectPromise = null
-
-async function connectToMongo() {
-  // If already connected and db exists, return it
-  if (db) return db
-  
-  // If connection is in progress, wait for it
-  if (connectPromise) {
-    await connectPromise
-    return db
-  }
-  
-  // Start new connection
-  connectPromise = (async () => {
-    try {
-      if (!client) {
-        client = new MongoClient(process.env.MONGO_URL)
-      }
-      await client.connect()
-      db = client.db(process.env.DB_NAME)
-    } catch (err) {
-      // Reset on error so next request retries
-      client = null
-      db = null
-      connectPromise = null
-      throw err
-    }
-    connectPromise = null
-  })()
-  
-  await connectPromise
-  return db
-}
+import {
+  supabaseServer,
+  getAdminConfig,
+  setAdminConfig,
+  getAllAdminConfig,
+  createOrUpdateUser,
+  createUserSession,
+  getUserBySession,
+  getUserById,
+  getUserByEmail,
+  updateUser,
+  deleteSession,
+  createExam,
+  getExams,
+  createLesson,
+  getLessonByPath,
+  saveProgress,
+  getUserProgress,
+  saveExamHistory,
+  getExamHistory,
+  createPaymentTransaction,
+  getPaymentTransactionBySessionId,
+  updatePaymentTransaction
+} from '@/lib/supabase-server'
 
 // Helper function to hash password
 function hashPassword(password) {
@@ -62,44 +48,33 @@ function handleCORS(response) {
 // Helper function to build lesson prompts for AI content generation
 function buildLessonPrompt(examId, sectionId, lessonId) {
   const lessonTitles = {
-    // IELTS Reading
     'ielts-reading-question-types': 'ประเภทคำถาม IELTS Reading ทั้งหมด',
     'ielts-reading-skimming-scanning': 'เทคนิค Skimming และ Scanning',
     'ielts-reading-true-false-ng': 'ทริคทำ True/False/Not Given',
     'ielts-reading-matching-headings': 'วิธีทำ Matching Headings',
     'ielts-reading-sentence-completion': 'เทคนิค Sentence Completion',
     'ielts-reading-time-management': 'การบริหารเวลา IELTS Reading',
-    
-    // IELTS Listening
     'ielts-listening-question-types': 'ประเภทคำถาม IELTS Listening',
     'ielts-listening-note-taking': 'เทคนิค Note Taking',
     'ielts-listening-prediction': 'การ Predict คำตอบ',
     'ielts-listening-spelling-tips': 'Spelling Tips และ Common Mistakes',
     'ielts-listening-map-diagram': 'ทำข้อ Map และ Diagram',
-    
-    // IELTS Writing
     'ielts-writing-task1-overview': 'Task 1: Overview และ Structure',
     'ielts-writing-task1-graphs': 'Task 1: การบรรยาย Graphs',
     'ielts-writing-task2-structure': 'Task 2: Essay Structure',
     'ielts-writing-task2-opinion': 'Task 2: Opinion Essay',
     'ielts-writing-vocabulary': 'Vocabulary for High Score',
     'ielts-writing-common-mistakes': 'Common Mistakes to Avoid',
-    
-    // IELTS Speaking
     'ielts-speaking-part1-tips': 'Part 1: Introduction Tips',
     'ielts-speaking-part2-structure': 'Part 2: Cue Card Strategy',
     'ielts-speaking-part3-discussion': 'Part 3: Discussion Skills',
     'ielts-speaking-fluency-tips': 'เพิ่ม Fluency และ Coherence',
     'ielts-speaking-vocabulary-range': 'Vocabulary Range Tips',
-    
-    // TOEIC Listening
     'toeic-listening-part1-photos': 'Part 1: Photographs',
     'toeic-listening-part2-qa': 'Part 2: Question-Response',
     'toeic-listening-part3-conversations': 'Part 3: Conversations',
     'toeic-listening-part4-talks': 'Part 4: Talks',
     'toeic-listening-listening-tricks': 'Listening Tricks และ Traps',
-    
-    // TOEIC Reading
     'toeic-reading-part5-incomplete': 'Part 5: Incomplete Sentences',
     'toeic-reading-part6-text-completion': 'Part 6: Text Completion',
     'toeic-reading-part7-single': 'Part 7: Single Passages',
@@ -157,14 +132,11 @@ function buildLessonPrompt(examId, sectionId, lessonId) {
 
 // Helper function to build Gemini prompts for different exam types
 function buildExamPrompt(examType, section, count) {
-  // ===== SECTION-SPECIFIC PROMPTS (works for ALL exam types) =====
-  
-  // GRAMMAR section - dedicated grammar questions
   if (section === 'grammar') {
     return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array.
 
-IMPORTANT: 
-- Each question MUST have "type": "multiple-choice" 
+IMPORTANT:
+- Each question MUST have "type": "multiple-choice"
 - MUST include "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining WHY the answer is correct
 - Explanation should be easy to understand with examples
 
@@ -183,105 +155,67 @@ Format:
       {"id": "c", "text": "going", "correct": false},
       {"id": "d", "text": "gone", "correct": false}
     ],
-    "explanation": "คำตอบที่ถูกคือ 'goes' เพราะประธาน 'She' เป็นเอกพจน์บุรุษที่ 3 ในรูป Present Simple Tense เราต้องเติม -s/-es ที่ท้ายกริยา เช่น He goes, She works, It rains"
-  },
-  {
-    "id": "q2",
-    "type": "multiple-choice",
-    "sentence": "I have been waiting here ____ two hours.",
-    "question": "Choose the correct preposition:",
-    "options": [
-      {"id": "a", "text": "since", "correct": false},
-      {"id": "b", "text": "for", "correct": true},
-      {"id": "c", "text": "during", "correct": false},
-      {"id": "d", "text": "while", "correct": false}
-    ],
-    "explanation": "ใช้ 'for' กับช่วงเวลา (duration) เช่น for two hours, for three days ส่วน 'since' ใช้กับจุดเวลา เช่น since Monday, since 2020"
+    "explanation": "คำตอบที่ถูกคือ 'goes' เพราะประธาน 'She' เป็นเอกพจน์บุรุษที่ 3 ในรูป Present Simple Tense เราต้องเติม -s/-es ที่ท้ายกริยา"
   }
 ]
 
 Rules:
 - "type" MUST be "multiple-choice"
-- "explanation" MUST be in THAI language (ภาษาไทย) with clear examples
+- "explanation" MUST be in THAI language
 - Cover various grammar topics
 - Generate exactly ${count} grammar questions. Return ONLY the JSON array.`
   }
 
-  // LISTENING prompts - for any exam type
   if (section === 'listening') {
     return `Generate ${count} ${examType} Listening questions. Return ONLY a valid JSON array.
 
-IMPORTANT: 
+IMPORTANT:
 - Each question MUST have "type": "listening"
 - MUST have "audioText" field containing the English text to be spoken
-- MUST have "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining why the answer is correct
+- MUST have "explanation" field IN THAI LANGUAGE
 
 Format for listening questions:
 [
   {
     "id": "q1",
     "type": "listening",
-    "audioText": "Good morning everyone. Today I'd like to discuss our quarterly sales figures. As you can see, we exceeded our targets by 15 percent this quarter.",
-    "question": "What is the main topic of the announcement?",
+    "audioText": "Good morning everyone. Today I'd like to discuss our quarterly sales figures.",
+    "question": "What is the main topic?",
     "options": [
-      {"id": "a", "text": "A new product launch", "correct": false},
-      {"id": "b", "text": "Quarterly sales performance", "correct": true},
-      {"id": "c", "text": "Employee promotions", "correct": false},
-      {"id": "d", "text": "Office renovations", "correct": false}
+      {"id": "a", "text": "Product launch", "correct": false},
+      {"id": "b", "text": "Quarterly sales", "correct": true},
+      {"id": "c", "text": "Employee promotions", "correct": false}
     ],
-    "explanation": "ผู้พูดกล่าวว่า 'quarterly sales figures' และ 'exceeded our targets by 15 percent' ซึ่งหมายถึงผลประกอบการยอดขายรายไตรมาส คำสำคัญคือ sales figures = ตัวเลขยอดขาย"
-  },
-  {
-    "id": "q2",
-    "type": "listening",
-    "audioText": "A: Excuse me, could you tell me how to get to the train station? B: Sure, go straight for two blocks, then turn left. You'll see it on your right.",
-    "question": "What does the person ask for?",
-    "options": [
-      {"id": "a", "text": "Directions to the train station", "correct": true},
-      {"id": "b", "text": "The time of the next train", "correct": false},
-      {"id": "c", "text": "A ticket price", "correct": false}
-    ],
-    "explanation": "คนที่ A ถามว่า 'how to get to the train station' แปลว่า 'ไปสถานีรถไฟอย่างไร' ซึ่งเป็นการถามทาง (directions)"
+    "explanation": "ผู้พูดกล่าวว่า 'quarterly sales figures' คำสำคัญคือ sales figures = ตัวเลขยอดขาย"
   }
 ]
 
-Rules:
-- "type" MUST be "listening"
-- "audioText" MUST contain 20-80 words of dialogue or announcement in English
-- "explanation" MUST be in THAI language with key vocabulary translations
-- Include a mix of: announcements, conversations, monologues
-- Make difficulty appropriate for ${examType} level
-- Generate exactly ${count} questions. Return ONLY the JSON array.`
+Generate exactly ${count} questions. Return ONLY the JSON array.`
   }
 
-  // WRITING prompts - for any exam type
   if (section === 'writing') {
     if (examType === 'IELTS') {
       return `Generate ${count} IELTS Writing task prompts. Return ONLY a valid JSON array.
 
-IMPORTANT: Alternate between Task 1 and Task 2. Use DIFFERENT topics for each.
-
-For Task 1: Include "chartData" field with numerical data for a chart. Choose ONE chart type: "bar", "line", or "pie".
+IMPORTANT: Alternate between Task 1 and Task 2.
 
 Task 1 format:
 {
   "id": "q1",
   "type": "writing",
   "task": "Task 1",
-  "prompt": "The bar chart below shows the percentage of households with internet access in five countries between 2010 and 2020. Summarise the information by selecting and reporting the main features.",
+  "prompt": "The bar chart below shows...",
   "chartData": {
     "chartType": "bar",
     "title": "Household Internet Access (%)",
-    "xAxisLabel": "Country",
-    "yAxisLabel": "Percentage (%)",
-    "categories": ["USA", "UK", "Japan", "Brazil", "India"],
+    "categories": ["USA", "UK", "Japan"],
     "datasets": [
-      {"label": "2010", "data": [75, 82, 78, 41, 7]},
-      {"label": "2020", "data": [90, 94, 93, 71, 43]}
+      {"label": "2010", "data": [75, 82, 78]},
+      {"label": "2020", "data": [90, 94, 93]}
     ]
   },
   "wordLimit": 150,
-  "rubric": "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+  "rubric": "Task Achievement, Coherence & Cohesion"
 }
 
 Task 2 format:
@@ -289,15 +223,14 @@ Task 2 format:
   "id": "q2",
   "type": "writing",
   "task": "Task 2",
-  "prompt": "Some people believe that technology has made our lives more complicated. Discuss both views and give your opinion.",
+  "prompt": "Some people believe that technology has made our lives more complicated. Discuss.",
   "wordLimit": 250,
-  "rubric": "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy"
+  "rubric": "Task Response, Coherence & Cohesion"
 }
 
 Generate exactly ${count} writing tasks. Return ONLY the JSON array.`
     }
 
-    // Generic writing for other exams (TOEFL, CU-TEP, etc.)
     return `Generate ${count} ${examType} Writing prompts. Return ONLY a valid JSON array.
 
 Format:
@@ -306,27 +239,15 @@ Format:
     "id": "q1",
     "type": "writing",
     "task": "Essay Writing",
-    "prompt": "Do you agree or disagree with the following statement? Technology has made communication between people easier than ever before. Use specific reasons and examples to support your opinion.",
+    "prompt": "Do you agree or disagree...",
     "wordLimit": 200,
-    "rubric": "Content, Organization, Grammar, Vocabulary"
-  },
-  {
-    "id": "q2",
-    "type": "writing",
-    "task": "Summary Writing",
-    "prompt": "Read the following passage and write a summary in your own words: [Include a 100-150 word passage about education, environment, or technology]",
-    "wordLimit": 100,
-    "rubric": "Comprehension, Paraphrasing, Conciseness"
+    "rubric": "Content, Organization, Grammar"
   }
 ]
 
-- "type" MUST be "writing"
-- Include essay, summary, or opinion writing tasks
-- Make difficulty appropriate for ${examType} level
-- Generate exactly ${count} writing prompts. Return ONLY the JSON array.`
+Generate exactly ${count} writing prompts. Return ONLY the JSON array.`
   }
 
-  // SPEAKING prompts - for any exam type
   if (section === 'speaking') {
     return `Generate ${count} ${examType} Speaking questions. Return ONLY a valid JSON array.
 
@@ -336,153 +257,52 @@ Format:
     "id": "q1",
     "type": "speaking",
     "part": "Part 1",
-    "question": "Tell me about your hometown. What do you like most about living there?",
+    "question": "Tell me about your hometown.",
     "preparationTime": 0,
     "speakingTime": 30,
-    "rubric": "Fluency, Vocabulary, Grammar, Pronunciation"
-  },
-  {
-    "id": "q2",
-    "type": "speaking",
-    "part": "Part 2",
-    "question": "Describe a memorable trip you have taken. You should say: where you went, who you went with, what you did there, and explain why it was memorable.",
-    "preparationTime": 60,
-    "speakingTime": 120,
-    "rubric": "Fluency, Vocabulary, Grammar, Pronunciation"
-  },
-  {
-    "id": "q3",
-    "type": "speaking",
-    "part": "Part 3",
-    "question": "What are the advantages and disadvantages of traveling abroad?",
-    "preparationTime": 0,
-    "speakingTime": 60,
-    "rubric": "Fluency, Vocabulary, Grammar, Pronunciation"
+    "rubric": "Fluency, Vocabulary, Grammar"
   }
 ]
 
-- "type" MUST be "speaking"
-- Include a mix of: personal questions, descriptive tasks, opinion/discussion questions
-- Make difficulty appropriate for ${examType} level
-- Generate exactly ${count} speaking questions. Return ONLY the JSON array.`
+Generate exactly ${count} speaking questions. Return ONLY the JSON array.`
   }
 
-  // READING prompts - for any exam type
   if (section === 'reading') {
     if (examType === 'IELTS') {
-      return `Generate ${count} IELTS Academic Reading questions. Return ONLY a valid JSON array.
+      return `Generate ${count} IELTS Reading questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST include an "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining why the answer is correct.
+IMPORTANT: Each question MUST include "explanation" IN THAI LANGUAGE.
 
 Mix these types:
+1. TRUE/FALSE/NOT GIVEN
+2. Multiple Choice
+3. Completion
 
-1. TRUE/FALSE/NOT GIVEN:
-{
-  "id": "q1",
-  "type": "true-false-notgiven",
-  "passage": "150-200 word academic passage about science, history, or society",
-  "statement": "The study found that climate change affects migration patterns.",
-  "correctAnswer": "TRUE",
-  "explanation": "ในย่อหน้าที่ 2 ระบุว่า 'climate change has significantly impacted bird migration' ซึ่งตรงกับข้อความที่ให้มา จึงตอบ TRUE"
-}
-
-2. Multiple Choice:
-{
-  "id": "q2",
-  "type": "reading",
-  "passage": "Academic text",
-  "question": "According to the passage, what is the main cause?",
-  "options": [
-    {"id": "a", "text": "option A", "correct": true},
-    {"id": "b", "text": "option B", "correct": false},
-    {"id": "c", "text": "option C", "correct": false},
-    {"id": "d", "text": "option D", "correct": false}
-  ],
-  "explanation": "คำตอบคือ A เพราะในบทความกล่าวว่า '...' คำสำคัญ: cause = สาเหตุ"
-}
-
-3. Completion:
-{
-  "id": "q3",
-  "type": "completion",
-  "passage": "Context passage",
-  "sentence": "The research was conducted in ____.",
-  "correctAnswer": "Southeast Asia",
-  "question": "Complete with NO MORE THAN TWO WORDS",
-  "wordLimit": 2,
-  "explanation": "บทความระบุชัดเจนว่า 'The study took place in Southeast Asia' ดังนั้นคำตอบคือ Southeast Asia"
-}
-
-Mix all types. Each must have Thai explanation. Generate exactly ${count} questions. Return ONLY the JSON array.`
+Each must have Thai explanation. Generate exactly ${count} questions. Return ONLY the JSON array.`
     }
 
-    // Generic reading for other exams
     return `Generate ${count} ${examType} Reading questions. Return ONLY a valid JSON array.
 
-IMPORTANT: Each question MUST include an "explanation" field IN THAI LANGUAGE (ภาษาไทย) explaining why the answer is correct with examples.
+IMPORTANT: Each question MUST include "explanation" IN THAI LANGUAGE.
 
 Format:
 [
   {
     "id": "q1",
     "type": "reading",
-    "passage": "A 100-150 word passage about business, science, or daily life appropriate for ${examType} level.",
-    "question": "What is the main idea of this passage?",
+    "passage": "A 100-150 word passage...",
+    "question": "What is the main idea?",
     "options": [
       {"id": "a", "text": "option A", "correct": false},
-      {"id": "b", "text": "option B", "correct": true},
-      {"id": "c", "text": "option C", "correct": false},
-      {"id": "d", "text": "option D", "correct": false}
+      {"id": "b", "text": "option B", "correct": true}
     ],
-    "explanation": "ใจความหลักอยู่ในย่อหน้าแรก คำว่า main idea หมายถึงใจความสำคัญของเรื่อง"
-  },
-  {
-    "id": "q2",
-    "type": "multiple-choice",
-    "sentence": "The company ____ to expand its operations next year.",
-    "question": "Choose the best answer:",
-    "options": [
-      {"id": "a", "text": "plan", "correct": false},
-      {"id": "b", "text": "plans", "correct": true},
-      {"id": "c", "text": "planning", "correct": false},
-      {"id": "d", "text": "planned", "correct": false}
-    ],
-    "explanation": "ประธาน 'company' เป็นเอกพจน์ ต้องใช้ 'plans' (เติม -s) ในรูป Present Simple"
+    "explanation": "ใจความหลักอยู่ในย่อหน้าแรก"
   }
 ]
 
-- Each question MUST have a Thai "explanation" field
-- Include a mix of: passage comprehension, vocabulary, grammar in context
-- Make difficulty appropriate for ${examType} level
-- Generate exactly ${count} reading questions. Return ONLY the JSON array.`
+Generate exactly ${count} reading questions. Return ONLY the JSON array.`
   }
 
-  // ===== GRAMMAR (no sections, just grammar questions) =====
-  if (examType === 'Grammar' || examType === 'grammar') {
-    return `Generate ${count} English Grammar practice questions. Return ONLY a valid JSON array.
-
-Mix different grammar topics: tenses, prepositions, articles, vocabulary, conditionals, reported speech.
-
-Format:
-[
-  {
-    "id": "q1",
-    "type": "multiple-choice",
-    "sentence": "She ____ to the office every morning by bus.",
-    "question": "Choose the correct answer:",
-    "options": [
-      {"id": "a", "text": "go", "correct": false},
-      {"id": "b", "text": "goes", "correct": true},
-      {"id": "c", "text": "going", "correct": false},
-      {"id": "d", "text": "gone", "correct": false}
-    ]
-  }
-]
-
-Generate exactly ${count} different grammar questions. Return ONLY the JSON array.`
-  }
-
-  // ===== FALLBACK: Default reading/multiple-choice =====
   return `Generate ${count} ${examType} English exam questions. Return ONLY a valid JSON array.
 
 Format:
@@ -490,30 +310,16 @@ Format:
   {
     "id": "q1",
     "type": "multiple-choice",
-    "sentence": "The manager ____ the report before the deadline.",
+    "sentence": "The manager ____ the report.",
     "question": "Choose the best answer:",
     "options": [
       {"id": "a", "text": "submits", "correct": false},
-      {"id": "b", "text": "submitted", "correct": true},
-      {"id": "c", "text": "submitting", "correct": false},
-      {"id": "d", "text": "submit", "correct": false}
-    ]
-  },
-  {
-    "id": "q2",
-    "type": "reading",
-    "passage": "A 50-100 word passage",
-    "question": "What is the main idea?",
-    "options": [
-      {"id": "a", "text": "option A", "correct": false},
-      {"id": "b", "text": "option B", "correct": true},
-      {"id": "c", "text": "option C", "correct": false},
-      {"id": "d", "text": "option D", "correct": false}
+      {"id": "b", "text": "submitted", "correct": true}
     ]
   }
 ]
 
-Make difficulty appropriate for ${examType} level. Generate exactly ${count} questions. Return ONLY the JSON array.`
+Generate exactly ${count} questions. Return ONLY the JSON array.`
 }
 
 // OPTIONS handler for CORS
@@ -528,7 +334,7 @@ const generateMockQuestions = (examType = 'TOEIC', count = 10) => {
 
   for (let i = 0; i < count; i++) {
     const type = questionTypes[Math.floor(Math.random() * questionTypes.length)]
-    
+
     if (type === 'multiple-choice') {
       questions.push({
         id: `q${i + 1}`,
@@ -559,13 +365,12 @@ const generateMockQuestions = (examType = 'TOEIC', count = 10) => {
       questions.push({
         id: `q${i + 1}`,
         type: 'reading',
-        passage: 'The annual conference will be held in Singapore this year. Participants from over 30 countries are expected to attend.',
+        passage: 'The annual conference will be held in Singapore this year.',
         question: 'Where will the conference be held?',
         options: [
           { id: 'a', text: 'Thailand', correct: false },
           { id: 'b', text: 'Singapore', correct: true },
-          { id: 'c', text: 'Malaysia', correct: false },
-          { id: 'd', text: 'Indonesia', correct: false }
+          { id: 'c', text: 'Malaysia', correct: false }
         ]
       })
     }
@@ -581,13 +386,12 @@ async function handleRoute(request, { params }) {
   const method = request.method
 
   try {
-    const db = await connectToMongo()
-
     // Root endpoint
     if ((route === '/root' || route === '/') && method === 'GET') {
-      return handleCORS(NextResponse.json({ 
+      return handleCORS(NextResponse.json({
         message: "Carrot School API",
-        version: "1.0.0",
+        version: "2.0.0",
+        database: "Supabase",
         endpoints: [
           '/generate-exam',
           '/lessons',
@@ -611,8 +415,7 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      // Check if user exists
-      const existingUser = await db.collection('users').findOne({ email })
+      const existingUser = await getUserByEmail(email)
       if (existingUser) {
         return handleCORS(NextResponse.json(
           { error: "อีเมลนี้ถูกใช้งานแล้ว" },
@@ -620,34 +423,34 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      // Create new user
-      const userId = uuidv4()
-      const user = {
-        id: userId,
-        name,
-        email,
-        password: hashPassword(password),
-        streak: 0,
-        hearts: 5,
-        totalXP: 0,
-        createdAt: new Date(),
-        lastLoginAt: new Date()
+      const user = await supabaseServer
+        .from('users')
+        .insert({
+          name,
+          username: name,
+          email,
+          password: hashPassword(password),
+          streak: 0,
+          hearts: 5,
+          total_xp: 0,
+          auth_provider: 'email',
+          last_login: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (user.error) {
+        return handleCORS(NextResponse.json(
+          { error: "Failed to create user" },
+          { status: 500 }
+        ))
       }
 
-      await db.collection('users').insertOne(user)
+      const token = createToken(user.data.id)
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      await createUserSession(user.data.id, token, expiresAt)
 
-      // Create token
-      const token = createToken(userId)
-      await db.collection('sessions').insertOne({
-        id: uuidv4(),
-        userId,
-        token,
-        createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-      })
-
-      // Return user (without password)
-      const { password: _, _id, ...userResponse } = user
+      const { password: _, ...userResponse } = user.data
       return handleCORS(NextResponse.json({
         user: userResponse,
         token
@@ -666,8 +469,7 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      // Find user
-      const user = await db.collection('users').findOne({ email })
+      const user = await getUserByEmail(email)
       if (!user || user.password !== hashPassword(password)) {
         return handleCORS(NextResponse.json(
           { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" },
@@ -675,24 +477,13 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      // Update last login
-      await db.collection('users').updateOne(
-        { id: user.id },
-        { $set: { lastLoginAt: new Date() } }
-      )
+      await updateUser(user.id, { last_login: new Date().toISOString() })
 
-      // Create token
       const token = createToken(user.id)
-      await db.collection('sessions').insertOne({
-        id: uuidv4(),
-        userId: user.id,
-        token,
-        createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-      })
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      await createUserSession(user.id, token, expiresAt)
 
-      // Return user (without password)
-      const { password: _, _id, ...userResponse } = user
+      const { password: _, ...userResponse } = user
       return handleCORS(NextResponse.json({
         user: userResponse,
         token
@@ -705,7 +496,7 @@ async function handleRoute(request, { params }) {
       const token = authHeader?.replace('Bearer ', '')
 
       if (token) {
-        await db.collection('sessions').deleteMany({ token })
+        await deleteSession(token)
       }
 
       return handleCORS(NextResponse.json({ success: true }))
@@ -723,64 +514,42 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      const session = await db.collection('sessions').findOne({
-        token,
-        expiresAt: { $gt: new Date() }
-      })
+      const user = await getUserBySession(token)
 
-      if (!session) {
+      if (!user) {
         return handleCORS(NextResponse.json(
           { error: "Invalid or expired session" },
           { status: 401 }
         ))
       }
 
-      const user = await db.collection('users').findOne({ id: session.userId })
-      if (!user) {
-        return handleCORS(NextResponse.json(
-          { error: "User not found" },
-          { status: 404 }
-        ))
-      }
-
-      const { password: _, _id, ...userResponse } = user
+      const { password: _, ...userResponse } = user
       return handleCORS(NextResponse.json({ user: userResponse }))
     }
 
-    // Generate AI Mock Exam (simulated with delay)
+    // Generate AI Mock Exam
     if (route === '/generate-exam' && method === 'POST') {
       const body = await request.json()
-      const { examType = 'TOEIC', questionCount = 10 } = body
+      const { examType = 'TOEIC', questionCount = 10, userId } = body
 
-      // Simulate AI processing delay
       await new Promise(resolve => setTimeout(resolve, 2000))
 
       const questions = generateMockQuestions(examType, questionCount)
-      
-      const exam = {
-        id: uuidv4(),
-        examType,
-        questions,
-        createdAt: new Date(),
-        totalQuestions: questions.length
-      }
 
-      // Save to database
-      await db.collection('exams').insertOne(exam)
+      const exam = await createExam({
+        user_id: userId || null,
+        exam_type: examType,
+        questions: questions,
+        total_questions: questions.length
+      })
 
-      const { _id, ...examData } = exam
-      return handleCORS(NextResponse.json(examData))
+      return handleCORS(NextResponse.json(exam))
     }
 
     // Get all lessons
     if (route === '/lessons' && method === 'GET') {
-      const lessons = await db.collection('exams')
-        .find({})
-        .limit(50)
-        .toArray()
-
-      const cleanedLessons = lessons.map(({ _id, ...rest }) => rest)
-      return handleCORS(NextResponse.json(cleanedLessons))
+      const lessons = await getExams(50)
+      return handleCORS(NextResponse.json(lessons))
     }
 
     // Save user progress
@@ -795,33 +564,21 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      const progress = {
-        id: uuidv4(),
-        userId,
-        lessonId,
-        score,
-        completedAt: completedAt || new Date(),
-        createdAt: new Date()
-      }
+      const progress = await saveProgress({
+        user_id: userId,
+        lesson_id: lessonId,
+        score: score || 0,
+        completed_at: completedAt || new Date().toISOString()
+      })
 
-      await db.collection('progress').insertOne(progress)
-      
-      const { _id, ...progressData } = progress
-      return handleCORS(NextResponse.json(progressData))
+      return handleCORS(NextResponse.json(progress))
     }
 
     // Get user progress
     if (route.startsWith('/progress/') && method === 'GET') {
       const userId = route.split('/').pop()
-      
-      const userProgress = await db.collection('progress')
-        .find({ userId })
-        .sort({ createdAt: -1 })
-        .limit(100)
-        .toArray()
-
-      const cleanedProgress = userProgress.map(({ _id, ...rest }) => rest)
-      return handleCORS(NextResponse.json(cleanedProgress))
+      const userProgress = await getUserProgress(userId, 100)
+      return handleCORS(NextResponse.json(userProgress))
     }
 
     // Create/Update user
@@ -836,20 +593,12 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      const user = {
-        id: userId,
+      const user = await updateUser(userId, {
         name,
         goal,
         streak,
-        hearts,
-        updatedAt: new Date()
-      }
-
-      await db.collection('users').updateOne(
-        { id: userId },
-        { $set: user },
-        { upsert: true }
-      )
+        hearts
+      })
 
       return handleCORS(NextResponse.json(user))
     }
@@ -857,9 +606,8 @@ async function handleRoute(request, { params }) {
     // Get user by ID
     if (route.startsWith('/user/') && method === 'GET') {
       const userId = route.split('/').pop()
-      
-      const user = await db.collection('users').findOne({ id: userId })
-      
+      const user = await getUserById(userId)
+
       if (!user) {
         return handleCORS(NextResponse.json(
           { error: "User not found" },
@@ -867,19 +615,19 @@ async function handleRoute(request, { params }) {
         ))
       }
 
-      const { _id, ...userData } = user
+      const { password: _, ...userData } = user
       return handleCORS(NextResponse.json(userData))
     }
 
     // Admin: Get API Keys status
     if (route === '/admin/keys' && method === 'GET') {
-      const config = await db.collection('config').findOne({ type: 'api_keys' })
-      
+      const config = await getAllAdminConfig()
+
       return handleCORS(NextResponse.json({
-        gemini: !!config?.geminiKey,
-        googleTTS: !!config?.googleTTSKey,
-        elevenLabs: !!config?.elevenLabsKey,
-        openAI: !!config?.openAIKey
+        gemini: !!config.geminiKey,
+        googleTTS: !!config.googleTTSKey,
+        elevenLabs: !!config.elevenLabsKey,
+        openAI: !!config.openAIKey
       }))
     }
 
@@ -888,42 +636,23 @@ async function handleRoute(request, { params }) {
       const body = await request.json()
       const { geminiKey, googleTTSKey, elevenLabsKey, openAIKey } = body
 
-      const updateData = {
-        type: 'api_keys',
-        updatedAt: new Date()
-      }
+      if (geminiKey) await setAdminConfig('geminiKey', geminiKey)
+      if (googleTTSKey) await setAdminConfig('googleTTSKey', googleTTSKey)
+      if (elevenLabsKey) await setAdminConfig('elevenLabsKey', elevenLabsKey)
+      if (openAIKey) await setAdminConfig('openAIKey', openAIKey)
 
-      if (geminiKey) updateData.geminiKey = geminiKey
-      if (googleTTSKey) updateData.googleTTSKey = googleTTSKey
-      if (elevenLabsKey) updateData.elevenLabsKey = elevenLabsKey
-      if (openAIKey) updateData.openAIKey = openAIKey
-
-      await db.collection('config').updateOne(
-        { type: 'api_keys' },
-        { $set: updateData },
-        { upsert: true }
-      )
-
-      return handleCORS(NextResponse.json({ 
+      return handleCORS(NextResponse.json({
         success: true,
         message: 'API keys saved successfully'
       }))
     }
 
-    // Generate AI questions using LLM (Emergent proxy or admin-configured key)
+    // Generate AI questions using LLM
     if (route === '/ai/generate-questions' && method === 'POST') {
       const body = await request.json()
       const { examType, section, count = 5 } = body
 
-      // Debug logging
-      console.log('=== AI Generate Questions ===')
-      console.log('examType:', examType)
-      console.log('section:', section)
-      console.log('count:', count)
-
-      // Get API key: use admin-configured key first, fallback to Emergent key
-      const config = await db.collection('config').findOne({ type: 'api_keys' })
-      const apiKey = config?.geminiKey || process.env.EMERGENT_LLM_KEY
+      const apiKey = await getAdminConfig('geminiKey') || process.env.EMERGENT_LLM_KEY
 
       if (!apiKey) {
         return handleCORS(NextResponse.json(
@@ -934,13 +663,10 @@ async function handleRoute(request, { params }) {
 
       try {
         const prompt = buildExamPrompt(examType, section, count)
-        
-        // Use Emergent LLM proxy (OpenAI-compatible) or direct Gemini based on key type
         const isEmergentKey = apiKey.startsWith('sk-emergent-')
         let generatedText
 
         if (isEmergentKey) {
-          // Use Emergent proxy with OpenAI format
           const aiResponse = await fetch('https://integrations.emergentagent.com/llm/chat/completions', {
             method: 'POST',
             headers: {
@@ -963,7 +689,6 @@ async function handleRoute(request, { params }) {
           const aiData = await aiResponse.json()
           generatedText = aiData.choices[0].message.content
         } else {
-          // Use direct Gemini API
           const geminiResponse = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
             {
@@ -984,21 +709,17 @@ async function handleRoute(request, { params }) {
           const geminiData = await geminiResponse.json()
           generatedText = geminiData.candidates[0].content.parts[0].text
         }
-        
-        // Extract JSON from response - robust extraction
+
         let questions
         try {
-          // Try code block extraction first
           const codeBlockMatch = generatedText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/)
           if (codeBlockMatch) {
             questions = JSON.parse(codeBlockMatch[1].trim())
           } else {
-            // Find the outermost JSON array or object
             const arrStart = generatedText.indexOf('[')
             const objStart = generatedText.indexOf('{')
-            
+
             if (arrStart !== -1 && (objStart === -1 || arrStart < objStart)) {
-              // Find matching bracket
               let depth = 0, endIdx = -1
               for (let i = arrStart; i < generatedText.length; i++) {
                 if (generatedText[i] === '[') depth++
@@ -1017,22 +738,20 @@ async function handleRoute(request, { params }) {
                 questions = JSON.parse(generatedText.substring(objStart, endIdx + 1))
               }
             }
-            
+
             if (!questions) {
               questions = JSON.parse(generatedText)
             }
           }
         } catch (parseErr) {
-          console.error('JSON parse error, raw text:', generatedText.substring(0, 500))
-          throw new Error('Failed to parse AI response as JSON: ' + parseErr.message)
+          console.error('JSON parse error')
+          throw new Error('Failed to parse AI response as JSON')
         }
 
-        // Ensure it's an array of question objects
         let questionsArray
         if (Array.isArray(questions)) {
           questionsArray = questions
         } else if (questions && typeof questions === 'object') {
-          // Check if it's a single question object (has 'id' or 'type' or 'question' or 'prompt')
           if (questions.id || questions.type || questions.question || questions.prompt) {
             questionsArray = [questions]
           } else if (questions.questions && Array.isArray(questions.questions)) {
@@ -1040,7 +759,6 @@ async function handleRoute(request, { params }) {
           } else if (questions.data && Array.isArray(questions.data)) {
             questionsArray = questions.data
           } else {
-            // Last resort: try Object.values but only if they are objects
             const vals = Object.values(questions)
             if (vals.length > 0 && typeof vals[0] === 'object' && vals[0] !== null) {
               questionsArray = vals
@@ -1072,9 +790,7 @@ async function handleRoute(request, { params }) {
       const body = await request.json()
       const { type, question, answer, rubric } = body
 
-      // Get API key: use admin-configured key first, fallback to Emergent key
-      const config = await db.collection('config').findOne({ type: 'api_keys' })
-      const apiKey = config?.geminiKey || process.env.EMERGENT_LLM_KEY
+      const apiKey = await getAdminConfig('geminiKey') || process.env.EMERGENT_LLM_KEY
 
       if (!apiKey) {
         return handleCORS(NextResponse.json(
@@ -1085,40 +801,40 @@ async function handleRoute(request, { params }) {
 
       try {
         let scoringPrompt = ''
-        
+
         if (type === 'writing') {
-          scoringPrompt = `You are an IELTS Writing examiner. Score this response on a scale of 0-9 (IELTS band score).
+          scoringPrompt = `You are an IELTS Writing examiner. Score this response on a scale of 0-9.
 
 Question/Task: ${question}
 
 Student's Answer:
 ${answer}
 
-Evaluation Criteria: ${rubric || 'Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy'}
+Evaluation Criteria: ${rubric || 'Task Response, Coherence & Cohesion'}
 
-Provide a JSON response with ONLY this structure, no extra text:
+Provide a JSON response:
 {
   "score": 7.5,
-  "feedback": "Detailed feedback explaining the score",
+  "feedback": "Detailed feedback",
   "strengths": ["strength 1", "strength 2"],
-  "improvements": ["area to improve 1", "area to improve 2"]
+  "improvements": ["improvement 1", "improvement 2"]
 }`
         } else if (type === 'speaking') {
-          scoringPrompt = `You are an IELTS Speaking examiner. Score this spoken response on a scale of 0-9 (IELTS band score).
+          scoringPrompt = `You are an IELTS Speaking examiner. Score this response on a scale of 0-9.
 
 Question: ${question}
 
-Transcription of Student's Speech:
+Transcription:
 ${answer}
 
-Evaluation Criteria: ${rubric || 'Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation'}
+Evaluation Criteria: ${rubric || 'Fluency & Coherence'}
 
-Provide a JSON response with ONLY this structure, no extra text:
+Provide a JSON response:
 {
   "score": 7.0,
-  "feedback": "Detailed feedback explaining the score",
-  "strengths": ["strength 1", "strength 2"],
-  "improvements": ["area to improve 1", "area to improve 2"]
+  "feedback": "Detailed feedback",
+  "strengths": ["strength 1"],
+  "improvements": ["improvement 1"]
 }`
         }
 
@@ -1160,11 +876,10 @@ Provide a JSON response with ONLY this structure, no extra text:
           const geminiData = await geminiResponse.json()
           generatedText = geminiData.candidates[0].content.parts[0].text
         }
-        
-        // Extract JSON
-        const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/) || 
+
+        const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/) ||
                          generatedText.match(/\{[\s\S]*\}/)
-        
+
         let scoring
         if (jsonMatch) {
           const jsonText = jsonMatch[1] || jsonMatch[0]
@@ -1196,25 +911,20 @@ Provide a JSON response with ONLY this structure, no extra text:
         ))
       }
 
-      const record = {
-        id: uuidv4(),
-        userId,
-        examType,
+      const record = await saveExamHistory({
+        user_id: userId,
+        exam_type: examType,
         section,
         questions: questions || [],
-        totalQuestions: totalQuestions || 0,
-        correctCount: correctCount || 0,
-        score: score || 0,
-        completedAt: new Date(),
-        createdAt: new Date()
-      }
+        total_questions: totalQuestions || 0,
+        correct_count: correctCount || 0,
+        score: score || 0
+      })
 
-      await db.collection('exam_history').insertOne(record)
-      const { _id, ...recordData } = record
-      return handleCORS(NextResponse.json(recordData))
+      return handleCORS(NextResponse.json(record))
     }
 
-    // Get Exam History (with filters)
+    // Get Exam History
     if (route.startsWith('/exam-history') && method === 'GET') {
       const url = new URL(request.url)
       const userId = url.searchParams.get('userId')
@@ -1228,25 +938,12 @@ Provide a JSON response with ONLY this structure, no extra text:
         ))
       }
 
-      const filter = { userId }
-      if (examType) filter.examType = examType
-      if (section) filter.section = section
-
-      const history = await db.collection('exam_history')
-        .find(filter)
-        .sort({ completedAt: -1 })
-        .limit(50)
-        .toArray()
-
-      const cleanedHistory = history.map(({ _id, ...rest }) => rest)
-      return handleCORS(NextResponse.json(cleanedHistory))
+      const history = await getExamHistory(userId, examType, section, 50)
+      return handleCORS(NextResponse.json(history))
     }
-
-    // ============ ADMIN CONFIG API ============
 
     // Get Admin Config
     if (route === '/admin/config' && method === 'GET') {
-      const { getAllAdminConfig } = await import('@/lib/supabase-server')
       const config = await getAllAdminConfig()
 
       return handleCORS(NextResponse.json({
@@ -1263,7 +960,6 @@ Provide a JSON response with ONLY this structure, no extra text:
     if (route === '/admin/config' && method === 'POST') {
       const body = await request.json()
       const { geminiKey, stripeKey, googleClientId, googleClientSecret, facebookAppId, facebookAppSecret } = body
-      const { setAdminConfig } = await import('@/lib/supabase-server')
 
       try {
         if (geminiKey && !geminiKey.includes('***')) {
@@ -1294,11 +990,8 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
     }
 
-    // ============ GOOGLE OAUTH ============
-
-    // Check which OAuth mode to use (custom vs Emergent)
+    // Check OAuth mode
     if (route === '/auth/google/mode' && method === 'GET') {
-      const { getAdminConfig } = await import('@/lib/supabase-server')
       const googleClientId = await getAdminConfig('googleClientId')
 
       return handleCORS(NextResponse.json({
@@ -1311,7 +1004,6 @@ Provide a JSON response with ONLY this structure, no extra text:
     if (route === '/auth/google/start' && method === 'POST') {
       const body = await request.json()
       const { redirectUrl } = body
-      const { getAdminConfig } = await import('@/lib/supabase-server')
 
       const googleClientId = await getAdminConfig('googleClientId')
 
@@ -1335,11 +1027,10 @@ Provide a JSON response with ONLY this structure, no extra text:
       return handleCORS(NextResponse.json({ authUrl }))
     }
 
-    // Custom Google OAuth - Callback handler
+    // Custom Google OAuth - Callback
     if (route === '/auth/google/custom-callback' && method === 'POST') {
       const body = await request.json()
       const { code, redirectUri } = body
-      const { getAdminConfig, createOrUpdateUser, createUserSession } = await import('@/lib/supabase-server')
 
       const googleClientId = await getAdminConfig('googleClientId')
       const googleClientSecret = await getAdminConfig('googleClientSecret')
@@ -1414,7 +1105,7 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
     }
 
-    // Emergent Auth - Google OAuth Callback (legacy support)
+    // Emergent Auth - Google OAuth Callback
     if (route === '/auth/google-callback' && method === 'POST') {
       const body = await request.json()
       const { sessionId } = body
@@ -1427,7 +1118,6 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
 
       try {
-        // Call Emergent Auth API to get user data
         const authResponse = await fetch('https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data', {
           method: 'GET',
           headers: {
@@ -1440,57 +1130,42 @@ Provide a JSON response with ONLY this structure, no extra text:
         }
 
         const authData = await authResponse.json()
-        // authData: { id, email, name, picture, session_token }
 
-        // Check if user exists
-        let user = await db.collection('users').findOne({ email: authData.email })
+        let user = await getUserByEmail(authData.email)
 
         if (user) {
-          // Update existing user
-          await db.collection('users').updateOne(
-            { email: authData.email },
-            { $set: { 
-              name: authData.name, 
-              picture: authData.picture,
-              googleId: authData.id,
-              updatedAt: new Date()
-            }}
-          )
-          user = await db.collection('users').findOne({ email: authData.email })
-        } else {
-          // Create new user
-          user = {
-            id: uuidv4(),
-            email: authData.email,
-            username: authData.name,
+          await updateUser(user.id, {
             name: authData.name,
             picture: authData.picture,
-            googleId: authData.id,
-            premium: false,
-            authProvider: 'google',
-            createdAt: new Date()
-          }
-          await db.collection('users').insertOne(user)
+            google_id: authData.id,
+            last_login: new Date().toISOString()
+          })
+          user = await getUserByEmail(authData.email)
+        } else {
+          const newUser = await supabaseServer
+            .from('users')
+            .insert({
+              email: authData.email,
+              username: authData.name,
+              name: authData.name,
+              picture: authData.picture,
+              google_id: authData.id,
+              premium: false,
+              auth_provider: 'google',
+              last_login: new Date().toISOString()
+            })
+            .select()
+            .single()
+
+          user = newUser.data
         }
 
-        // Store session
         const sessionToken = authData.session_token || crypto.randomBytes(32).toString('hex')
-        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
-        await db.collection('user_sessions').updateOne(
-          { session_token: sessionToken },
-          { 
-            $set: { 
-              user_id: user.id, 
-              session_token: sessionToken,
-              expires_at: expiresAt,
-              created_at: new Date()
-            }
-          },
-          { upsert: true }
-        )
+        await createUserSession(user.id, sessionToken, expiresAt)
 
-        const { _id, password, ...safeUser } = user
+        const { password: _, ...safeUser } = user
         return handleCORS(NextResponse.json({
           user: safeUser,
           session_token: sessionToken
@@ -1505,12 +1180,10 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
     }
 
-    // ============ STRIPE PAYMENT ============
-    
     // Payment plans
     const PAYMENT_PLANS = {
-      monthly: { amount: 19900, currency: 'thb', name: 'Premium Monthly' }, // Amount in satang (199 THB)
-      yearly: { amount: 149000, currency: 'thb', name: 'Premium Yearly' }   // Amount in satang (1490 THB)
+      monthly: { amount: 19900, currency: 'thb', name: 'Premium Monthly' },
+      yearly: { amount: 149000, currency: 'thb', name: 'Premium Yearly' }
     }
 
     // Create Checkout Session
@@ -1526,8 +1199,6 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
 
       const planData = PAYMENT_PLANS[plan]
-
-      const { getAdminConfig } = await import('@/lib/supabase-server')
       const stripeApiKey = await getAdminConfig('stripeKey') || process.env.STRIPE_API_KEY
 
       if (!stripeApiKey) {
@@ -1569,20 +1240,16 @@ Provide a JSON response with ONLY this structure, no extra text:
           }
         })
 
-        // Store payment transaction
-        const transaction = {
-          id: uuidv4(),
+        await createPaymentTransaction({
           session_id: session.id,
           user_id: userId,
           email: email,
           plan: plan,
-          amount: planData.amount / 100, // Store in THB
+          amount: planData.amount / 100,
           currency: planData.currency,
           status: 'pending',
-          payment_status: 'initiated',
-          created_at: new Date()
-        }
-        await db.collection('payment_transactions').insertOne(transaction)
+          payment_status: 'initiated'
+        })
 
         return handleCORS(NextResponse.json({
           url: session.url,
@@ -1610,7 +1277,6 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
 
       try {
-        const { getAdminConfig } = await import('@/lib/supabase-server')
         const stripeApiKey = await getAdminConfig('stripeKey') || process.env.STRIPE_API_KEY
 
         if (!stripeApiKey) {
@@ -1624,40 +1290,30 @@ Provide a JSON response with ONLY this structure, no extra text:
         const stripe = new Stripe(stripeApiKey)
 
         const session = await stripe.checkout.sessions.retrieve(sessionId)
-
-        // Update transaction in database
-        const transaction = await db.collection('payment_transactions').findOne({ session_id: sessionId })
+        const transaction = await getPaymentTransactionBySessionId(sessionId)
 
         if (transaction && transaction.payment_status !== 'paid' && session.payment_status === 'paid') {
-          // Payment successful - update transaction
-          await db.collection('payment_transactions').updateOne(
-            { session_id: sessionId },
-            { $set: { 
-              status: session.status,
-              payment_status: session.payment_status,
-              updated_at: new Date()
-            }}
-          )
+          await updatePaymentTransaction(sessionId, {
+            status: session.status,
+            payment_status: session.payment_status,
+            updated_at: new Date().toISOString()
+          })
 
-          // Upgrade user to premium
           if (transaction.user_id) {
-            await db.collection('users').updateOne(
-              { id: transaction.user_id },
-              { $set: { 
-                premium: true,
-                premiumSince: new Date(),
-                premiumPlan: transaction.plan
-              }}
-            )
+            await updateUser(transaction.user_id, {
+              premium: true,
+              premium_since: new Date().toISOString(),
+              premium_plan: transaction.plan
+            })
           } else if (transaction.email) {
-            await db.collection('users').updateOne(
-              { email: transaction.email },
-              { $set: { 
+            const user = await getUserByEmail(transaction.email)
+            if (user) {
+              await updateUser(user.id, {
                 premium: true,
-                premiumSince: new Date(),
-                premiumPlan: transaction.plan
-              }}
-            )
+                premium_since: new Date().toISOString(),
+                premium_plan: transaction.plan
+              })
+            }
           }
         }
 
@@ -1681,9 +1337,6 @@ Provide a JSON response with ONLY this structure, no extra text:
     if (route === '/webhook/stripe' && method === 'POST') {
       try {
         const body = await request.text()
-        const signature = request.headers.get('stripe-signature')
-
-        const { getAdminConfig } = await import('@/lib/supabase-server')
         const stripeApiKey = await getAdminConfig('stripeKey') || process.env.STRIPE_API_KEY
 
         if (!stripeApiKey) {
@@ -1693,40 +1346,27 @@ Provide a JSON response with ONLY this structure, no extra text:
           ))
         }
 
-        const Stripe = (await import('stripe')).default
-        const stripe = new Stripe(stripeApiKey)
-
-        // For production, verify webhook signature
-        // const event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
         const event = JSON.parse(body)
 
-        // Process webhook event
         if (event.type === 'checkout.session.completed') {
           const session = event.data.object
-          
+
           if (session.payment_status === 'paid') {
-            const transaction = await db.collection('payment_transactions').findOne({ 
-              session_id: session.id 
-            })
+            const transaction = await getPaymentTransactionBySessionId(session.id)
 
             if (transaction && transaction.payment_status !== 'paid') {
-              // Update transaction
-              await db.collection('payment_transactions').updateOne(
-                { session_id: session.id },
-                { $set: { 
-                  status: 'completed',
-                  payment_status: 'paid',
-                  updated_at: new Date()
-                }}
-              )
+              await updatePaymentTransaction(session.id, {
+                status: 'completed',
+                payment_status: 'paid',
+                updated_at: new Date().toISOString()
+              })
 
-              // Upgrade user
               const metadata = session.metadata || {}
               if (metadata.user_id) {
-                await db.collection('users').updateOne(
-                  { id: metadata.user_id },
-                  { $set: { premium: true, premiumSince: new Date() }}
-                )
+                await updateUser(metadata.user_id, {
+                  premium: true,
+                  premium_since: new Date().toISOString()
+                })
               }
             }
           }
@@ -1743,8 +1383,6 @@ Provide a JSON response with ONLY this structure, no extra text:
       }
     }
 
-    // ============ LESSONS API ============
-    
     // Lesson metadata
     const LESSON_META = {
       ielts: {
@@ -1782,15 +1420,9 @@ Provide a JSON response with ONLY this structure, no extra text:
         ))
       }
 
-      // Check if lesson content exists in database
-      let lesson = await db.collection('lessons').findOne({
-        examId,
-        sectionId,
-        lessonId
-      })
+      let lesson = await getLessonByPath(examId, sectionId, lessonId)
 
       if (!lesson) {
-        // Generate content with AI
         console.log(`Generating lesson content for ${examId}/${sectionId}/${lessonId}`)
 
         const apiKey = process.env.EMERGENT_LLM_KEY
@@ -1804,7 +1436,6 @@ Provide a JSON response with ONLY this structure, no extra text:
         const lessonPrompt = buildLessonPrompt(examId, sectionId, lessonId)
 
         try {
-          // Use Emergent proxy with OpenAI format (same as generate-questions)
           const isEmergentKey = apiKey.startsWith('sk-emergent-')
           let generatedText
 
@@ -1837,7 +1468,6 @@ Provide a JSON response with ONLY this structure, no extra text:
             const aiData = await aiResponse.json()
             generatedText = aiData.choices[0].message.content
           } else {
-            // Use direct Gemini API
             const geminiResponse = await fetch(
               `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
               {
@@ -1858,23 +1488,18 @@ Provide a JSON response with ONLY this structure, no extra text:
             generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text
           }
 
-          // Clean and parse JSON
           let content = generatedText || ''
           content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
           const lessonContent = JSON.parse(content)
 
-          // Save to database
-          lesson = {
-            examId,
-            sectionId,
-            lessonId,
-            examName: examMeta.name,
-            sectionName: sectionMeta.name,
-            ...lessonContent,
-            createdAt: new Date()
-          }
-
-          await db.collection('lessons').insertOne(lesson)
+          lesson = await createLesson({
+            exam_id: examId,
+            section_id: sectionId,
+            lesson_id: lessonId,
+            exam_name: examMeta.name,
+            section_name: sectionMeta.name,
+            ...lessonContent
+          })
 
         } catch (error) {
           console.error('Lesson generation error:', error)
@@ -1885,11 +1510,9 @@ Provide a JSON response with ONLY this structure, no extra text:
         }
       }
 
-      const { _id, ...safeLesson } = lesson
-      return handleCORS(NextResponse.json(safeLesson))
+      return handleCORS(NextResponse.json(lesson))
     }
 
-    // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` },
       { status: 404 }
@@ -1904,7 +1527,6 @@ Provide a JSON response with ONLY this structure, no extra text:
   }
 }
 
-// Export all HTTP methods
 export const GET = handleRoute
 export const POST = handleRoute
 export const PUT = handleRoute
