@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Star, BookOpen, ChevronRight, Bell, Crown, Shield, CircleHelp as HelpCircle, LogOut, X, Check, Moon, Sun } from 'lucide-react'
+import { Flame, Star, BookOpen, ChevronRight, Bell, Crown, Shield, HelpCircle, LogOut, X, Check, Moon, Sun } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 export default function ProfilePage() {
@@ -69,8 +69,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 pt-12 pb-8 lg:pb-12 px-5 lg:px-8 text-center">
-        <div className="max-w-4xl mx-auto">
+      <div className="bg-orange-500 pt-12 pb-5 px-5 text-center">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring' }} className="flex flex-col items-center">
           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-2 relative">
             <span className="text-xl font-black text-orange-500">{initials}</span>
@@ -87,15 +86,14 @@ export default function ProfilePage() {
             <span className="text-white text-xs font-bold">{isPremium ? 'Plus Member' : 'Free Plan'}</span>
           </div>
         </motion.div>
-        </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 lg:px-8 pt-4 lg:pt-6 space-y-4 lg:space-y-6">
+      <div className="px-4 pt-4 space-y-4">
 
         {/* Stats */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="grid grid-cols-3 lg:grid-cols-6 divide-x divide-gray-100">
+            <div className="grid grid-cols-3 divide-x divide-gray-100">
               {[
                 { icon: Flame, val: '7',   label: 'วัน Streak', color: 'text-orange-500' },
                 { icon: Star,  val: '350', label: 'XP รวม',     color: 'text-yellow-500' },

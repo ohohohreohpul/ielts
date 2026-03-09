@@ -150,30 +150,26 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 pt-12 pb-8 lg:pb-12 px-5 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white/70 text-sm lg:text-base font-medium">สวัสดี 👋</p>
-              <h1 className="text-2xl lg:text-4xl font-black text-white">{user?.name || 'นักเรียน'}</h1>
+      <div className="bg-orange-500 pt-12 pb-5 px-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-white/70 text-sm font-medium">สวัสดี 👋</p>
+            <h1 className="text-2xl font-black text-white">{user?.name || 'นักเรียน'}</h1>
+          </div>
+          <div className="flex gap-3">
+            <div className="bg-white/20 rounded-xl px-3 py-2 flex items-center gap-1.5">
+              <Flame className="w-4 h-4 text-yellow-300" />
+              <span className="text-white text-sm font-bold">7</span>
             </div>
-            <div className="flex gap-3 lg:gap-4">
-              <div className="bg-white/20 rounded-xl px-3 lg:px-4 py-2 lg:py-3 flex items-center gap-1.5 lg:gap-2">
-                <Flame className="w-4 h-4 lg:w-6 lg:h-6 text-yellow-300" />
-                <span className="text-white text-sm lg:text-lg font-bold">7</span>
-                <span className="hidden lg:inline text-white/80 text-sm">วันติดต่อกัน</span>
-              </div>
-              <div className="bg-white/20 rounded-xl px-3 lg:px-4 py-2 lg:py-3 flex items-center gap-1.5 lg:gap-2">
-                <Star className="w-4 h-4 lg:w-6 lg:h-6 text-yellow-300" />
-                <span className="text-white text-sm lg:text-lg font-bold">350</span>
-                <span className="hidden lg:inline text-white/80 text-sm">XP</span>
-              </div>
+            <div className="bg-white/20 rounded-xl px-3 py-2 flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-yellow-300" />
+              <span className="text-white text-sm font-bold">350</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 pt-5 lg:pt-8 space-y-5 lg:space-y-8">
+      <div className="px-4 pt-5 space-y-5">
 
         {/* Continue Learning */}
         {lastExam && (
@@ -196,8 +192,8 @@ export default function DashboardPage() {
 
         {/* Free Exams */}
         <div>
-          <p className="text-xs lg:text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 lg:mb-4">🆓 ข้อสอบฟรี</p>
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🆓 ข้อสอบฟรี</p>
+          <div className="grid grid-cols-2 gap-3">
             {freeExams.map((exam, i) => (
               <motion.button
                 key={exam.id}
@@ -222,11 +218,11 @@ export default function DashboardPage() {
 
         {/* PREMIUM / ADDITIONAL EXAMS */}
         <div>
-          <div className="flex items-center justify-between mb-3 lg:mb-4">
-            <p className="text-xs lg:text-sm font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
-            <button onClick={() => router.push('/practice')} className="text-xs lg:text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors">ดูทั้งหมด</button>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
+            <button onClick={() => router.push('/practice')} className="text-xs font-bold text-orange-500">ดูทั้งหมด</button>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {premiumExams.map((exam, i) => {
               const accessible = isExamAccessible(exam)
               return (

@@ -40,27 +40,25 @@ export default function LessonsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 pt-14 pb-12 lg:pb-16 px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-3 lg:gap-4 mb-2">
-              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-white/20 rounded-xl flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl lg:text-4xl font-black text-white">เตรียมสอบ</h1>
-                <p className="text-white/70 text-sm lg:text-base">เรียนรู้เทคนิคและทริคต่างๆ</p>
-              </div>
+      <div className="bg-gradient-to-r from-orange-500 to-amber-500 pt-14 pb-8 px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <GraduationCap className="w-6 h-6 text-white" />
             </div>
-          </motion.div>
-        </div>
+            <div>
+              <h1 className="text-2xl font-black text-white">เตรียมสอบ</h1>
+              <p className="text-white/70 text-sm">เรียนรู้เทคนิคและทริคต่างๆ</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 -mt-4 lg:-mt-6">
+      <div className="px-4 -mt-4">
         {/* Info Card */}
         <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 border-0 mb-6">
           <CardContent className="p-4">
@@ -75,9 +73,9 @@ export default function LessonsPage() {
         </Card>
 
         {/* Exam Types */}
-        <h2 className="text-lg lg:text-xl font-bold text-gray-900 mb-3 lg:mb-4">เลือกข้อสอบ</h2>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">เลือกข้อสอบ</h2>
+        
+        <div className="space-y-4">
           {examTypes.map((exam, idx) => (
             <motion.div
               key={exam.id}

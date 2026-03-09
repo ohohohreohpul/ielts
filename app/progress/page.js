@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trophy, BookOpen, Headphones, PenTool, Mic, CircleCheck as CheckCircle2, Circle as XCircle, ChevronDown, ChevronUp, ListFilter as Filter, TrendingUp } from 'lucide-react'
+import { Trophy, BookOpen, Headphones, PenTool, Mic, CheckCircle2, XCircle, ChevronDown, ChevronUp, Filter, TrendingUp } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 const EXAM_META = {
@@ -135,18 +135,16 @@ export default function ProgressPage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 pt-12 pb-8 lg:pb-12 px-5 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl lg:text-4xl font-black text-white">ความก้าวหน้า</h1>
-          <p className="text-white/70 text-sm lg:text-base font-medium mt-1 lg:mt-2">ประวัติการฝึกสอบทั้งหมด</p>
-        </div>
+      <div className="bg-orange-500 pt-12 pb-5 px-5">
+        <h1 className="text-2xl font-black text-white">ความก้าวหน้า</h1>
+        <p className="text-white/70 text-sm font-medium mt-1">ประวัติการฝึกสอบทั้งหมด</p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 pt-5 lg:pt-8 space-y-4 lg:space-y-6">
+      <div className="px-4 pt-5 space-y-4">
 
         {/* Stats Cards */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Trophy className="w-5 h-5 text-orange-500" />
@@ -184,7 +182,6 @@ export default function ProgressPage() {
                 }`}
               >
                 {f.emoji && <span>{f.emoji}</span>}
-                }
                 {f.label}
               </button>
             ))}

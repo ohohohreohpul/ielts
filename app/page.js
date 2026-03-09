@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader as Loader2 } from 'lucide-react'
+import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader2 } from 'lucide-react'
 import AudioPlayer from '@/components/AudioPlayer'
 import VoiceRecorder from '@/components/VoiceRecorder'
 import dynamic from 'next/dynamic'
@@ -429,7 +429,7 @@ function AppInner() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md lg:max-w-xl text-center"
+          className="w-full max-w-sm text-center"
         >
           {/* Animated Icon */}
           <motion.div
@@ -563,40 +563,35 @@ function AppInner() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 lg:px-8 py-4">
+        <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <Button variant="ghost" size="sm" onClick={() => router.push('/practice')} className="lg:h-10 lg:px-4">
-              <X className="w-5 h-5 lg:w-6 lg:h-6" />
-              <span className="hidden lg:inline ml-2">ออกจากบทเรียน</span>
+            <Button variant="ghost" size="sm" onClick={() => router.push('/practice')}>
+              <X className="w-5 h-5" />
             </Button>
-
-            <div className="flex items-center gap-3 lg:gap-6">
-              <div className="flex items-center gap-2 bg-orange-50 px-3 py-2 rounded-lg">
-                <Flame className="w-5 h-5 lg:w-6 lg:h-6 text-orange-500" />
-                <span className="font-bold text-orange-500 lg:text-lg">{streak}</span>
-                <span className="hidden lg:inline text-sm text-gray-600">วันติดต่อกัน</span>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <Flame className="w-5 h-5 text-orange-500" />
+                <span className="font-bold text-orange-500">{streak}</span>
               </div>
-
+              
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Heart key={i} className={`w-5 h-5 lg:w-6 lg:h-6 ${i < hearts ? 'fill-red-500 text-red-500' : 'text-gray-300'}`} />
+                  <Heart key={i} className={`w-5 h-5 ${i < hearts ? 'fill-red-500 text-red-500' : 'text-gray-300'}`} />
                 ))}
               </div>
             </div>
           </div>
-
-          <Progress value={progress} className="h-3 lg:h-4" />
-          <p className="text-xs lg:text-sm text-gray-500 mt-2 text-center">
-            ข้อ {completedQuestions + 1} จาก {questions.length}
-          </p>
+          
+          <Progress value={progress} className="h-3" />
         </div>
       </div>
 
       {/* Question Content */}
-      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 lg:py-12 pb-32">
+      <div className="max-w-2xl mx-auto px-4 py-8 pb-32">
         <AnimatePresence mode="wait">
           <motion.div key={currentQuestionIndex} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }}>
             
@@ -873,8 +868,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -883,8 +876,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -935,8 +926,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -945,8 +934,6 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
-                              )
-                              }
                             </ul>
                           </div>
                         )}
@@ -962,8 +949,8 @@ function AppInner() {
       </div>
 
       {/* Bottom Action Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 lg:p-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div className="max-w-2xl mx-auto">
           {!showFeedback ? (
             <Button 
               onClick={checkAnswer} 
