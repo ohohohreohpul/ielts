@@ -7,6 +7,7 @@ export const viewport = {
   userScalable: false,
   viewportFit: 'cover',
   themeColor: '#FF6500',
+  minimal: 'ui',
 }
 
 export const metadata = {
@@ -56,9 +57,10 @@ export default function RootLayout({ children }) {
         {/* Prevent scroll bounce on iOS */}
         <style dangerouslySetInnerHTML={{__html: `
           * { -webkit-tap-highlight-color: transparent; }
-          html { height: 100%; overflow: hidden; }
-          body { height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: none; }
           input, textarea, select { font-size: 16px !important; }
+          @supports (padding: env(safe-area-inset-bottom)) {
+            body { padding-bottom: env(safe-area-inset-bottom); }
+          }
         `}} />
 
         {/* SW registration */}
