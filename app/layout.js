@@ -58,9 +58,6 @@ export default function RootLayout({ children }) {
         <style dangerouslySetInnerHTML={{__html: `
           * { -webkit-tap-highlight-color: transparent; }
           input, textarea, select { font-size: 16px !important; }
-          @supports (padding: env(safe-area-inset-bottom)) {
-            body { padding-bottom: env(safe-area-inset-bottom); }
-          }
         `}} />
 
         {/* SW registration */}

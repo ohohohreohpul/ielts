@@ -140,22 +140,8 @@ code {
     }
 }
 
-@supports (padding: max(0px)) {
-  .safe-area-bottom {
-    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
-  }
-}
-
-@supports not (padding: max(0px)) {
-  .safe-area-bottom {
-    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-  }
-}
-
 html {
   height: 100%;
-  position: fixed;
-  overflow: hidden;
   width: 100%;
 }
 
@@ -165,4 +151,6 @@ body {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
   position: relative;
+  padding-bottom: 0;
+  margin: 0;
 }

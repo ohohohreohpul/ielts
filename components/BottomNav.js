@@ -16,14 +16,8 @@ export default function BottomNav() {
   const router = useRouter()
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 safe-area-bottom"
-      style={{
-        paddingBottom: 'env(safe-area-inset-bottom)',
-        paddingBottom: 'constant(safe-area-inset-bottom)'
-      }}
-    >
-      <div className="max-w-md mx-auto flex justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200">
+      <div className="max-w-md mx-auto flex justify-around" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}>
         {TABS.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (
