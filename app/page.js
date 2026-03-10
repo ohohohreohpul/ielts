@@ -9,12 +9,25 @@ import { Progress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader2 } from 'lucide-react'
+import { Heart, Flame, Target, Trophy, Sparkles, X, Check, Crown, Zap, BookOpen, Headphones, PenTool, Mic, Settings as SettingsIcon, Loader as Loader2 } from 'lucide-react'
 import AudioPlayer from '@/components/AudioPlayer'
 import VoiceRecorder from '@/components/VoiceRecorder'
+import ExamTimer from '@/components/ExamTimer'
+import TimingSummary from '@/components/TimingSummary'
 import dynamic from 'next/dynamic'
 
 const ExamChart = dynamic(() => import('@/components/ExamChart'), { ssr: false })
+
+const EXAM_TIME_LIMITS = {
+  'TOEIC': { reading: 75 * 60, listening: 45 * 60 },
+  'IELTS': { reading: 60 * 60, listening: 30 * 60, writing: 60 * 60, speaking: 15 * 60 },
+  'TOEFL': { reading: 54 * 60, listening: 41 * 60, writing: 50 * 60, speaking: 17 * 60 },
+  'CU-TEP': { reading: 60 * 60, listening: 30 * 60 },
+  'TU-GET': { reading: 60 * 60 },
+  'O-NET': { reading: 60 * 60 },
+  'กพ.': { reading: 40 * 60 },
+  'Grammar': { grammar: 30 * 60 }
+}
 
 const GOALS = [
   { id: 'toeic', icon: Target, title: 'TOEIC 700+', description: 'การฟังและการอ่านภาษาอังกฤษธุรกิจ', sections: ['reading', 'listening'] },
@@ -51,6 +64,11 @@ function AppInner() {
   const [scoring, setScoring] = useState(false)
   const [recordedAudio, setRecordedAudio] = useState(null)
   const [answerHistory, setAnswerHistory] = useState([]) // Track answers for history
+  const [timeLimit, setTimeLimit] = useState(null)
+  const [sessionStartTime, setSessionStartTime] = useState(null)
+  const [questionStartTime, setQuestionStartTime] = useState(null)
+  const [questionTimings, setQuestionTimings] = useState([])
+  const [totalTimeSpent, setTotalTimeSpent] = useState(0)
 
   const currentQuestion = questions[currentQuestionIndex]
   const progress = questions.length > 0 ? (completedQuestions / questions.length) * 100 : 0
@@ -132,6 +150,15 @@ function AppInner() {
         
         clearInterval(tipInterval)
         setQuestions(data.questions)
+
+        const examTimeLimits = EXAM_TIME_LIMITS[examType] || {}
+        const sectionTimeLimit = examTimeLimits[section] || null
+        setTimeLimit(sectionTimeLimit)
+        setSessionStartTime(Date.now())
+        setQuestionStartTime(Date.now())
+        setQuestionTimings([])
+        setTotalTimeSpent(0)
+
         setStage('lesson')
         return // Success - exit
       } catch (error) {
@@ -313,8 +340,18 @@ function AppInner() {
   }
 
   const nextQuestion = () => {
+    const questionEndTime = Date.now()
+    const timeSpent = Math.round((questionEndTime - questionStartTime) / 1000)
+
+    const lastAnswer = answerHistory[answerHistory.length - 1]
+    setQuestionTimings(prev => [...prev, {
+      questionIndex: currentQuestionIndex,
+      timeSpent,
+      isCorrect: lastAnswer?.isCorrect || false
+    }])
+
     setCompletedQuestions(completedQuestions + 1)
-    
+
     if (currentQuestionIndex < questions.length - 1) {
       // Still have questions in current batch
       setCurrentQuestionIndex(currentQuestionIndex + 1)
@@ -324,13 +361,14 @@ function AppInner() {
       setRecordedAudio(null)
       setAiScore(null)
       setShowFeedback(false)
+      setQuestionStartTime(Date.now())
     } else {
-      // Finished current batch - save history and fetch more questions (Duolingo style!)
+      // Finished current batch - calculate total time
+      const totalTime = Math.round((questionEndTime - sessionStartTime) / 1000)
+      setTotalTimeSpent(totalTime)
+
       saveExamHistory(answerHistory)
-      setAnswerHistory([]) // Reset for next batch
-      
-      // Auto-fetch next batch of questions
-      fetchMoreQuestions()
+      setStage('complete')
     }
   }
 
@@ -381,6 +419,10 @@ function AppInner() {
         setRecordedAudio(null)
         setAiScore(null)
         setShowFeedback(false)
+        setAnswerHistory([])
+        setSessionStartTime(Date.now())
+        setQuestionStartTime(Date.now())
+        setQuestionTimings([])
         setStage('lesson')
       } else {
         throw new Error('No questions received')
@@ -496,59 +538,63 @@ function AppInner() {
   // Complete - show stats and options to continue or stop
   if (stage === 'complete') {
     const xpEarned = completedQuestions * 10
+    const correctCount = answerHistory.filter(a => a.isCorrect).length
+    const accuracy = completedQuestions > 0 ? Math.round((correctCount / completedQuestions) * 100) : 0
+
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center p-4">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md text-center">
-          <motion.div 
-            initial={{ scale: 0 }} 
-            animate={{ scale: 1 }} 
-            transition={{ type: 'spring', duration: 0.8, delay: 0.2 }} 
-            className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full mb-6 shadow-xl"
-          >
-            <Trophy className="w-14 h-14 text-white" />
-          </motion.div>
-          
-          <h1 className="text-3xl font-black text-gray-900 mb-2">ยอดเยี่ยม! 🎉</h1>
-          <p className="text-gray-500 mb-6">คุณทำได้ดีมาก!</p>
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4 pb-20">
+        <div className="max-w-md mx-auto">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', duration: 0.8, delay: 0.2 }}
+              className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full mb-6 shadow-xl"
+            >
+              <Trophy className="w-14 h-14 text-white" />
+            </motion.div>
 
-          <Card className="bg-white rounded-2xl p-5 shadow-lg mb-6 border-0">
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center p-3 bg-orange-50 rounded-xl">
-                <div className="text-2xl font-black text-orange-600 mb-1">{completedQuestions}</div>
-                <div className="text-xs text-gray-500 font-medium">ข้อที่ทำ</div>
+            <h1 className="text-3xl font-black text-gray-900 mb-2">ยอดเยี่ยม! 🎉</h1>
+            <p className="text-gray-500 mb-6">คุณทำเสร็จแล้ว {completedQuestions} ข้อ</p>
+
+            <Card className="bg-white rounded-2xl p-5 shadow-lg mb-6 border-0">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-3 bg-orange-50 rounded-xl">
+                  <div className="text-2xl font-black text-orange-600 mb-1">{completedQuestions}</div>
+                  <div className="text-xs text-gray-500 font-medium">ข้อที่ทำ</div>
+                </div>
+                <div className="text-center p-3 bg-green-50 rounded-xl">
+                  <div className="text-2xl font-black text-green-600 mb-1">{accuracy}%</div>
+                  <div className="text-xs text-gray-500 font-medium">ความแม่นยำ</div>
+                </div>
+                <div className="text-center p-3 bg-purple-50 rounded-xl">
+                  <div className="text-2xl font-black text-purple-600 mb-1">{streak}</div>
+                  <div className="text-xs text-gray-500 font-medium">🔥 Streak</div>
+                </div>
               </div>
-              <div className="text-center p-3 bg-green-50 rounded-xl">
-                <div className="text-2xl font-black text-green-600 mb-1">+{xpEarned}</div>
-                <div className="text-xs text-gray-500 font-medium">XP</div>
+            </Card>
+
+            {questionTimings.length > 0 && (
+              <div className="mb-6 text-left">
+                <TimingSummary
+                  questionTimings={questionTimings}
+                  totalTime={totalTimeSpent}
+                />
               </div>
-              <div className="text-center p-3 bg-purple-50 rounded-xl">
-                <div className="text-2xl font-black text-purple-600 mb-1">{streak}</div>
-                <div className="text-xs text-gray-500 font-medium">🔥 Streak</div>
-              </div>
+            )}
+
+            <div className="space-y-3">
+              {/* Back to practice selection */}
+              <Button
+                onClick={restartLesson}
+                className="w-full h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600"
+                size="lg"
+              >
+                เลือกข้อสอบอื่น
+              </Button>
             </div>
-          </Card>
-
-          <div className="space-y-3">
-            {/* Continue button - fetch more questions */}
-            <Button 
-              onClick={fetchMoreQuestions} 
-              className="w-full h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600"
-              size="lg"
-            >
-              🚀 ทำต่อเลย!
-            </Button>
-            
-            {/* Back to practice selection */}
-            <Button 
-              onClick={restartLesson} 
-              variant="outline"
-              className="w-full h-12 font-semibold"
-              size="lg"
-            >
-              เลือกข้อสอบอื่น
-            </Button>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     )
   }
@@ -571,13 +617,25 @@ function AppInner() {
             <Button variant="ghost" size="sm" onClick={() => router.push('/practice')}>
               <X className="w-5 h-5" />
             </Button>
-            
-            <div className="flex items-center gap-4">
+
+            <div className="flex items-center gap-3">
+              {timeLimit && (
+                <ExamTimer
+                  timeLimit={timeLimit}
+                  onTimeUp={() => {
+                    alert('หมดเวลา! กำลังสรุปผล...')
+                    setStage('complete')
+                  }}
+                  isPaused={showFeedback}
+                  showWarningAt={300}
+                />
+              )}
+
               <div className="flex items-center gap-1">
                 <Flame className="w-5 h-5 text-orange-500" />
                 <span className="font-bold text-orange-500">{streak}</span>
               </div>
-              
+
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Heart key={i} className={`w-5 h-5 ${i < hearts ? 'fill-red-500 text-red-500' : 'text-gray-300'}`} />
@@ -868,6 +926,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
@@ -876,6 +936,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
@@ -926,6 +988,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">จุดแข็ง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.strengths.map((s, i) => <li key={i} className="text-gray-700">{s}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
@@ -934,6 +998,8 @@ function AppInner() {
                             <h4 className="font-semibold text-orange-700 mb-2">ควรปรับปรุง:</h4>
                             <ul className="list-disc list-inside space-y-1">
                               {aiScore.improvements.map((imp, i) => <li key={i} className="text-gray-700">{imp}</li>)}
+                              )
+                              }
                             </ul>
                           </div>
                         )}
