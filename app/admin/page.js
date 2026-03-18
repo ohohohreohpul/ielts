@@ -8,6 +8,21 @@ import { Input } from '@/components/ui/input'
 import { ArrowLeft, Key, CreditCard, Settings, Eye, EyeOff, Save, Check, Loader as Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
+const OPENROUTER_MODELS = [
+  { value: 'meta-llama/llama-4-maverick:free', label: 'Llama 4 Maverick (Free)' },
+  { value: 'meta-llama/llama-4-scout:free', label: 'Llama 4 Scout (Free)' },
+  { value: 'google/gemini-2.0-flash-exp:free', label: 'Gemini 2.0 Flash (Free)' },
+  { value: 'deepseek/deepseek-chat-v3-0324:free', label: 'DeepSeek V3 (Free)' },
+  { value: 'qwen/qwen3-235b-a22b:free', label: 'Qwen3 235B (Free)' },
+  { value: 'microsoft/phi-4-reasoning:free', label: 'Phi-4 Reasoning (Free)' },
+  { value: 'openai/gpt-4o-mini', label: 'GPT-4o Mini (Paid)' },
+  { value: 'openai/gpt-4o', label: 'GPT-4o (Paid)' },
+  { value: 'anthropic/claude-3.5-sonnet', label: 'Claude 3.5 Sonnet (Paid)' },
+  { value: 'anthropic/claude-3-haiku', label: 'Claude 3 Haiku (Paid)' },
+  { value: 'google/gemini-2.0-flash-001', label: 'Gemini 2.0 Flash (Paid)' },
+  { value: 'meta-llama/llama-3.3-70b-instruct', label: 'Llama 3.3 70B (Paid)' },
+]
+
 export default function AdminPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -18,6 +33,8 @@ export default function AdminPage() {
   const [config, setConfig] = useState({
     geminiKey: '',
     openAIKey: '',
+    openRouterKey: '',
+    openRouterModel: 'meta-llama/llama-4-maverick:free',
     llmProvider: 'gemini',
     stripeKey: '',
     googleClientId: '',
@@ -38,6 +55,8 @@ export default function AdminPage() {
         setConfig({
           geminiKey: data.geminiKey || '',
           openAIKey: data.openAIKey || '',
+          openRouterKey: data.openRouterKey || '',
+          openRouterModel: data.openRouterModel || 'meta-llama/llama-4-maverick:free',
           llmProvider: data.llmProvider || 'gemini',
           stripeKey: data.stripeKey || '',
           googleClientId: data.googleClientId || '',
@@ -88,16 +107,19 @@ export default function AdminPage() {
     {
       title: 'AI Configuration',
       icon: '🤖',
-      description: 'ตั้งค่า API key สำหรับ AI (Gemini หรือ OpenAI)',
+      description: 'ตั้งค่า API key สำหรับ AI (Gemini, OpenAI หรือ OpenRouter)',
       fields: [
         { key: 'llmProvider', label: 'AI Provider', type: 'select', options: [
           { value: 'gemini', label: 'Google Gemini' },
-          { value: 'openai', label: 'OpenAI (GPT-4)' }
+          { value: 'openai', label: 'OpenAI (GPT-4)' },
+          { value: 'openrouter', label: 'OpenRouter (รองรับหลาย model)' }
         ]},
         { key: 'geminiKey', label: 'Gemini API Key', placeholder: 'AIza...' },
-        { key: 'openAIKey', label: 'OpenAI API Key', placeholder: 'sk-...' }
+        { key: 'openAIKey', label: 'OpenAI API Key', placeholder: 'sk-...' },
+        { key: 'openRouterKey', label: 'OpenRouter API Key', placeholder: 'sk-or-v1-...' },
+        { key: 'openRouterModel', label: 'OpenRouter Model', type: 'openrouter-model' }
       ],
-      instructions: 'เลือก AI provider และใส่ API key ที่ต้องการใช้'
+      instructions: 'เลือก AI provider และใส่ API key ที่ต้องการใช้ สำหรับ OpenRouter ใส่ API key จาก openrouter.ai แล้วเลือก model ที่ต้องการ'
     },
     {
       title: 'Payment (Stripe)',
@@ -168,6 +190,31 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
+        {/* OpenRouter Info Banner */}
+        {config.llmProvider === 'openrouter' && (
+          <Card className="border-purple-200 bg-purple-50">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🚀</span>
+                <div>
+                  <h3 className="font-bold text-purple-800">OpenRouter เปิดใช้งานแล้ว</h3>
+                  <p className="text-sm text-purple-700 mt-1">
+                    รองรับ 300+ AI models จากผู้ให้บริการชั้นนำ รวมถึง model ฟรี
+                  </p>
+                  <a
+                    href="https://openrouter.ai/keys"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-purple-600 underline mt-1 inline-block"
+                  >
+                    รับ API key ฟรีที่ openrouter.ai/keys →
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Config Sections */}
         {configSections.map((section, idx) => (
           <motion.div
@@ -203,6 +250,16 @@ export default function AdminPage() {
                       >
                         {field.options.map(opt => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    ) : field.type === 'openrouter-model' ? (
+                      <select
+                        value={config[field.key]}
+                        onChange={(e) => setConfig(prev => ({ ...prev, [field.key]: e.target.value }))}
+                        className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      >
+                        {OPENROUTER_MODELS.map(m => (
+                          <option key={m.value} value={m.value}>{m.label}</option>
                         ))}
                       </select>
                     ) : (

@@ -751,19 +751,23 @@ async function handleRoute(request, context) {
         googleTTS: !!config.googleTTSKey,
         elevenLabs: !!config.elevenLabsKey,
         openAI: !!config.openAIKey,
-        llmProvider: config.llmProvider || 'gemini'
+        openRouter: !!config.openRouterKey,
+        llmProvider: config.llmProvider || 'gemini',
+        openRouterModel: config.openRouterModel || 'meta-llama/llama-4-maverick:free'
       }))
     }
 
     // Admin: Save API Keys
     if (route === '/admin/keys' && method === 'POST') {
       const body = await request.json()
-      const { geminiKey, googleTTSKey, elevenLabsKey, openAIKey, llmProvider } = body
+      const { geminiKey, googleTTSKey, elevenLabsKey, openAIKey, openRouterKey, openRouterModel, llmProvider } = body
 
       if (geminiKey) await setAdminConfig('geminiKey', geminiKey)
       if (googleTTSKey) await setAdminConfig('googleTTSKey', googleTTSKey)
       if (elevenLabsKey) await setAdminConfig('elevenLabsKey', elevenLabsKey)
       if (openAIKey) await setAdminConfig('openAIKey', openAIKey)
+      if (openRouterKey) await setAdminConfig('openRouterKey', openRouterKey)
+      if (openRouterModel) await setAdminConfig('openRouterModel', openRouterModel)
       if (llmProvider) await setAdminConfig('llmProvider', llmProvider)
 
       return handleCORS(NextResponse.json({
@@ -780,17 +784,25 @@ async function handleRoute(request, context) {
       const llmProvider = await getAdminConfig('llmProvider') || 'gemini'
       const geminiKey = await getAdminConfig('geminiKey')
       const openAIKey = await getAdminConfig('openAIKey')
+      const openRouterKey = await getAdminConfig('openRouterKey')
+      const openRouterModel = await getAdminConfig('openRouterModel') || 'meta-llama/llama-4-maverick:free'
       const emergentKey = process.env.EMERGENT_LLM_KEY
 
       let apiKey = null
       let useProvider = llmProvider
 
-      if (llmProvider === 'openai' && openAIKey) {
+      if (llmProvider === 'openrouter' && openRouterKey) {
+        apiKey = openRouterKey
+        useProvider = 'openrouter'
+      } else if (llmProvider === 'openai' && openAIKey) {
         apiKey = openAIKey
         useProvider = 'openai'
       } else if (llmProvider === 'gemini' && geminiKey) {
         apiKey = geminiKey
         useProvider = 'gemini'
+      } else if (openRouterKey) {
+        apiKey = openRouterKey
+        useProvider = 'openrouter'
       } else if (openAIKey) {
         apiKey = openAIKey
         useProvider = 'openai'
@@ -804,7 +816,7 @@ async function handleRoute(request, context) {
 
       if (!apiKey) {
         return handleCORS(NextResponse.json(
-          { error: "API key not configured. Please configure Gemini or OpenAI API key in Admin Console." },
+          { error: "API key not configured. Please configure Gemini, OpenAI, or OpenRouter API key in Admin Console." },
           { status: 400 }
         ))
       }
@@ -813,7 +825,31 @@ async function handleRoute(request, context) {
         const prompt = buildExamPrompt(examType, section, count)
         let generatedText
 
-        if (useProvider === 'openai' || useProvider === 'emergent') {
+        if (useProvider === 'openrouter') {
+          const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': 'https://mydemy-ai-exams-w77mqdkq.sites.blink.new',
+              'X-Title': 'Mydemy AI Exam App'
+            },
+            body: JSON.stringify({
+              model: openRouterModel,
+              messages: [{ role: 'user', content: prompt }],
+              temperature: 0.9,
+              max_tokens: 8192,
+            })
+          })
+
+          if (!aiResponse.ok) {
+            const errorData = await aiResponse.json()
+            throw new Error(errorData.error?.message || 'OpenRouter API request failed')
+          }
+
+          const aiData = await aiResponse.json()
+          generatedText = aiData.choices[0].message.content
+        } else if (useProvider === 'openai' || useProvider === 'emergent') {
           const apiUrl = useProvider === 'emergent'
             ? 'https://integrations.emergentagent.com/llm/chat/completions'
             : 'https://api.openai.com/v1/chat/completions'
@@ -944,17 +980,25 @@ async function handleRoute(request, context) {
       const llmProvider = await getAdminConfig('llmProvider') || 'gemini'
       const geminiKey = await getAdminConfig('geminiKey')
       const openAIKey = await getAdminConfig('openAIKey')
+      const openRouterKey = await getAdminConfig('openRouterKey')
+      const openRouterModel = await getAdminConfig('openRouterModel') || 'meta-llama/llama-4-maverick:free'
       const emergentKey = process.env.EMERGENT_LLM_KEY
 
       let apiKey = null
       let useProvider = llmProvider
 
-      if (llmProvider === 'openai' && openAIKey) {
+      if (llmProvider === 'openrouter' && openRouterKey) {
+        apiKey = openRouterKey
+        useProvider = 'openrouter'
+      } else if (llmProvider === 'openai' && openAIKey) {
         apiKey = openAIKey
         useProvider = 'openai'
       } else if (llmProvider === 'gemini' && geminiKey) {
         apiKey = geminiKey
         useProvider = 'gemini'
+      } else if (openRouterKey) {
+        apiKey = openRouterKey
+        useProvider = 'openrouter'
       } else if (openAIKey) {
         apiKey = openAIKey
         useProvider = 'openai'
@@ -968,7 +1012,7 @@ async function handleRoute(request, context) {
 
       if (!apiKey) {
         return handleCORS(NextResponse.json(
-          { error: "API key not configured. Please configure Gemini or OpenAI API key in Admin Console." },
+          { error: "API key not configured. Please configure Gemini, OpenAI, or OpenRouter API key in Admin Console." },
           { status: 400 }
         ))
       }
@@ -1014,7 +1058,27 @@ Provide a JSON response:
 
         let generatedText
 
-        if (useProvider === 'openai' || useProvider === 'emergent') {
+        if (useProvider === 'openrouter') {
+          const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': 'https://mydemy-ai-exams-w77mqdkq.sites.blink.new',
+              'X-Title': 'Mydemy AI Exam App'
+            },
+            body: JSON.stringify({
+              model: openRouterModel,
+              messages: [{ role: 'user', content: scoringPrompt }],
+              temperature: 0.7,
+              max_tokens: 2048,
+            })
+          })
+
+          if (!aiResponse.ok) throw new Error('OpenRouter scoring failed')
+          const aiData = await aiResponse.json()
+          generatedText = aiData.choices[0].message.content
+        } else if (useProvider === 'openai' || useProvider === 'emergent') {
           const apiUrl = useProvider === 'emergent'
             ? 'https://integrations.emergentagent.com/llm/chat/completions'
             : 'https://api.openai.com/v1/chat/completions'
@@ -1126,6 +1190,8 @@ Provide a JSON response:
       return handleCORS(NextResponse.json({
         geminiKey: config.geminiKey ? '***configured***' : '',
         openAIKey: config.openAIKey ? '***configured***' : '',
+        openRouterKey: config.openRouterKey ? '***configured***' : '',
+        openRouterModel: config.openRouterModel || 'meta-llama/llama-4-maverick:free',
         llmProvider: config.llmProvider || 'gemini',
         stripeKey: config.stripeKey ? '***configured***' : '',
         googleClientId: config.googleClientId ? '***configured***' : '',
@@ -1138,7 +1204,7 @@ Provide a JSON response:
     // Save Admin Config
     if (route === '/admin/config' && method === 'POST') {
       const body = await request.json()
-      const { geminiKey, openAIKey, llmProvider, stripeKey, googleClientId, googleClientSecret, facebookAppId, facebookAppSecret } = body
+      const { geminiKey, openAIKey, openRouterKey, openRouterModel, llmProvider, stripeKey, googleClientId, googleClientSecret, facebookAppId, facebookAppSecret } = body
 
       try {
         if (geminiKey && !geminiKey.includes('***')) {
@@ -1146,6 +1212,12 @@ Provide a JSON response:
         }
         if (openAIKey && !openAIKey.includes('***')) {
           await setAdminConfig('openAIKey', openAIKey)
+        }
+        if (openRouterKey && !openRouterKey.includes('***')) {
+          await setAdminConfig('openRouterKey', openRouterKey)
+        }
+        if (openRouterModel) {
+          await setAdminConfig('openRouterModel', openRouterModel)
         }
         if (llmProvider) {
           await setAdminConfig('llmProvider', llmProvider)
