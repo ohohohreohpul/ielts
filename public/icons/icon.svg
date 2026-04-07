@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="220" fill="#1B3F7A"/>
+
+  <!-- Cat face (white circle) -->
+  <circle cx="512" cy="560" r="260" fill="white"/>
+
+  <!-- Left ear -->
+  <polygon points="320,360 280,240 420,310" fill="white" stroke="#1B3F7A" stroke-width="12" stroke-linejoin="round"/>
+  <!-- Left ear inner -->
+  <polygon points="322,352 295,268 404,318" fill="#1B3F7A" opacity="0.7"/>
+
+  <!-- Right ear -->
+  <polygon points="704,360 744,240 604,310" fill="white" stroke="#1B3F7A" stroke-width="12" stroke-linejoin="round"/>
+  <!-- Right ear inner -->
+  <polygon points="702,352 729,268 620,318" fill="#1B3F7A" opacity="0.7"/>
+
+  <!-- Graduation cap board -->
+  <rect x="340" y="270" width="344" height="24" rx="6" fill="#152E5A"/>
+  <!-- Graduation cap top -->
+  <polygon points="512,210 680,275 512,300 344,275" fill="#152E5A"/>
+  <!-- Tassel string -->
+  <line x1="676" y1="280" x2="700" y2="340" stroke="#F0F4FF" stroke-width="10" stroke-linecap="round"/>
+  <!-- Tassel end -->
+  <circle cx="700" cy="347" r="12" fill="#F0F4FF"/>
+  <!-- Tassel fringe -->
+  <line x1="700" y1="355" x2="692" y2="385" stroke="#F0F4FF" stroke-width="5" stroke-linecap="round"/>
+  <line x1="700" y1="355" x2="700" y2="388" stroke="#F0F4FF" stroke-width="5" stroke-linecap="round"/>
+  <line x1="700" y1="355" x2="708" y2="385" stroke="#F0F4FF" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Eyes -->
+  <circle cx="448" cy="540" r="26" fill="#152E5A"/>
+  <circle cx="576" cy="540" r="26" fill="#152E5A"/>
+  <!-- Eye shine -->
+  <circle cx="458" cy="530" r="9" fill="white"/>
+  <circle cx="586" cy="530" r="9" fill="white"/>
+
+  <!-- Nose -->
+  <ellipse cx="512" cy="608" rx="14" ry="10" fill="#152E5A"/>
+
+  <!-- Smile -->
+  <path d="M 490 628 Q 512 652 534 628" fill="none" stroke="#152E5A" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- Whiskers left -->
+  <line x1="360" y1="605" x2="488" y2="618" stroke="#152E5A" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  <line x1="352" y1="630" x2="485" y2="630" stroke="#152E5A" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Whiskers right -->
+  <line x1="536" y1="618" x2="664" y2="605" stroke="#152E5A" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  <line x1="539" y1="630" x2="672" y2="630" stroke="#152E5A" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+</svg>

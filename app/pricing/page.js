@@ -151,7 +151,7 @@ function PricingContent() {
           >
             <Crown className="w-10 h-10 text-white" />
           </motion.div>
-          <h2 className="text-2xl font-bold mb-2">Carrot School Premium</h2>
+          <h2 className="text-2xl font-bold mb-2">kedikedi Premium</h2>
           <p className="text-gray-600">เข้าถึงข้อสอบทุกประเภท ไม่จำกัด</p>
         </div>
 

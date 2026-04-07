@@ -6,18 +6,18 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#FF6500',
+  themeColor: '#1B3F7A',
   minimal: 'ui',
 }
 
 export const metadata = {
-  title: 'Carrot School - AI Mock Exams',
-  description: 'ฝึกสอบ TOEIC และ IELTS ด้วย AI - ทีละข้อ สนุกเหมือน Duolingo',
+  title: 'kedikedi - AI Mock Exams',
+  description: 'ฝึกสอบ IELTS, TOEIC, TOEFL และอีกมากด้วย AI - ทีละข้อ สนุกเหมือน Duolingo',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Carrot School',
+    title: 'kedikedi',
     startupImage: ['/icons/icon-512.png'],
   },
   icons: {
@@ -26,6 +26,7 @@ export const metadata = {
       { url: '/icons/icon-192.png', sizes: '192x192' },
     ],
     icon: [
+      { url: '/icons/icon.svg', type: 'image/svg+xml' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
@@ -34,8 +35,8 @@ export const metadata = {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'apple-mobile-web-app-title': 'Carrot School',
-    'msapplication-TileColor': '#FF6500',
+    'apple-mobile-web-app-title': 'kedikedi',
+    'msapplication-TileColor': '#1B3F7A',
     'msapplication-TileImage': '/icons/icon-144.png',
   },
 }
@@ -52,7 +53,7 @@ export default function RootLayout({ children }) {
         {/* Splash screens for iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Carrot School" />
+        <meta name="apple-mobile-web-app-title" content="kedikedi" />
 
         {/* Prevent scroll bounce on iOS */}
         <style dangerouslySetInnerHTML={{__html: `

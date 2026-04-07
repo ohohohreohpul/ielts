@@ -1,13 +1,13 @@
 {
-  "name": "Carrot School - AI Mock Exams",
-  "short_name": "Carrot School",
-  "description": "ฝึกสอบ TOEIC และ IELTS ด้วย AI - ทีละข้อ สนุกเหมือน Duolingo",
+  "name": "kedikedi - AI Mock Exams",
+  "short_name": "kedikedi",
+  "description": "ฝึกสอบ IELTS, TOEIC, TOEFL และอีกมากด้วย AI - ทีละข้อ สนุกเหมือน Duolingo",
   "start_url": "/welcome",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FF6500",
-  "theme_color": "#FF6500",
+  "background_color": "#1B3F7A",
+  "theme_color": "#1B3F7A",
   "lang": "th",
   "categories": ["education"],
   "icons": [

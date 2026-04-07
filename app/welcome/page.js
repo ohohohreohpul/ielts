@@ -22,18 +22,18 @@ export default function WelcomePage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Top section - Orange */}
-      <div className="bg-orange-500 pt-16 pb-24 px-6 flex flex-col items-center text-white">
+      {/* Top section - Blue */}
+      <div className="pt-16 pb-24 px-6 flex flex-col items-center text-white" style={{background: '#1B3F7A'}}>
         <motion.div
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', duration: 0.6 }}
-          className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-2xl"
+          className="w-24 h-24 rounded-3xl flex items-center justify-center mb-6 shadow-2xl overflow-hidden"
         >
-          <span className="text-5xl font-black text-orange-500">🥕</span>
+          <img src="/icons/icon.svg" alt="kedikedi" className="w-full h-full object-cover" />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <h1 className="text-4xl font-black text-white text-center mb-2 tracking-tight">Carrot School</h1>
+          <h1 className="text-4xl font-black text-white text-center mb-2 tracking-tight">kedikedi</h1>
           <p className="text-white/70 text-center text-base font-medium">ฝึกสอบให้เชี่ยวชาญ ทีละข้อ</p>
         </motion.div>
       </div>

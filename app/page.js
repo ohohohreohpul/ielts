@@ -1177,9 +1177,9 @@ function AppInner() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <p className="text-5xl">🥕</p>
+              <p className="text-5xl">🐱</p>
             </div>
-            <DialogTitle className="text-center text-2xl">Carrot School Plus</DialogTitle>
+            <DialogTitle className="text-center text-2xl">kedikedi Plus</DialogTitle>
             <DialogDescription className="text-center">หัวใจหมดแล้ว! อัพเกรดเพื่อฝึกได้ไม่จำกัด</DialogDescription>
           </DialogHeader>
           

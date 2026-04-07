@@ -60,7 +60,7 @@ export default function ProfilePage() {
 
   const menu = [
     { icon: Bell,        label: 'การแจ้งเตือน',        sub: notifications ? 'เปิดอยู่' : 'ปิดอยู่', sheet: 'notifications' },
-    { icon: Crown,       label: 'Carrot School Plus',   sub: isPremium ? 'คุณเป็นสมาชิก Plus ✨' : 'ปลดล็อคข้อสอบทั้งหมด', sheet: 'plus', orange: !isPremium },
+    { icon: Crown,       label: 'kedikedi Plus',   sub: isPremium ? 'คุณเป็นสมาชิก Plus ✨' : 'ปลดล็อคข้อสอบทั้งหมด', sheet: 'plus', orange: !isPremium },
     { icon: Shield,      label: 'ความเป็นส่วนตัว',     sub: 'จัดการข้อมูลของคุณ', sheet: 'privacy' },
     { icon: HelpCircle,  label: 'ช่วยเหลือ',           sub: 'คำถามที่พบบ่อย', sheet: 'help' },
   ]
@@ -172,7 +172,7 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between px-5 pt-14 pb-4 border-b border-gray-100">
                 <h2 className="text-xl font-black text-gray-900">
                   {activeSheet === 'notifications' && '🔔 การแจ้งเตือน'}
-                  {activeSheet === 'plus' && '🥕 Carrot School Plus'}
+                  {activeSheet === 'plus' && '🐱 kedikedi Plus'}
                   {activeSheet === 'privacy' && '🔒 ความเป็นส่วนตัว'}
                   {activeSheet === 'help' && '❓ ช่วยเหลือ'}
                 </h2>
@@ -277,7 +277,7 @@ export default function ProfilePage() {
                     </div>
                     <div className="bg-gray-50 rounded-xl p-4">
                       <p className="text-xs text-gray-400 leading-relaxed">
-                        Carrot School เก็บข้อมูลเฉพาะที่จำเป็นสำหรับการใช้งาน เราไม่แชร์ข้อมูลกับบุคคลที่สาม ข้อมูลของคุณจะถูกเข้ารหัสและเก็บอย่างปลอดภัย
+                        kedikedi เก็บข้อมูลเฉพาะที่จำเป็นสำหรับการใช้งาน เราไม่แชร์ข้อมูลกับบุคคลที่สาม ข้อมูลของคุณจะถูกเข้ารหัสและเก็บอย่างปลอดภัย
                       </p>
                     </div>
                   </>
@@ -287,7 +287,7 @@ export default function ProfilePage() {
                 {activeSheet === 'help' && (
                   <>
                     {[
-                      { q: 'Carrot School คืออะไร?', a: 'แอปฝึกสอบภาษาอังกฤษด้วย AI สร้างข้อสอบจำลองเหมือนจริง รองรับ TOEIC, IELTS, TOEFL, CU-TEP, TU-GET, O-NET และ กพ.' },
+                      { q: 'kedikedi คืออะไร?', a: 'แอปฝึกสอบภาษาอังกฤษด้วย AI สร้างข้อสอบจำลองเหมือนจริง รองรับ TOEIC, IELTS, TOEFL, CU-TEP, TU-GET, O-NET และ กพ.' },
                       { q: 'ข้อสอบสร้างจากอะไร?', a: 'ข้อสอบสร้างโดย AI (Gemini) ทุกครั้งที่ฝึกจะได้ข้อสอบใหม่ไม่ซ้ำ ความยากเหมาะสมกับข้อสอบจริง' },
                       { q: 'Premium ต่างจาก Free อย่างไร?', a: 'Free: TOEIC + Grammar / Premium: ปลดล็อคทุกข้อสอบ + หัวใจไม่จำกัด + AI Scoring' },
                       { q: 'หัวใจหมดแล้วทำอย่างไร?', a: 'หัวใจจะรีเซ็ตทุกวัน หรืออัพเกรดเป็น Plus เพื่อหัวใจไม่จำกัด' },

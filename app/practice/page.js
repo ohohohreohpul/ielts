@@ -215,7 +215,7 @@ export default function PracticePage() {
             >
               <div className="text-center mb-6">
                 <p className="text-4xl mb-2">🥕</p>
-                <h2 className="text-2xl font-black text-gray-900">Carrot School Plus</h2>
+                <h2 className="text-2xl font-black text-gray-900">kedikedi Plus</h2>
                 <p className="text-gray-500 text-sm mt-1">ปลดล็อคข้อสอบทั้งหมด</p>
               </div>
 

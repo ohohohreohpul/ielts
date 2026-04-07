@@ -264,7 +264,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
             <span className="text-4xl">🥕</span>
             <div className="flex-1">
-              <p className="text-white font-black text-base">Carrot School Plus 👑</p>
+              <p className="text-white font-black text-base">kedikedi Plus 👑</p>
               <p className="text-white/70 text-sm mt-0.5">ปลดล็อคข้อสอบทั้งหมด เริ่มต้น ฿83/เดือน</p>
             </div>
             <ChevronRight className="w-5 h-5 text-white/70 flex-shrink-0" />
@@ -372,7 +372,7 @@ export default function DashboardPage() {
                     className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 active:opacity-80 text-lg"
                   >
                     <Crown className="w-5 h-5" />
-                    ปลดล็อคด้วย Carrot School Plus
+                    ปลดล็อคด้วย kedikedi Plus
                   </button>
                 )}
               </div>

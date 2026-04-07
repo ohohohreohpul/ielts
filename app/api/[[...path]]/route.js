@@ -508,7 +508,7 @@ async function handleRoute(request, context) {
     // Root endpoint
     if ((route === '/root' || route === '/') && method === 'GET') {
       return handleCORS(NextResponse.json({
-        message: "Carrot School API",
+        message: "kedikedi API",
         version: "2.0.0",
         database: "Supabase",
         endpoints: [
@@ -1378,7 +1378,7 @@ Provide a JSON response:
               currency: planData.currency,
               product_data: {
                 name: planData.name,
-                description: `Carrot School ${planData.name} Subscription`,
+                description: `kedikedi ${planData.name} Subscription`,
               },
               unit_amount: planData.amount,
             },

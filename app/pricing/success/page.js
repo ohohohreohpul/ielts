@@ -37,7 +37,7 @@ export default function PaymentSuccessPage() {
         </motion.div>
 
         <h1 className="text-3xl font-black mb-2">ยินดีต้อนรับสู่ Premium! 🎉</h1>
-        <p className="text-gray-600 mb-8">ขอบคุณที่สนับสนุน Carrot School</p>
+        <p className="text-gray-600 mb-8">ขอบคุณที่สนับสนุน kedikedi</p>
 
         <Card className="mb-6">
           <CardContent className="p-6">
