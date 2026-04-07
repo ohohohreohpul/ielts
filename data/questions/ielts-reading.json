@@ -1,0 +1,204 @@
+[
+  {
+    "id": "ielts-r-001",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "The concept of neuroplasticity has fundamentally changed our understanding of the human brain. For decades, scientists believed that the adult brain was essentially fixed — that after childhood, its structure was largely immutable. However, research over the past three decades has demonstrated that the brain retains a remarkable capacity to reorganise itself throughout life. Neurons can form new connections, existing pathways can be strengthened or weakened, and even new neurons can be generated in certain regions. This plasticity is activity-dependent, meaning it is driven by experience, learning, and environmental stimulation.",
+    "question": "What was the previously held belief about the adult brain?",
+    "options": [
+      {"id": "a", "text": "It could generate unlimited new neurons.", "correct": false},
+      {"id": "b", "text": "Its structure could not significantly change after childhood.", "correct": true},
+      {"id": "c", "text": "It was more adaptable than the childhood brain.", "correct": false},
+      {"id": "d", "text": "It required continuous stimulation to function.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'scientists believed that the adult brain was essentially fixed — that after childhood, its structure was largely immutable' ซึ่ง immutable หมายถึง ไม่เปลี่ยนแปลง"
+  },
+  {
+    "id": "ielts-r-002",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "The concept of neuroplasticity has fundamentally changed our understanding of the human brain. For decades, scientists believed that the adult brain was essentially fixed — that after childhood, its structure was largely immutable. However, research over the past three decades has demonstrated that the brain retains a remarkable capacity to reorganise itself throughout life. Neurons can form new connections, existing pathways can be strengthened or weakened, and even new neurons can be generated in certain regions. This plasticity is activity-dependent, meaning it is driven by experience, learning, and environmental stimulation.",
+    "statement": "Neuroplasticity occurs regardless of a person's level of activity or experience.",
+    "options": [
+      {"id": "true", "text": "True", "correct": false},
+      {"id": "false", "text": "False", "correct": true},
+      {"id": "notgiven", "text": "Not Given", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ False เพราะบทความระบุว่า 'This plasticity is activity-dependent, meaning it is driven by experience, learning, and environmental stimulation' ซึ่งตรงข้ามกับข้อความ"
+  },
+  {
+    "id": "ielts-r-003",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "Urban heat islands (UHIs) are metropolitan areas that are significantly warmer than their surrounding rural environments. The primary cause is the replacement of natural land cover — vegetation and soil — with impervious surfaces such as asphalt and concrete, which absorb and retain heat more effectively. Buildings, vehicles, and industrial processes also contribute considerable waste heat. The consequences are serious: elevated nighttime temperatures disrupt sleep and increase energy consumption as residents run air conditioning, which in turn generates more heat — a self-reinforcing cycle. Public health impacts include increased rates of heat-related illness, particularly among the elderly and young children.",
+    "question": "According to the passage, what creates the self-reinforcing cycle mentioned by the author?",
+    "options": [
+      {"id": "a", "text": "The removal of vegetation in city centres", "correct": false},
+      {"id": "b", "text": "The use of air conditioning generating additional heat", "correct": true},
+      {"id": "c", "text": "Waste heat from industrial facilities", "correct": false},
+      {"id": "d", "text": "High levels of vehicle traffic during daytime hours", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'residents run air conditioning, which in turn generates more heat — a self-reinforcing cycle' การใช้แอร์ผลิตความร้อนเพิ่มเติม ทำให้วนซ้ำ"
+  },
+  {
+    "id": "ielts-r-004",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "Urban heat islands (UHIs) are metropolitan areas that are significantly warmer than their surrounding rural environments. The primary cause is the replacement of natural land cover — vegetation and soil — with impervious surfaces such as asphalt and concrete, which absorb and retain heat more effectively. Buildings, vehicles, and industrial processes also contribute considerable waste heat. The consequences are serious: elevated nighttime temperatures disrupt sleep and increase energy consumption as residents run air conditioning, which in turn generates more heat — a self-reinforcing cycle. Public health impacts include increased rates of heat-related illness, particularly among the elderly and young children.",
+    "statement": "Urban heat islands affect elderly people and children more severely than other groups.",
+    "options": [
+      {"id": "true", "text": "True", "correct": true},
+      {"id": "false", "text": "False", "correct": false},
+      {"id": "notgiven", "text": "Not Given", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ True จากประโยค 'Public health impacts include increased rates of heat-related illness, particularly among the elderly and young children'"
+  },
+  {
+    "id": "ielts-r-005",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "Urban heat islands (UHIs) are metropolitan areas that are significantly warmer than their surrounding rural environments. The primary cause is the replacement of natural land cover — vegetation and soil — with impervious surfaces such as asphalt and concrete, which absorb and retain heat more effectively. Buildings, vehicles, and industrial processes also contribute considerable waste heat.",
+    "statement": "Governments have introduced legislation to reduce the urban heat island effect.",
+    "options": [
+      {"id": "true", "text": "True", "correct": false},
+      {"id": "false", "text": "False", "correct": false},
+      {"id": "notgiven", "text": "Not Given", "correct": true}
+    ],
+    "explanation": "คำตอบที่ถูกคือ Not Given เพราะบทความไม่ได้กล่าวถึงกฎหมายหรือนโยบายของรัฐบาลเลย ข้อมูลนี้ไม่มีในบทความ"
+  },
+  {
+    "id": "ielts-r-006",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "Microplastics — particles smaller than five millimetres — are now found in virtually every ecosystem on Earth, from the deepest ocean trenches to remote Arctic ice. They originate primarily from the breakdown of larger plastic items and from microbeads used in personal care products. Unlike conventional pollutants, microplastics do not decompose; instead, they accumulate in the food chain. Marine organisms ingest them, mistaking them for food, and the particles then pass up the food chain through predation. Preliminary studies have detected microplastics in human blood and lung tissue, though the long-term health implications remain an active area of research.",
+    "question": "According to the passage, how do microplastics enter the human body?",
+    "options": [
+      {"id": "a", "text": "Through direct consumption of plastic products", "correct": false},
+      {"id": "b", "text": "Through contaminated drinking water only", "correct": false},
+      {"id": "c", "text": "Via the food chain through consumption of affected organisms", "correct": true},
+      {"id": "d", "text": "Through skin absorption during contact with plastics", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากบทความที่ระบุว่า สิ่งมีชีวิตในทะเลกิน microplastics แล้วมันส่งต่อขึ้นไปตามห่วงโซ่อาหาร (food chain) จนถึงมนุษย์"
+  },
+  {
+    "id": "ielts-r-007",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "Microplastics — particles smaller than five millimetres — are now found in virtually every ecosystem on Earth, from the deepest ocean trenches to remote Arctic ice. They originate primarily from the breakdown of larger plastic items and from microbeads used in personal care products. Unlike conventional pollutants, microplastics do not decompose; instead, they accumulate in the food chain.",
+    "statement": "Microplastics will eventually break down into harmless substances over time.",
+    "options": [
+      {"id": "true", "text": "True", "correct": false},
+      {"id": "false", "text": "False", "correct": true},
+      {"id": "notgiven", "text": "Not Given", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ False เพราะบทความระบุชัดเจนว่า 'microplastics do not decompose' หมายถึงไม่ย่อยสลาย ตรงข้ามกับข้อความที่กล่าวว่าจะสลายตัวไป"
+  },
+  {
+    "id": "ielts-r-008",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "The industrial revolution of the 18th and 19th centuries fundamentally reshaped not just economies but also social structures. The migration of rural populations into urban centres created densely packed cities with inadequate infrastructure for sanitation, housing, and public health. Child labour was widespread, with children as young as five working in mines and factories for up to 16 hours a day. It was largely in response to these conditions that organised labour movements emerged, advocating for safer workplaces, regulated hours, and fair wages. The reforms achieved by these movements laid the groundwork for modern employment law.",
+    "question": "What was a major social consequence of industrialisation described in the passage?",
+    "options": [
+      {"id": "a", "text": "The strengthening of rural communities", "correct": false},
+      {"id": "b", "text": "The rapid growth of crowded cities with poor conditions", "correct": true},
+      {"id": "c", "text": "The decline of child labour across all industries", "correct": false},
+      {"id": "d", "text": "The immediate improvement in workers' rights", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'migration of rural populations into urban centres created densely packed cities with inadequate infrastructure for sanitation, housing, and public health'"
+  },
+  {
+    "id": "ielts-r-009",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "The industrial revolution of the 18th and 19th centuries fundamentally reshaped not just economies but also social structures. The migration of rural populations into urban centres created densely packed cities with inadequate infrastructure for sanitation, housing, and public health. Child labour was widespread, with children as young as five working in mines and factories for up to 16 hours a day.",
+    "statement": "Children who worked during the industrial revolution were paid the same wages as adults.",
+    "options": [
+      {"id": "true", "text": "True", "correct": false},
+      {"id": "false", "text": "False", "correct": false},
+      {"id": "notgiven", "text": "Not Given", "correct": true}
+    ],
+    "explanation": "คำตอบที่ถูกคือ Not Given เพราะบทความพูดถึงเด็กทำงาน แต่ไม่ได้กล่าวถึงเรื่องค่าจ้างของเด็กเทียบกับผู้ใหญ่เลย"
+  },
+  {
+    "id": "ielts-r-010",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "Sleep deprivation has increasingly been recognised as a public health crisis. Adults require between seven and nine hours of sleep per night for optimal functioning, yet surveys consistently show that a significant proportion of the population regularly sleeps fewer than six hours. The consequences extend far beyond fatigue: chronic sleep deprivation is linked to increased risk of cardiovascular disease, obesity, type 2 diabetes, and impaired immune function. Cognitive effects are equally serious — concentration, decision-making, and emotional regulation are all compromised. Paradoxically, many people underestimate the degree to which they are impaired, often believing they have adapted to insufficient sleep.",
+    "question": "Which of the following best summarises the 'paradox' mentioned in the final sentence?",
+    "options": [
+      {"id": "a", "text": "Sleep deprivation causes physical illness but not mental illness.", "correct": false},
+      {"id": "b", "text": "People who sleep less tend to feel more energetic.", "correct": false},
+      {"id": "c", "text": "People are unaware of how much sleep deprivation affects them.", "correct": true},
+      {"id": "d", "text": "Sleeping too much is as harmful as sleeping too little.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'many people underestimate the degree to which they are impaired, often believing they have adapted to insufficient sleep' — คนคิดว่าตัวเองโอเค แต่จริงๆ ไม่โอเค"
+  },
+  {
+    "id": "ielts-r-011",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "Sleep deprivation has increasingly been recognised as a public health crisis. Adults require between seven and nine hours of sleep per night for optimal functioning, yet surveys consistently show that a significant proportion of the population regularly sleeps fewer than six hours. The consequences extend far beyond fatigue: chronic sleep deprivation is linked to increased risk of cardiovascular disease, obesity, type 2 diabetes, and impaired immune function.",
+    "statement": "Chronic lack of sleep can increase a person's risk of developing diabetes.",
+    "options": [
+      {"id": "true", "text": "True", "correct": true},
+      {"id": "false", "text": "False", "correct": false},
+      {"id": "notgiven", "text": "Not Given", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ True จากประโยค 'chronic sleep deprivation is linked to increased risk of...type 2 diabetes'"
+  },
+  {
+    "id": "ielts-r-012",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "Coral reefs, often described as the rainforests of the sea, support approximately 25% of all marine species despite covering less than 1% of the ocean floor. They are among the most biodiverse and productive ecosystems on Earth. However, rising ocean temperatures — a direct result of climate change — cause coral bleaching, a process in which corals expel the symbiotic algae living within their tissues. Without these algae, corals lose their primary food source and their distinctive colour, turning white. If the thermal stress persists, the corals die. Mass bleaching events have increased dramatically in frequency and intensity since the 1980s.",
+    "question": "What is the immediate cause of coral bleaching according to the passage?",
+    "options": [
+      {"id": "a", "text": "Ocean acidification destroying coral skeletons", "correct": false},
+      {"id": "b", "text": "Corals expelling the algae that live within them", "correct": true},
+      {"id": "c", "text": "Overfishing removing species that protect coral", "correct": false},
+      {"id": "d", "text": "Pollution reducing water clarity and sunlight", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'coral bleaching, a process in which corals expel the symbiotic algae living within their tissues' — ปะการังขับสาหร่ายออกมา"
+  },
+  {
+    "id": "ielts-r-013",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "Coral reefs, often described as the rainforests of the sea, support approximately 25% of all marine species despite covering less than 1% of the ocean floor. They are among the most biodiverse and productive ecosystems on Earth. However, rising ocean temperatures — a direct result of climate change — cause coral bleaching.",
+    "statement": "Coral reefs cover more than 10% of the ocean floor.",
+    "options": [
+      {"id": "true", "text": "True", "correct": false},
+      {"id": "false", "text": "False", "correct": true},
+      {"id": "notgiven", "text": "Not Given", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ False เพราะบทความระบุว่า 'covering less than 1% of the ocean floor' ซึ่งน้อยกว่า 1% ไม่ใช่มากกว่า 10%"
+  },
+  {
+    "id": "ielts-r-014",
+    "type": "reading",
+    "questionType": "multiple-choice",
+    "passage": "Artificial intelligence is transforming the field of medical diagnosis. Machine learning algorithms trained on large datasets of medical images have demonstrated accuracy rates comparable to, and in some cases exceeding, those of experienced clinicians in detecting conditions such as diabetic retinopathy, skin cancers, and certain cardiac abnormalities. Proponents argue that AI can eliminate diagnostic errors caused by human fatigue and cognitive bias, and can expand access to specialist-level diagnosis in resource-limited settings. Critics, however, raise concerns about algorithmic bias — if training data underrepresents certain demographic groups, the system may perform poorly for those populations.",
+    "question": "What concern do critics raise about AI diagnostic systems?",
+    "options": [
+      {"id": "a", "text": "AI systems are too expensive for widespread use.", "correct": false},
+      {"id": "b", "text": "AI may not perform equally well for all patient groups.", "correct": true},
+      {"id": "c", "text": "AI cannot match the accuracy of human doctors.", "correct": false},
+      {"id": "d", "text": "AI systems require constant retraining to remain effective.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'if training data underrepresents certain demographic groups, the system may perform poorly for those populations' — ระบบอาจทำงานได้ไม่ดีกับบางกลุ่มประชากร"
+  },
+  {
+    "id": "ielts-r-015",
+    "type": "reading",
+    "questionType": "true-false-notgiven",
+    "passage": "Artificial intelligence is transforming the field of medical diagnosis. Machine learning algorithms trained on large datasets of medical images have demonstrated accuracy rates comparable to, and in some cases exceeding, those of experienced clinicians in detecting conditions such as diabetic retinopathy, skin cancers, and certain cardiac abnormalities.",
+    "statement": "AI diagnostic systems have never outperformed human doctors in any medical field.",
+    "options": [
+      {"id": "true", "text": "True", "correct": false},
+      {"id": "false", "text": "False", "correct": true},
+      {"id": "notgiven", "text": "Not Given", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ False เพราะบทความระบุว่า 'in some cases exceeding those of experienced clinicians' หมายถึงบางครั้ง AI ดีกว่าแพทย์ด้วยซ้ำ"
+  }
+]

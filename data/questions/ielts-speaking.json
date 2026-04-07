@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ielts-s-001",
+    "type": "speaking",
+    "part": "Part 1",
+    "question": "Let's talk about where you live. Can you describe your hometown or the city where you grew up?",
+    "preparationTime": 0,
+    "speakingTime": 45,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-002",
+    "type": "speaking",
+    "part": "Part 1",
+    "question": "Do you enjoy cooking? What kinds of food do you like to cook or eat?",
+    "preparationTime": 0,
+    "speakingTime": 45,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-003",
+    "type": "speaking",
+    "part": "Part 1",
+    "question": "How do you usually spend your weekends? Has this changed compared to when you were younger?",
+    "preparationTime": 0,
+    "speakingTime": 45,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-004",
+    "type": "speaking",
+    "part": "Part 2",
+    "question": "Describe a book or film that had a significant impact on you. You should say:\n• What the book or film was about\n• When you read or watched it\n• Why it made such an impression on you\n• And explain how it has influenced your thinking or behaviour",
+    "preparationTime": 60,
+    "speakingTime": 120,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-005",
+    "type": "speaking",
+    "part": "Part 2",
+    "question": "Describe a time when you had to learn something new quickly. You should say:\n• What you had to learn\n• Why you needed to learn it quickly\n• How you went about learning it\n• And explain whether you succeeded and what the outcome was",
+    "preparationTime": 60,
+    "speakingTime": 120,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-006",
+    "type": "speaking",
+    "part": "Part 2",
+    "question": "Describe a journey or trip that was particularly memorable for you. You should say:\n• Where you went and who you went with\n• What happened during the trip\n• What made it memorable\n• And explain whether you would like to go back and why",
+    "preparationTime": 60,
+    "speakingTime": 120,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-007",
+    "type": "speaking",
+    "part": "Part 3",
+    "question": "Do you think technology is making people less able to communicate face-to-face? Why or why not?",
+    "preparationTime": 0,
+    "speakingTime": 90,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-008",
+    "type": "speaking",
+    "part": "Part 3",
+    "question": "Some people believe that traditional jobs will disappear due to automation. How do you think this will affect society?",
+    "preparationTime": 0,
+    "speakingTime": 90,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-009",
+    "type": "speaking",
+    "part": "Part 3",
+    "question": "Is it more important for a country to preserve its cultural traditions or to adapt to modern, globalised ways of living? Discuss.",
+    "preparationTime": 0,
+    "speakingTime": 90,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  },
+  {
+    "id": "ielts-s-010",
+    "type": "speaking",
+    "part": "Part 1",
+    "question": "Do you prefer working alone or in a team? Can you explain why?",
+    "preparationTime": 0,
+    "speakingTime": 45,
+    "rubric": "Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation"
+  }
+]

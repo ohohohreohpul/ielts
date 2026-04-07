@@ -1,0 +1,132 @@
+[
+  {
+    "id": "ocsc-r-001",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "The new policy requires that all civil servants _______ a mandatory training course within six months of joining.",
+    "options": [
+      {"id": "a", "text": "complete", "correct": true},
+      {"id": "b", "text": "completes", "correct": false},
+      {"id": "c", "text": "completed", "correct": false},
+      {"id": "d", "text": "will complete", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะหลัง 'requires that...' ต้องใช้ Subjunctive Mood (กริยาฐาน ไม่เติม -s)"
+  },
+  {
+    "id": "ocsc-r-002",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "_______ announced by the Minister of Finance, the new tax measures will take effect from January.",
+    "options": [
+      {"id": "a", "text": "Being", "correct": false},
+      {"id": "b", "text": "As", "correct": true},
+      {"id": "c", "text": "When", "correct": false},
+      {"id": "d", "text": "Though", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'As announced by...' (ตามที่ประกาศโดย...) เป็นวลีมาตรฐานในเอกสารราชการ"
+  },
+  {
+    "id": "ocsc-r-003",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The government has pledged to _______ corruption through stricter enforcement of anti-bribery legislation.",
+    "options": [
+      {"id": "a", "text": "tolerate", "correct": false},
+      {"id": "b", "text": "eradicate", "correct": true},
+      {"id": "c", "text": "proliferate", "correct": false},
+      {"id": "d", "text": "perpetuate", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'eradicate' (กำจัด/ขจัดให้หมดสิ้น) เหมาะสมที่สุดกับนโยบายต่อต้านคอร์รัปชัน"
+  },
+  {
+    "id": "ocsc-r-004",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The minister's statement was _______, leading many commentators to interpret it in different ways.",
+    "options": [
+      {"id": "a", "text": "unequivocal", "correct": false},
+      {"id": "b", "text": "transparent", "correct": false},
+      {"id": "c", "text": "ambiguous", "correct": true},
+      {"id": "d", "text": "decisive", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะ 'ambiguous' (คลุมเครือ/ตีความได้หลายทาง) สอดคล้องกับการที่นักวิเคราะห์ตีความต่างกัน"
+  },
+  {
+    "id": "ocsc-r-005",
+    "type": "reading",
+    "passage": "Good governance is increasingly recognised as a cornerstone of sustainable development. The United Nations Development Programme identifies several key dimensions of good governance: participation, consensus orientation, accountability, transparency, responsiveness, effectiveness and efficiency, equity and inclusiveness, and the rule of law. Transparency — ensuring that decisions are made and enforced in a manner that follows rules and regulations — is particularly critical in the public sector, where officials are entrusted with managing public resources. Without transparency, corruption can flourish, eroding public trust and diverting resources away from essential services. Digital governance initiatives, such as open data portals and e-procurement systems, are being adopted by many governments as tools to enhance transparency and reduce opportunities for corruption.",
+    "question": "According to the passage, what makes transparency especially important in the public sector?",
+    "options": [
+      {"id": "a", "text": "It improves efficiency in government decision-making.", "correct": false},
+      {"id": "b", "text": "Public officials manage resources that belong to the public.", "correct": true},
+      {"id": "c", "text": "It is required by international development agreements.", "correct": false},
+      {"id": "d", "text": "It enables governments to collect more tax revenue.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'officials are entrusted with managing public resources'"
+  },
+  {
+    "id": "ocsc-r-006",
+    "type": "reading",
+    "passage": "Good governance is increasingly recognised as a cornerstone of sustainable development. The United Nations Development Programme identifies several key dimensions of good governance: participation, consensus orientation, accountability, transparency, responsiveness, effectiveness and efficiency, equity and inclusiveness, and the rule of law. Transparency — ensuring that decisions are made and enforced in a manner that follows rules and regulations — is particularly critical in the public sector, where officials are entrusted with managing public resources. Without transparency, corruption can flourish, eroding public trust and diverting resources away from essential services. Digital governance initiatives, such as open data portals and e-procurement systems, are being adopted by many governments as tools to enhance transparency and reduce opportunities for corruption.",
+    "question": "According to the passage, digital governance tools such as open data portals are primarily adopted to:",
+    "options": [
+      {"id": "a", "text": "Streamline administrative procedures", "correct": false},
+      {"id": "b", "text": "Improve public participation in elections", "correct": false},
+      {"id": "c", "text": "Increase transparency and reduce corruption opportunities", "correct": true},
+      {"id": "d", "text": "Improve the efficiency of tax collection", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'being adopted by many governments as tools to enhance transparency and reduce opportunities for corruption'"
+  },
+  {
+    "id": "ocsc-r-007",
+    "type": "reading",
+    "passage": "Thailand's civil service has undergone significant reform since the enactment of the Civil Service Act B.E. 2551 (2008), which introduced a performance-based evaluation system and strengthened merit principles in recruitment and promotion. The Office of the Civil Service Commission (OCSC) plays a central role in managing these reforms, overseeing civil servant qualifications, ethics standards, and career development. A key challenge has been aligning the competency frameworks used to assess civil servants with the rapidly evolving demands of digital government — a priority reflected in Thailand's 20-Year National Strategy and the Thailand 4.0 policy agenda. Capacity development programmes focusing on digital literacy, data analysis, and innovation management are being rolled out to build a civil service capable of leading the country's digital transformation.",
+    "question": "What is identified as a key challenge for Thailand's civil service reform?",
+    "options": [
+      {"id": "a", "text": "Implementing a performance-based evaluation system", "correct": false},
+      {"id": "b", "text": "Reducing the number of civil servants across departments", "correct": false},
+      {"id": "c", "text": "Updating competency frameworks to match digital government requirements", "correct": true},
+      {"id": "d", "text": "Strengthening merit principles in procurement processes", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'aligning the competency frameworks used to assess civil servants with the rapidly evolving demands of digital government'"
+  },
+  {
+    "id": "ocsc-r-008",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "The delegation _______ by the Deputy Prime Minister, who expressed the government's commitment to regional cooperation.",
+    "options": [
+      {"id": "a", "text": "was led", "correct": true},
+      {"id": "b", "text": "led", "correct": false},
+      {"id": "c", "text": "has led", "correct": false},
+      {"id": "d", "text": "were led", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะ 'delegation' เป็นนามเอกพจน์ และต้องใช้ Passive Voice 'was led' เพราะคณะผู้แทนถูกนำโดยรองนายกรัฐมนตรี"
+  },
+  {
+    "id": "ocsc-r-009",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The audit committee called for greater _______ in the allocation of the national budget.",
+    "options": [
+      {"id": "a", "text": "opacity", "correct": false},
+      {"id": "b", "text": "accountability", "correct": true},
+      {"id": "c", "text": "autonomy", "correct": false},
+      {"id": "d", "text": "rigidity", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'accountability' (ความรับผิดชอบ/ความโปร่งใสในการตรวจสอบได้) เหมาะสมกับบริบทของคณะกรรมการตรวจสอบและงบประมาณ"
+  },
+  {
+    "id": "ocsc-r-010",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "_________ the proposal had been submitted on time, the committee would have reviewed it in last week's session.",
+    "options": [
+      {"id": "a", "text": "If", "correct": false},
+      {"id": "b", "text": "Unless", "correct": false},
+      {"id": "c", "text": "Had", "correct": true},
+      {"id": "d", "text": "Should", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะ 'Had the proposal been submitted...' เป็น Inverted Third Conditional — เทียบเท่ากับ 'If the proposal had been submitted...'"
+  }
+]

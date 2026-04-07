@@ -1,0 +1,104 @@
+[
+  {
+    "id": "ielts-w-001",
+    "type": "writing",
+    "task": "Task 1",
+    "prompt": "The bar chart below shows the percentage of households in four countries (UK, Australia, Canada, Japan) with internet access in 2005, 2010, and 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+    "chartData": {
+      "chartType": "bar",
+      "title": "Household Internet Access by Country (%)",
+      "categories": ["UK", "Australia", "Canada", "Japan"],
+      "datasets": [
+        {"label": "2005", "data": [58, 55, 61, 66]},
+        {"label": "2010", "data": [73, 71, 79, 78]},
+        {"label": "2020", "data": [94, 88, 91, 90]}
+      ]
+    },
+    "wordLimit": 150,
+    "rubric": "Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-002",
+    "type": "writing",
+    "task": "Task 2",
+    "prompt": "Some people believe that university education should be free for all students, while others argue that students should pay tuition fees themselves. Discuss both views and give your own opinion.",
+    "wordLimit": 250,
+    "rubric": "Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-003",
+    "type": "writing",
+    "task": "Task 1",
+    "prompt": "The line graph below shows the average monthly temperature (°C) in three cities — Bangkok, London, and Sydney — over the course of a year. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+    "chartData": {
+      "chartType": "line",
+      "title": "Average Monthly Temperature (°C)",
+      "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "datasets": [
+        {"label": "Bangkok", "data": [28, 29, 30, 31, 31, 30, 29, 29, 29, 29, 28, 27]},
+        {"label": "London", "data": [5, 5, 8, 11, 14, 17, 19, 19, 16, 12, 8, 5]},
+        {"label": "Sydney", "data": [23, 23, 22, 19, 16, 13, 12, 14, 16, 18, 21, 22]}
+      ]
+    },
+    "wordLimit": 150,
+    "rubric": "Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-004",
+    "type": "writing",
+    "task": "Task 2",
+    "prompt": "In many cities, the number of cars on the road is increasing, leading to traffic congestion and pollution. What are the causes of this problem, and what measures could be taken to address it?",
+    "wordLimit": 250,
+    "rubric": "Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-005",
+    "type": "writing",
+    "task": "Task 1",
+    "prompt": "The pie charts below show the proportion of energy generated from different sources in Country X in 1990 and 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+    "chartData": {
+      "chartType": "pie",
+      "title": "Energy Sources in Country X",
+      "categories": ["Coal", "Natural Gas", "Nuclear", "Renewables", "Oil"],
+      "datasets": [
+        {"label": "1990", "data": [45, 25, 15, 5, 10]},
+        {"label": "2020", "data": [20, 28, 18, 25, 9]}
+      ]
+    },
+    "wordLimit": 150,
+    "rubric": "Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-006",
+    "type": "writing",
+    "task": "Task 2",
+    "prompt": "Some people think that social media has had a largely negative impact on society. Others believe it has brought significant benefits. To what extent do you agree or disagree with the view that social media is harmful?",
+    "wordLimit": 250,
+    "rubric": "Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-007",
+    "type": "writing",
+    "task": "Task 2",
+    "prompt": "Many governments spend large amounts of money on space exploration programmes. Some people argue this money would be better spent solving problems on Earth. Do you agree or disagree?",
+    "wordLimit": 250,
+    "rubric": "Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  },
+  {
+    "id": "ielts-w-008",
+    "type": "writing",
+    "task": "Task 1",
+    "prompt": "The table below shows the number of international tourists (in millions) visiting five countries in 2015 and 2022. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+    "chartData": {
+      "chartType": "bar",
+      "title": "International Tourist Arrivals (millions)",
+      "categories": ["France", "Spain", "USA", "Thailand", "Japan"],
+      "datasets": [
+        {"label": "2015", "data": [84, 68, 77, 30, 19]},
+        {"label": "2022", "data": [79, 71, 66, 11, 25]}
+      ]
+    },
+    "wordLimit": 150,
+    "rubric": "Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy"
+  }
+]

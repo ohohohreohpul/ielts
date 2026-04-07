@@ -56,13 +56,15 @@ function AppInner() {
   const [isCorrect, setIsCorrect] = useState(false)
   const [aiScore, setAiScore] = useState(null)
   const [hearts, setHearts] = useState(5)
-  const [streak, setStreak] = useState(3)
+  const [streak, setStreak] = useState(0)
   const [showPaywall, setShowPaywall] = useState(false)
   const [completedQuestions, setCompletedQuestions] = useState(0)
   const [loading, setLoading] = useState(false)
   const [loadingTip, setLoadingTip] = useState(0)
   const [scoring, setScoring] = useState(false)
   const [recordedAudio, setRecordedAudio] = useState(null)
+  const [speakingTranscript, setSpeakingTranscript] = useState('')
+  const [reorderWords, setReorderWords] = useState([])
   const [answerHistory, setAnswerHistory] = useState([]) // Track answers for history
   const [timeLimit, setTimeLimit] = useState(null)
   const [sessionStartTime, setSessionStartTime] = useState(null)
@@ -150,6 +152,10 @@ function AppInner() {
         
         clearInterval(tipInterval)
         setQuestions(data.questions)
+        const firstQ = data.questions[0]
+        if (firstQ?.type === 'reorder' && firstQ?.words) {
+          setReorderWords([...firstQ.words].sort(() => Math.random() - 0.5))
+        }
 
         const examTimeLimits = EXAM_TIME_LIMITS[examType] || {}
         const sectionTimeLimit = examTimeLimits[section] || null
@@ -199,7 +205,8 @@ function AppInner() {
       const correct = selected?.correct || false
       setIsCorrect(correct)
       recordAnswer(correct, selected?.text || selectedAnswer, correctOpt?.text || '', null)
-      
+      setStreak(prev => correct ? prev + 1 : 0)
+
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -215,6 +222,7 @@ function AppInner() {
       const correct = userAns === correctAns || userAns.includes(correctAns) || correctAns.includes(userAns)
       setIsCorrect(correct)
       recordAnswer(correct, textAnswer.trim(), currentQuestion.correctAnswer, null)
+      setStreak(prev => correct ? prev + 1 : 0)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -225,6 +233,7 @@ function AppInner() {
       const correct = selectedAnswer?.toUpperCase() === currentQuestion.correctAnswer.toUpperCase()
       setIsCorrect(correct)
       recordAnswer(correct, selectedAnswer, currentQuestion.correctAnswer, null)
+      setStreak(prev => correct ? prev + 1 : 0)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -235,6 +244,19 @@ function AppInner() {
       const correct = textAnswer.trim().toLowerCase().includes(currentQuestion.correctAnswer.toLowerCase())
       setIsCorrect(correct)
       recordAnswer(correct, textAnswer.trim(), currentQuestion.correctAnswer, null)
+      setStreak(prev => correct ? prev + 1 : 0)
+      if (!correct) {
+        const newHearts = hearts - 1
+        setHearts(newHearts)
+        if (newHearts === 0) { setShowPaywall(true); return }
+      }
+      setShowFeedback(true)
+    } else if (qType === 'reorder') {
+      const userOrder = reorderWords.map(w => w.id)
+      const correct = JSON.stringify(userOrder) === JSON.stringify(currentQuestion.correctOrder)
+      setIsCorrect(correct)
+      recordAnswer(correct, userOrder.join(' '), (currentQuestion.correctOrder || []).join(' '), null)
+      setStreak(prev => correct ? prev + 1 : 0)
       if (!correct) {
         const newHearts = hearts - 1
         setHearts(newHearts)
@@ -242,6 +264,12 @@ function AppInner() {
       }
       setShowFeedback(true)
     } else if (qType === 'writing') {
+      const wordCount = writingAnswer.trim().split(/\s+/).filter(w => w).length
+      const minWords = currentQuestion.wordLimit || 50
+      if (wordCount < minWords) {
+        alert(`กรุณาเขียนอย่างน้อย ${minWords} คำ (ตอนนี้มี ${wordCount} คำ)`)
+        return
+      }
       setScoring(true)
       try {
         const response = await fetch('/api/ai/score-answer', {
@@ -279,7 +307,7 @@ function AppInner() {
           body: JSON.stringify({
             type: 'speaking',
             question: currentQuestion.question,
-            answer: '[Audio transcription would go here]',
+            answer: speakingTranscript || '[No transcript available]',
             rubric: currentQuestion.rubric
           })
         })
@@ -354,14 +382,22 @@ function AppInner() {
 
     if (currentQuestionIndex < questions.length - 1) {
       // Still have questions in current batch
-      setCurrentQuestionIndex(currentQuestionIndex + 1)
+      const nextIdx = currentQuestionIndex + 1
+      setCurrentQuestionIndex(nextIdx)
       setSelectedAnswer(null)
       setTextAnswer('')
       setWritingAnswer('')
       setRecordedAudio(null)
+      setSpeakingTranscript('')
       setAiScore(null)
       setShowFeedback(false)
       setQuestionStartTime(Date.now())
+      const nextQ = questions[nextIdx]
+      if (nextQ?.type === 'reorder' && nextQ?.words) {
+        setReorderWords([...nextQ.words].sort(() => Math.random() - 0.5))
+      } else {
+        setReorderWords([])
+      }
     } else {
       // Finished current batch - calculate total time
       const totalTime = Math.round((questionEndTime - sessionStartTime) / 1000)
@@ -719,6 +755,48 @@ function AppInner() {
               </div>
             )}
 
+            {/* Reorder / Sentence arrangement */}
+            {currentQuestion.type === 'reorder' && (
+              <div className="space-y-6">
+                <h2 className="text-xl font-semibold text-gray-900">{currentQuestion.question || 'เรียงคำให้ถูกต้อง:'}</h2>
+                <p className="text-sm text-gray-500">กดที่คำเพื่อย้ายขึ้น/ลงในลำดับ</p>
+
+                {/* Current arrangement */}
+                <div className="flex flex-wrap gap-2 min-h-[48px] p-3 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                  {reorderWords.map((word, idx) => (
+                    <button
+                      key={word.id}
+                      disabled={showFeedback}
+                      onClick={() => {
+                        if (idx > 0) {
+                          const newWords = [...reorderWords]
+                          ;[newWords[idx - 1], newWords[idx]] = [newWords[idx], newWords[idx - 1]]
+                          setReorderWords(newWords)
+                        }
+                      }}
+                      className="px-3 py-2 bg-white border-2 border-orange-300 rounded-lg font-medium text-gray-800 hover:bg-orange-50 hover:border-orange-500 transition-all cursor-pointer disabled:cursor-default"
+                    >
+                      {word.text}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="text-xs text-gray-400 text-center">กดคำเพื่อขยับไปทางซ้าย · ลำดับปัจจุบัน: {reorderWords.map(w => w.text).join(' → ')}</p>
+
+                {showFeedback && (
+                  <div className="p-3 bg-green-50 rounded-xl border border-green-200">
+                    <p className="text-sm font-medium text-green-700">ลำดับที่ถูกต้อง:</p>
+                    <p className="text-sm text-green-800 mt-1">
+                      {(currentQuestion.correctOrder || [])
+                        .map(id => currentQuestion.words?.find(w => w.id === id)?.text)
+                        .filter(Boolean)
+                        .join(' ')}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Listening with Audio Player */}
             {currentQuestion.type === 'listening' && (
               <div className="space-y-6">
@@ -962,8 +1040,11 @@ function AppInner() {
                   </CardContent>
                 </Card>
 
-                <VoiceRecorder 
-                  onRecordingComplete={(blob) => setRecordedAudio(blob)} 
+                <VoiceRecorder
+                  onRecordingComplete={(blob, transcript) => {
+                    setRecordedAudio(blob)
+                    setSpeakingTranscript(transcript || '')
+                  }}
                   hasRecording={!!recordedAudio}
                 />
 
@@ -1020,8 +1101,9 @@ function AppInner() {
                 ((currentQuestion.type === 'fill-in-blank' || currentQuestion.type === 'completion') && !textAnswer.trim()) ||
                 (currentQuestion.type === 'true-false-notgiven' && !selectedAnswer) ||
                 (currentQuestion.type === 'short-answer' && !textAnswer.trim()) ||
-                (currentQuestion.type === 'writing' && writingAnswer.split(/\s+/).filter(w => w).length < 50) ||
-                (currentQuestion.type === 'speaking' && !recordedAudio)
+                (currentQuestion.type === 'writing' && writingAnswer.split(/\s+/).filter(w => w).length < (currentQuestion.wordLimit || 50)) ||
+                (currentQuestion.type === 'speaking' && !recordedAudio) ||
+                (currentQuestion.type === 'reorder' && reorderWords.length === 0)
               }
               className="w-full h-14 text-lg font-semibold hover:hover:disabled:opacity-50" 
               size="lg"

@@ -1,0 +1,132 @@
+[
+  {
+    "id": "toefl-r-001",
+    "type": "reading",
+    "passage": "The phenomenon of bioluminescence — the production and emission of light by living organisms — has evolved independently at least 40 times in evolutionary history. Found in species ranging from fireflies to deep-sea fish, bioluminescence serves remarkably diverse functions. In the deep ocean, where sunlight cannot penetrate, organisms use light to attract prey, deter predators, and communicate with potential mates. The anglerfish, for instance, dangles a luminescent lure above its jaws to attract curious prey into striking range. Conversely, the vampire squid uses bioluminescent photophores scattered across its body to confuse predators. On land, fireflies use species-specific flashing patterns as mating signals — a visual language that reduces the risk of interbreeding between closely related species. Perhaps most remarkably, some bioluminescent organisms appear to use light for counter-illumination camouflage: by emitting light from their ventral (underside) surfaces that matches the faint light filtering from above, they effectively erase their own shadows and become invisible to predators looking upward from below.",
+    "question": "According to the passage, what is the primary purpose of bioluminescence in deep-sea anglerfish?",
+    "options": [
+      {"id": "a", "text": "To camouflage themselves from predators", "correct": false},
+      {"id": "b", "text": "To attract prey within striking range", "correct": true},
+      {"id": "c", "text": "To signal potential mates", "correct": false},
+      {"id": "d", "text": "To illuminate the dark ocean floor", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'The anglerfish...dangles a luminescent lure above its jaws to attract curious prey into striking range'"
+  },
+  {
+    "id": "toefl-r-002",
+    "type": "reading",
+    "passage": "The phenomenon of bioluminescence — the production and emission of light by living organisms — has evolved independently at least 40 times in evolutionary history. Found in species ranging from fireflies to deep-sea fish, bioluminescence serves remarkably diverse functions. In the deep ocean, where sunlight cannot penetrate, organisms use light to attract prey, deter predators, and communicate with potential mates. The anglerfish, for instance, dangles a luminescent lure above its jaws to attract curious prey into striking range. Conversely, the vampire squid uses bioluminescent photophores scattered across its body to confuse predators. On land, fireflies use species-specific flashing patterns as mating signals — a visual language that reduces the risk of interbreeding between closely related species. Perhaps most remarkably, some bioluminescent organisms appear to use light for counter-illumination camouflage: by emitting light from their ventral (underside) surfaces that matches the faint light filtering from above, they effectively erase their own shadows and become invisible to predators looking upward from below.",
+    "question": "The word 'ventral' in the passage is closest in meaning to:",
+    "options": [
+      {"id": "a", "text": "upper", "correct": false},
+      {"id": "b", "text": "lateral", "correct": false},
+      {"id": "c", "text": "underside", "correct": true},
+      {"id": "d", "text": "external", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะข้อความในวงเล็บหลัง 'ventral' ระบุว่า '(underside)' โดยตรง"
+  },
+  {
+    "id": "toefl-r-003",
+    "type": "reading",
+    "passage": "The phenomenon of bioluminescence — the production and emission of light by living organisms — has evolved independently at least 40 times in evolutionary history. Found in species ranging from fireflies to deep-sea fish, bioluminescence serves remarkably diverse functions. In the deep ocean, where sunlight cannot penetrate, organisms use light to attract prey, deter predators, and communicate with potential mates. The anglerfish, for instance, dangles a luminescent lure above its jaws to attract curious prey into striking range. Conversely, the vampire squid uses bioluminescent photophores scattered across its body to confuse predators. On land, fireflies use species-specific flashing patterns as mating signals — a visual language that reduces the risk of interbreeding between closely related species. Perhaps most remarkably, some bioluminescent organisms appear to use light for counter-illumination camouflage: by emitting light from their ventral (underside) surfaces that matches the faint light filtering from above, they effectively erase their own shadows and become invisible to predators looking upward from below.",
+    "question": "Which of the following can be inferred from the passage about the evolution of bioluminescence?",
+    "options": [
+      {"id": "a", "text": "It evolved from a single common ancestor.", "correct": false},
+      {"id": "b", "text": "It developed separately across many different lineages.", "correct": true},
+      {"id": "c", "text": "It is found only in marine organisms.", "correct": false},
+      {"id": "d", "text": "It evolved primarily as a defensive mechanism.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'bioluminescence...has evolved independently at least 40 times' — วิวัฒนาการแยกกันในสายพันธุ์ต่างๆ"
+  },
+  {
+    "id": "toefl-r-004",
+    "type": "reading",
+    "passage": "Urbanisation — the process by which populations shift from rural to urban areas — is one of the most significant demographic transformations of the modern era. For the first time in human history, more than half of the world's population now lives in cities, a threshold crossed around 2008. This shift has profound implications for resource consumption, infrastructure, public health, and social organisation. Cities consume approximately 75% of the world's energy and are responsible for 80% of global carbon emissions, despite occupying only about 3% of the Earth's land surface. This disproportionate impact stems from the high concentration of industrial activity, transportation systems, and residential energy use in urban centres. However, cities also offer potential solutions: the density of urban living can make public transit viable, reduce per-capita energy use in heating and cooling, and concentrate economic activity in ways that drive innovation. Planners increasingly speak of 'smart cities' — urban environments that use data and technology to optimise everything from traffic flow to waste management.",
+    "question": "What does the passage say about cities' share of the Earth's land surface?",
+    "options": [
+      {"id": "a", "text": "Cities cover approximately 75% of the land surface.", "correct": false},
+      {"id": "b", "text": "Cities occupy around 3% of land but consume disproportionate energy.", "correct": true},
+      {"id": "c", "text": "Cities cover 80% of the world's habitable land.", "correct": false},
+      {"id": "d", "text": "Cities have expanded to cover more than half the land surface.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'despite occupying only about 3% of the Earth's land surface' และการใช้พลังงาน 75% ของโลก"
+  },
+  {
+    "id": "toefl-r-005",
+    "type": "reading",
+    "passage": "Urbanisation — the process by which populations shift from rural to urban areas — is one of the most significant demographic transformations of the modern era. For the first time in human history, more than half of the world's population now lives in cities, a threshold crossed around 2008. This shift has profound implications for resource consumption, infrastructure, public health, and social organisation. Cities consume approximately 75% of the world's energy and are responsible for 80% of global carbon emissions, despite occupying only about 3% of the Earth's land surface. This disproportionate impact stems from the high concentration of industrial activity, transportation systems, and residential energy use in urban centres. However, cities also offer potential solutions: the density of urban living can make public transit viable, reduce per-capita energy use in heating and cooling, and concentrate economic activity in ways that drive innovation. Planners increasingly speak of 'smart cities' — urban environments that use data and technology to optimise everything from traffic flow to waste management.",
+    "question": "The word 'viable' in the passage is closest in meaning to:",
+    "options": [
+      {"id": "a", "text": "expensive", "correct": false},
+      {"id": "b", "text": "necessary", "correct": false},
+      {"id": "c", "text": "feasible", "correct": true},
+      {"id": "d", "text": "popular", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะ 'viable' หมายถึง 'เป็นไปได้ในทางปฏิบัติ' (feasible) — บริบทคือการทำให้ระบบขนส่งสาธารณะเป็นไปได้จริง"
+  },
+  {
+    "id": "toefl-r-006",
+    "type": "reading",
+    "passage": "Urbanisation — the process by which populations shift from rural to urban areas — is one of the most significant demographic transformations of the modern era. For the first time in human history, more than half of the world's population now lives in cities, a threshold crossed around 2008. This shift has profound implications for resource consumption, infrastructure, public health, and social organisation. Cities consume approximately 75% of the world's energy and are responsible for 80% of global carbon emissions, despite occupying only about 3% of the Earth's land surface. This disproportionate impact stems from the high concentration of industrial activity, transportation systems, and residential energy use in urban centres. However, cities also offer potential solutions: the density of urban living can make public transit viable, reduce per-capita energy use in heating and cooling, and concentrate economic activity in ways that drive innovation. Planners increasingly speak of 'smart cities' — urban environments that use data and technology to optimise everything from traffic flow to waste management.",
+    "question": "According to the passage, which of the following is presented as a potential BENEFIT of urbanisation?",
+    "options": [
+      {"id": "a", "text": "Reduced carbon emissions overall", "correct": false},
+      {"id": "b", "text": "Lower per-capita heating and cooling energy use", "correct": true},
+      {"id": "c", "text": "Decreased concentration of industrial activity", "correct": false},
+      {"id": "d", "text": "Greater availability of rural land for agriculture", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'reduce per-capita energy use in heating and cooling' ซึ่งระบุเป็นข้อดีของการอยู่อาศัยในเมือง"
+  },
+  {
+    "id": "toefl-r-007",
+    "type": "reading",
+    "passage": "The Columbian Exchange — the widespread transfer of plants, animals, culture, human populations, technology, and ideas between the Americas and the Old World in the 15th and 16th centuries — is regarded by many historians as one of the most consequential events in human history. European explorers brought to the Americas horses, cattle, pigs, wheat, and sugarcane. From the Americas, they took back tomatoes, potatoes, maize, tobacco, and cacao. The demographic consequences were catastrophic for indigenous American populations: diseases such as smallpox, measles, and influenza, to which Native Americans had no immunity, killed an estimated 50–90% of the indigenous population within a century of contact. Conversely, the introduction of American crops — particularly the potato — dramatically increased the caloric availability in Europe and Asia, contributing to population growth that some scholars link to the Industrial Revolution. The exchange was thus simultaneously one of the greatest catastrophes and one of the greatest boosts to human productivity ever recorded.",
+    "question": "Which of the following was brought FROM the Americas TO Europe during the Columbian Exchange?",
+    "options": [
+      {"id": "a", "text": "Horses and cattle", "correct": false},
+      {"id": "b", "text": "Wheat and sugarcane", "correct": false},
+      {"id": "c", "text": "Tomatoes and potatoes", "correct": true},
+      {"id": "d", "text": "Smallpox and measles", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'From the Americas, they took back tomatoes, potatoes, maize, tobacco, and cacao'"
+  },
+  {
+    "id": "toefl-r-008",
+    "type": "reading",
+    "passage": "The Columbian Exchange — the widespread transfer of plants, animals, culture, human populations, technology, and ideas between the Americas and the Old World in the 15th and 16th centuries — is regarded by many historians as one of the most consequential events in human history. European explorers brought to the Americas horses, cattle, pigs, wheat, and sugarcane. From the Americas, they took back tomatoes, potatoes, maize, tobacco, and cacao. The demographic consequences were catastrophic for indigenous American populations: diseases such as smallpox, measles, and influenza, to which Native Americans had no immunity, killed an estimated 50–90% of the indigenous population within a century of contact. Conversely, the introduction of American crops — particularly the potato — dramatically increased the caloric availability in Europe and Asia, contributing to population growth that some scholars link to the Industrial Revolution.",
+    "question": "According to the passage, why were diseases from Europe so devastating to Native Americans?",
+    "options": [
+      {"id": "a", "text": "Native Americans had weaker immune systems generally.", "correct": false},
+      {"id": "b", "text": "European diseases were more virulent than previously seen.", "correct": false},
+      {"id": "c", "text": "Native Americans lacked immunity to these diseases.", "correct": true},
+      {"id": "d", "text": "Native Americans had no access to medicine or treatment.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'diseases...to which Native Americans had no immunity'"
+  },
+  {
+    "id": "toefl-r-009",
+    "type": "reading",
+    "passage": "Plate tectonics — the theory that Earth's outer shell is divided into several plates that glide over the mantle — revolutionised the Earth sciences when it gained acceptance in the 1960s. The theory explains a remarkable array of geological phenomena: the distribution of earthquakes and volcanoes, the formation of mountain ranges, the existence of mid-ocean ridges, and the shapes of the continents. Prior to plate tectonics, geologists struggled to explain why the coastlines of South America and Africa appear to fit together like puzzle pieces, why identical fossil species are found on continents separated by thousands of miles of ocean, and why the youngest oceanic rock is found near mid-ocean ridges. The concept of seafloor spreading — the process by which molten rock rises at mid-ocean ridges, solidifies, and pushes existing oceanic crust outward — provided the mechanism that made continental drift, once dismissed as fantasy, scientifically credible.",
+    "question": "What problem did the theory of plate tectonics help to resolve?",
+    "options": [
+      {"id": "a", "text": "Why Earth has a molten mantle beneath the crust", "correct": false},
+      {"id": "b", "text": "Why identical fossils are found on distant continents", "correct": true},
+      {"id": "c", "text": "Why oceanic crust is thicker than continental crust", "correct": false},
+      {"id": "d", "text": "Why Earth's magnetic field reverses periodically", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'why identical fossil species are found on continents separated by thousands of miles of ocean'"
+  },
+  {
+    "id": "toefl-r-010",
+    "type": "reading",
+    "passage": "Plate tectonics — the theory that Earth's outer shell is divided into several plates that glide over the mantle — revolutionised the Earth sciences when it gained acceptance in the 1960s. The theory explains a remarkable array of geological phenomena: the distribution of earthquakes and volcanoes, the formation of mountain ranges, the existence of mid-ocean ridges, and the shapes of the continents. Prior to plate tectonics, geologists struggled to explain why the coastlines of South America and Africa appear to fit together like puzzle pieces, why identical fossil species are found on continents separated by thousands of miles of ocean, and why the youngest oceanic rock is found near mid-ocean ridges. The concept of seafloor spreading — the process by which molten rock rises at mid-ocean ridges, solidifies, and pushes existing oceanic crust outward — provided the mechanism that made continental drift, once dismissed as fantasy, scientifically credible.",
+    "question": "The passage implies that before plate tectonics was accepted, continental drift was:",
+    "options": [
+      {"id": "a", "text": "widely accepted but poorly understood", "correct": false},
+      {"id": "b", "text": "considered scientifically impossible", "correct": false},
+      {"id": "c", "text": "not taken seriously by geologists", "correct": true},
+      {"id": "d", "text": "supported by fossil evidence", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'continental drift, once dismissed as fantasy' — ถูกมองว่าเป็นแค่ความฝัน ไม่ได้รับการยอมรับ"
+  }
+]

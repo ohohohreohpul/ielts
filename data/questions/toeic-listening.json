@@ -1,0 +1,166 @@
+[
+  {
+    "id": "toeic-l-001",
+    "type": "listening",
+    "part": "Part 2",
+    "audioText": "When does the quarterly review meeting start?",
+    "question": "When does the quarterly review meeting start?",
+    "options": [
+      {"id": "a", "text": "It starts at 10 AM.", "correct": true},
+      {"id": "b", "text": "In the main conference room.", "correct": false},
+      {"id": "c", "text": "The director will attend.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะคำถามถามว่า 'เมื่อไหร่' (When) คำตอบที่ถูกต้องต้องบอกเวลา ตัวเลือก B บอกสถานที่ ตัวเลือก C บอกว่าใครจะมา ไม่ตอบคำถาม When"
+  },
+  {
+    "id": "toeic-l-002",
+    "type": "listening",
+    "part": "Part 2",
+    "audioText": "Would you like me to book a table for the client dinner?",
+    "question": "Would you like me to book a table for the client dinner?",
+    "options": [
+      {"id": "a", "text": "Yes, for seven people at 7 PM.", "correct": true},
+      {"id": "b", "text": "The restaurant is on Fifth Avenue.", "correct": false},
+      {"id": "c", "text": "I had dinner with them last week.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะคำถาม Yes/No question ตอบว่า Yes พร้อมรายละเอียดการจอง ตัวเลือก B บอกที่ตั้ง ตัวเลือก C พูดถึงเรื่องในอดีต ไม่ตอบคำถาม"
+  },
+  {
+    "id": "toeic-l-003",
+    "type": "listening",
+    "part": "Part 3",
+    "audioText": "Woman: Excuse me, I ordered the chicken sandwich but received the tuna instead. Man: I apologize for that. I'll take it back and bring your correct order right away. Would you like a complimentary drink while you wait? Woman: That would be great, thank you. I'll have a sparkling water.",
+    "question": "Where does this conversation most likely take place?",
+    "options": [
+      {"id": "a", "text": "In a grocery store", "correct": false},
+      {"id": "b", "text": "In a restaurant", "correct": true},
+      {"id": "c", "text": "In a hotel lobby", "correct": false},
+      {"id": "d", "text": "In a company cafeteria", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะบทสนทนาพูดถึงการสั่งอาหาร ได้รับอาหารผิด และการเสนอเครื่องดื่มฟรี ซึ่งเป็นสถานการณ์ทั่วไปในร้านอาหาร"
+  },
+  {
+    "id": "toeic-l-004",
+    "type": "listening",
+    "part": "Part 3",
+    "audioText": "Man: Sarah, did you have a chance to review the Hendricks proposal? Woman: I did. The pricing seems competitive, but I have some concerns about their delivery timeline. Man: The client needs everything by the 15th. Do you think we should ask for a revised timeline? Woman: Absolutely. Let's schedule a call with them tomorrow morning.",
+    "question": "What is the woman's concern about the proposal?",
+    "options": [
+      {"id": "a", "text": "The pricing is too high.", "correct": false},
+      {"id": "b", "text": "The delivery timeline may not work.", "correct": true},
+      {"id": "c", "text": "The client has not approved it.", "correct": false},
+      {"id": "d", "text": "The proposal was submitted late.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'I have some concerns about their delivery timeline' และ 'The client needs everything by the 15th'"
+  },
+  {
+    "id": "toeic-l-005",
+    "type": "listening",
+    "part": "Part 3",
+    "audioText": "Woman: I heard IT is rolling out new security software next week. Man: Yes, it's mandatory for all laptops. You'll need to bring yours to the IT desk between Monday and Wednesday. Woman: Can I do it on Thursday? I have back-to-back meetings all week. Man: Unfortunately no — Thursday is the deadline for the final configuration. You really should go Monday or Tuesday.",
+    "question": "What does the man suggest the woman do?",
+    "options": [
+      {"id": "a", "text": "Reschedule her meetings", "correct": false},
+      {"id": "b", "text": "Contact the IT department by email", "correct": false},
+      {"id": "c", "text": "Bring her laptop to IT on Monday or Tuesday", "correct": true},
+      {"id": "d", "text": "Wait until after the Thursday deadline", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'You really should go Monday or Tuesday' ผู้ชายแนะนำให้ไปในวันจันทร์หรืออังคาร"
+  },
+  {
+    "id": "toeic-l-006",
+    "type": "listening",
+    "part": "Part 4",
+    "audioText": "Good morning, everyone. Before we begin today's product demonstration, I'd like to remind you that our trade show booths will close at 5 PM sharp today, not 6 PM as originally scheduled. This change is due to the venue's setup requirements for tomorrow's keynote event. All exhibitors should ensure their displays are packed and ready for storage by 4:45 PM. Thank you for your cooperation, and enjoy the rest of the show.",
+    "question": "Why has the closing time been changed?",
+    "options": [
+      {"id": "a", "text": "The product demonstration ran longer than expected.", "correct": false},
+      {"id": "b", "text": "The venue needs to prepare for another event.", "correct": true},
+      {"id": "c", "text": "Exhibitors requested an earlier closing time.", "correct": false},
+      {"id": "d", "text": "Security staff are unavailable after 5 PM.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'This change is due to the venue's setup requirements for tomorrow's keynote event'"
+  },
+  {
+    "id": "toeic-l-007",
+    "type": "listening",
+    "part": "Part 4",
+    "audioText": "Hello, this is a message for James Park. This is Linda calling from Greenfield Medical Clinic. Your annual health check-up is scheduled for this coming Friday at 2:30 PM. Please remember to fast for at least 8 hours before your appointment, as blood tests will be conducted. Bring your insurance card and a photo ID. If you need to reschedule, please call us at 555-0198 before Thursday noon. We look forward to seeing you.",
+    "question": "What is James Park asked to do before his appointment?",
+    "options": [
+      {"id": "a", "text": "Complete an online health form", "correct": false},
+      {"id": "b", "text": "Bring a referral from his doctor", "correct": false},
+      {"id": "c", "text": "Avoid eating for at least 8 hours", "correct": true},
+      {"id": "d", "text": "Confirm his appointment by Thursday", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'fast for at least 8 hours before your appointment' การอดอาหารอย่างน้อย 8 ชั่วโมง"
+  },
+  {
+    "id": "toeic-l-008",
+    "type": "listening",
+    "part": "Part 4",
+    "audioText": "Attention passengers. This is an announcement from the operations team at Terminal B. Due to increased passenger volume this afternoon, wait times at security checkpoints may be up to 45 minutes. We strongly recommend that all passengers arrive at the checkpoint no later than 90 minutes before their scheduled departure. Additional staff have been deployed to speed up the process. We apologize for any inconvenience and thank you for your patience.",
+    "question": "What is the purpose of this announcement?",
+    "options": [
+      {"id": "a", "text": "To inform passengers about a flight cancellation", "correct": false},
+      {"id": "b", "text": "To warn about delays at security and advise early arrival", "correct": true},
+      {"id": "c", "text": "To introduce new security procedures at Terminal B", "correct": false},
+      {"id": "d", "text": "To announce the opening of a new terminal", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะประกาศแจ้งว่าการรักษาความปลอดภัยใช้เวลานานถึง 45 นาที และแนะนำให้ผู้โดยสารมาแต่เนิ่นๆ"
+  },
+  {
+    "id": "toeic-l-009",
+    "type": "listening",
+    "part": "Part 2",
+    "audioText": "Who is responsible for coordinating the office move next month?",
+    "question": "Who is responsible for coordinating the office move next month?",
+    "options": [
+      {"id": "a", "text": "The move is scheduled for the 20th.", "correct": false},
+      {"id": "b", "text": "Lisa from Operations is handling it.", "correct": true},
+      {"id": "c", "text": "We're moving to the fourth floor.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะคำถามถามว่า 'ใคร' (Who) รับผิดชอบ คำตอบที่ถูกต้องต้องระบุชื่อคน ตัวเลือก A บอกวันที่ ตัวเลือก C บอกสถานที่"
+  },
+  {
+    "id": "toeic-l-010",
+    "type": "listening",
+    "part": "Part 3",
+    "audioText": "Man: I just got off the phone with the supplier. They said the materials won't arrive until next Wednesday. Woman: That's a problem. We were supposed to start production on Monday. Man: I know. I'm thinking we could use some of the inventory from the warehouse to get started. Woman: Good idea. Let me check what we have available and I'll get back to you this afternoon.",
+    "question": "What problem are they facing?",
+    "options": [
+      {"id": "a", "text": "The warehouse is closed.", "correct": false},
+      {"id": "b", "text": "The supplier cannot fulfill the order.", "correct": false},
+      {"id": "c", "text": "Materials will arrive later than needed.", "correct": true},
+      {"id": "d", "text": "Production was halted by management.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'the materials won't arrive until next Wednesday' ในขณะที่ต้องเริ่มผลิตวันจันทร์"
+  },
+  {
+    "id": "toeic-l-011",
+    "type": "listening",
+    "part": "Part 2",
+    "audioText": "Haven't you already submitted the budget proposal to the finance team?",
+    "question": "Haven't you already submitted the budget proposal to the finance team?",
+    "options": [
+      {"id": "a", "text": "No, I'm planning to do it this afternoon.", "correct": true},
+      {"id": "b", "text": "The finance team meets on Thursdays.", "correct": false},
+      {"id": "c", "text": "The budget was approved last month.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะตอบ No และอธิบายแผนที่จะทำ ตัวเลือก B พูดถึงตารางประชุม ตัวเลือก C พูดถึงการอนุมัติงบซึ่งไม่ตอบคำถาม"
+  },
+  {
+    "id": "toeic-l-012",
+    "type": "listening",
+    "part": "Part 4",
+    "audioText": "Welcome to the Parkview Business Center orientation. I'm Helen Morris, the building manager. Over the next 30 minutes, I'll walk you through the key features of our facility. We have three floors of premium office space, two conference centers with full AV equipment, a rooftop lounge available for tenant events, and 24-hour security. Parking passes can be obtained from the reception desk. After this session, I'll take you on a quick tour of the building. Please hold your questions until the end.",
+    "question": "What will happen after the orientation session?",
+    "options": [
+      {"id": "a", "text": "Parking passes will be distributed.", "correct": false},
+      {"id": "b", "text": "A tour of the building will be conducted.", "correct": true},
+      {"id": "c", "text": "Questions will be submitted in writing.", "correct": false},
+      {"id": "d", "text": "Tenants will sign rental agreements.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'After this session, I'll take you on a quick tour of the building'"
+  }
+]

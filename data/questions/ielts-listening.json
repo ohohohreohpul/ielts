@@ -1,0 +1,142 @@
+[
+  {
+    "id": "ielts-l-001",
+    "type": "listening",
+    "part": "Section 1",
+    "audioText": "Agent: Good morning, City Library. How can I help you? Caller: Hi, I'd like to register for a library card. Agent: Of course. Could I take your full name? Caller: It's Maria Santos. Agent: And your address? Caller: 14 Elm Street, Southgate. Agent: Great. Do you have a form of ID with you? Caller: I have my passport. Agent: That's fine. You can come in any day between 9 AM and 6 PM. The registration takes about 10 minutes.",
+    "question": "What document does the caller plan to bring for registration?",
+    "options": [
+      {"id": "a", "text": "A driving licence", "correct": false},
+      {"id": "b", "text": "A utility bill", "correct": false},
+      {"id": "c", "text": "A passport", "correct": true},
+      {"id": "d", "text": "A student ID card", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากบทสนทนา 'I have my passport' ผู้โทรบอกว่าจะนำพาสปอร์ตไปแสดง"
+  },
+  {
+    "id": "ielts-l-002",
+    "type": "listening",
+    "part": "Section 1",
+    "audioText": "Agent: Good morning, City Library. How can I help you? Caller: Hi, I'd like to register for a library card. Agent: Of course. Could I take your full name? Caller: It's Maria Santos. Agent: And your address? Caller: 14 Elm Street, Southgate. Agent: Great. Do you have a form of ID with you? Caller: I have my passport. Agent: That's fine. You can come in any day between 9 AM and 6 PM. The registration takes about 10 minutes.",
+    "question": "How long does the registration process take?",
+    "options": [
+      {"id": "a", "text": "5 minutes", "correct": false},
+      {"id": "b", "text": "10 minutes", "correct": true},
+      {"id": "c", "text": "15 minutes", "correct": false},
+      {"id": "d", "text": "30 minutes", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'The registration takes about 10 minutes'"
+  },
+  {
+    "id": "ielts-l-003",
+    "type": "listening",
+    "part": "Section 2",
+    "audioText": "Welcome to Greenfield Nature Reserve. Before you begin your visit, I'd like to share a few important points. The reserve covers 340 hectares and is home to over 200 species of birds. Our most popular walking trail — the Riverside Path — takes approximately two hours to complete and is suitable for all fitness levels. Please note that dogs must be kept on leads at all times. The visitor centre closes at 5:30 PM, and the car park gates are locked at 6 PM sharp. Photography is welcomed throughout the reserve.",
+    "question": "What rule applies to dogs in the reserve?",
+    "options": [
+      {"id": "a", "text": "Dogs are not allowed in the reserve.", "correct": false},
+      {"id": "b", "text": "Dogs must be kept on leads.", "correct": true},
+      {"id": "c", "text": "Dogs are only allowed on the Riverside Path.", "correct": false},
+      {"id": "d", "text": "Dogs must be registered at the visitor centre.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'dogs must be kept on leads at all times'"
+  },
+  {
+    "id": "ielts-l-004",
+    "type": "listening",
+    "part": "Section 2",
+    "audioText": "Welcome to Greenfield Nature Reserve. Before you begin your visit, I'd like to share a few important points. The reserve covers 340 hectares and is home to over 200 species of birds. Our most popular walking trail — the Riverside Path — takes approximately two hours to complete and is suitable for all fitness levels. Please note that dogs must be kept on leads at all times. The visitor centre closes at 5:30 PM, and the car park gates are locked at 6 PM sharp.",
+    "question": "At what time are the car park gates locked?",
+    "options": [
+      {"id": "a", "text": "5:00 PM", "correct": false},
+      {"id": "b", "text": "5:30 PM", "correct": false},
+      {"id": "c", "text": "6:00 PM", "correct": true},
+      {"id": "d", "text": "6:30 PM", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'the car park gates are locked at 6 PM sharp' — 6 โมงเย็นพอดี"
+  },
+  {
+    "id": "ielts-l-005",
+    "type": "listening",
+    "part": "Section 3",
+    "audioText": "Tutor: So, Emma and James, how are you getting on with your research project? Emma: We've done quite a bit of background reading, but we're still deciding on our methodology. James: I think we should use surveys — they'd give us a large sample size quickly. Emma: I'm not sure. Surveys can be superficial. I think interviews would give us more depth, even if we get fewer participants. Tutor: Both are valid approaches. Have you considered combining them — using surveys for breadth and interviews for depth?",
+    "question": "What does the tutor suggest as a possible approach?",
+    "options": [
+      {"id": "a", "text": "Using only interviews for the research", "correct": false},
+      {"id": "b", "text": "Using surveys and interviews together", "correct": true},
+      {"id": "c", "text": "Focusing on secondary research only", "correct": false},
+      {"id": "d", "text": "Reducing the scope of the project", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'Have you considered combining them — using surveys for breadth and interviews for depth?'"
+  },
+  {
+    "id": "ielts-l-006",
+    "type": "listening",
+    "part": "Section 3",
+    "audioText": "Tutor: So, Emma and James, how are you getting on with your research project? Emma: We've done quite a bit of background reading, but we're still deciding on our methodology. James: I think we should use surveys — they'd give us a large sample size quickly. Emma: I'm not sure. Surveys can be superficial. I think interviews would give us more depth, even if we get fewer participants.",
+    "question": "Why does Emma prefer interviews over surveys?",
+    "options": [
+      {"id": "a", "text": "Interviews are faster to conduct.", "correct": false},
+      {"id": "b", "text": "Interviews provide a larger sample size.", "correct": false},
+      {"id": "c", "text": "Interviews provide more in-depth information.", "correct": true},
+      {"id": "d", "text": "Interviews are cheaper to organise.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'I think interviews would give us more depth, even if we get fewer participants'"
+  },
+  {
+    "id": "ielts-l-007",
+    "type": "listening",
+    "part": "Section 4",
+    "audioText": "Today I want to discuss the phenomenon of decision fatigue — the deteriorating quality of decisions made after a long session of decision-making. Research by social psychologist Roy Baumeister showed that willpower and decision-making capacity draw on a shared mental resource. As this resource becomes depleted over the course of a day, people tend to make increasingly poor choices — opting for default options, making impulsive decisions, or avoiding decisions altogether. This has significant implications for fields ranging from healthcare to criminal justice, where important decisions are often made late in the day.",
+    "question": "What happens to decision-making quality as mental resources are depleted?",
+    "options": [
+      {"id": "a", "text": "People become more careful and analytical.", "correct": false},
+      {"id": "b", "text": "People make increasingly poor decisions.", "correct": true},
+      {"id": "c", "text": "People tend to make faster but more accurate decisions.", "correct": false},
+      {"id": "d", "text": "People rely more heavily on expert advice.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'people tend to make increasingly poor choices — opting for default options, making impulsive decisions, or avoiding decisions altogether'"
+  },
+  {
+    "id": "ielts-l-008",
+    "type": "listening",
+    "part": "Section 4",
+    "audioText": "Today I want to discuss the phenomenon of decision fatigue — the deteriorating quality of decisions made after a long session of decision-making. Research by social psychologist Roy Baumeister showed that willpower and decision-making capacity draw on a shared mental resource. As this resource becomes depleted over the course of a day, people tend to make increasingly poor choices. This has significant implications for fields ranging from healthcare to criminal justice, where important decisions are often made late in the day.",
+    "question": "In which fields does the speaker suggest decision fatigue is particularly relevant?",
+    "options": [
+      {"id": "a", "text": "Education and technology", "correct": false},
+      {"id": "b", "text": "Sports and entertainment", "correct": false},
+      {"id": "c", "text": "Healthcare and criminal justice", "correct": true},
+      {"id": "d", "text": "Finance and marketing", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'This has significant implications for fields ranging from healthcare to criminal justice'"
+  },
+  {
+    "id": "ielts-l-009",
+    "type": "listening",
+    "part": "Section 1",
+    "audioText": "Receptionist: Good afternoon, Lakeside Sports Centre. Student: Hi, I'd like to book a badminton court for Saturday afternoon. Receptionist: Certainly. What time were you thinking? Student: Around 3 PM if possible. Receptionist: We have a court available at 3:15 PM. It would be for one hour, and the cost is £8 per person. Student: That's fine. I'll need it for two people. Receptionist: Great. Can I take your name? Student: Tom Bradley.",
+    "question": "What is the total cost for two people to use the badminton court?",
+    "options": [
+      {"id": "a", "text": "£8", "correct": false},
+      {"id": "b", "text": "£12", "correct": false},
+      {"id": "c", "text": "£16", "correct": true},
+      {"id": "d", "text": "£20", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะค่าบริการ £8 ต่อคน และต้องการ 2 คน ดังนั้น £8 × 2 = £16"
+  },
+  {
+    "id": "ielts-l-010",
+    "type": "listening",
+    "part": "Section 2",
+    "audioText": "Good evening and welcome to the City Museum's late-night opening. Tonight, we have three special exhibitions running simultaneously. On the ground floor, you'll find our new Ancient Civilisations display featuring artefacts on loan from Cairo and Athens. On the first floor, the Photography Through the Decades exhibition showcases over 300 images spanning the last 100 years. Finally, in the basement gallery, our Science and Innovation showcase explores the history of technological breakthroughs. Guided tours begin every 45 minutes from the main entrance, and all refreshments are available in the café until 10 PM.",
+    "question": "Where is the Ancient Civilisations display located?",
+    "options": [
+      {"id": "a", "text": "In the basement gallery", "correct": false},
+      {"id": "b", "text": "On the first floor", "correct": false},
+      {"id": "c", "text": "On the ground floor", "correct": true},
+      {"id": "d", "text": "In the main entrance hall", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'On the ground floor, you'll find our new Ancient Civilisations display'"
+  }
+]

@@ -1,0 +1,327 @@
+[
+  {
+    "id": "gr-001",
+    "type": "multiple-choice",
+    "sentence": "She ____ to the gym every morning before work.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "go", "correct": false},
+      {"id": "b", "text": "goes", "correct": true},
+      {"id": "c", "text": "going", "correct": false},
+      {"id": "d", "text": "gone", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'goes' เพราะประธาน 'She' เป็นบุรุษที่ 3 เอกพจน์ ในรูป Present Simple Tense ต้องเติม -s/-es ที่กริยา เช่น He works, She studies, It rains"
+  },
+  {
+    "id": "gr-002",
+    "type": "multiple-choice",
+    "sentence": "By the time we arrived, the movie ____.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "already started", "correct": false},
+      {"id": "b", "text": "had already started", "correct": true},
+      {"id": "c", "text": "has already started", "correct": false},
+      {"id": "d", "text": "was already starting", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'had already started' เพราะเหตุการณ์ที่เกิดขึ้นก่อนอีกเหตุการณ์ในอดีต ใช้ Past Perfect Tense (had + V3) โครงสร้าง: By the time + Past Simple, Past Perfect"
+  },
+  {
+    "id": "gr-003",
+    "type": "multiple-choice",
+    "sentence": "If I ____ more time, I would study abroad.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "have", "correct": false},
+      {"id": "b", "text": "had", "correct": true},
+      {"id": "c", "text": "would have", "correct": false},
+      {"id": "d", "text": "will have", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'had' เพราะเป็น Second Conditional สมมติสิ่งที่ไม่เป็นจริงในปัจจุบัน โครงสร้าง: If + Past Simple, would + V1 เช่น If I had money, I would travel."
+  },
+  {
+    "id": "gr-004",
+    "type": "multiple-choice",
+    "sentence": "The report ____ by the manager before it was sent out.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "reviewed", "correct": false},
+      {"id": "b", "text": "was reviewed", "correct": true},
+      {"id": "c", "text": "has reviewed", "correct": false},
+      {"id": "d", "text": "reviewing", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'was reviewed' เพราะเป็น Passive Voice ในรูป Past Simple ประธาน (report) ถูกกระทำ ไม่ได้กระทำเอง โครงสร้าง: was/were + V3"
+  },
+  {
+    "id": "gr-005",
+    "type": "multiple-choice",
+    "sentence": "Neither the students nor the teacher ____ ready for the exam.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "were", "correct": false},
+      {"id": "b", "text": "was", "correct": true},
+      {"id": "c", "text": "are", "correct": false},
+      {"id": "d", "text": "have been", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'was' เพราะ Neither...nor... กริยาจะผันตามประธานที่อยู่ใกล้ที่สุด ซึ่งก็คือ 'the teacher' (เอกพจน์) จึงใช้ was"
+  },
+  {
+    "id": "gr-006",
+    "type": "multiple-choice",
+    "sentence": "I wish I ____ harder when I was in school.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "study", "correct": false},
+      {"id": "b", "text": "studied", "correct": false},
+      {"id": "c", "text": "had studied", "correct": true},
+      {"id": "d", "text": "would study", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'had studied' เพราะ 'I wish' + Past Perfect แสดงความเสียใจเกี่ยวกับสิ่งที่เกิดขึ้นในอดีต (ตอนนั้นไม่ได้ตั้งใจเรียน)"
+  },
+  {
+    "id": "gr-007",
+    "type": "multiple-choice",
+    "sentence": "The number of applicants ____ increased significantly this year.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "have", "correct": false},
+      {"id": "b", "text": "has", "correct": true},
+      {"id": "c", "text": "are", "correct": false},
+      {"id": "d", "text": "were", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'has' เพราะ 'The number of + นามพหูพจน์' ถือว่าเป็นประธานเอกพจน์ ใช้กริยาเอกพจน์ (has, is, was) ต่างจาก 'A number of' ซึ่งใช้กริยาพหูพจน์"
+  },
+  {
+    "id": "gr-008",
+    "type": "multiple-choice",
+    "sentence": "He suggested ____ a new branch in Bangkok.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "to open", "correct": false},
+      {"id": "b", "text": "open", "correct": false},
+      {"id": "c", "text": "opening", "correct": true},
+      {"id": "d", "text": "opened", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'opening' เพราะกริยา suggest ตามด้วย Gerund (V-ing) เสมอ กริยาอื่นที่ตามด้วย Gerund เช่น enjoy, avoid, consider, recommend"
+  },
+  {
+    "id": "gr-009",
+    "type": "multiple-choice",
+    "sentence": "This is the project ____ we have been working on for months.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "who", "correct": false},
+      {"id": "b", "text": "whom", "correct": false},
+      {"id": "c", "text": "which", "correct": true},
+      {"id": "d", "text": "whose", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'which' เพราะใช้แทนสิ่งของ (project) ใน Relative Clause ใช้ who/whom แทนคน ใช้ which/that แทนสิ่งของ ใช้ whose แสดงความเป็นเจ้าของ"
+  },
+  {
+    "id": "gr-010",
+    "type": "multiple-choice",
+    "sentence": "The more you practice, ____ you become.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "the more better", "correct": false},
+      {"id": "b", "text": "the better", "correct": true},
+      {"id": "c", "text": "better", "correct": false},
+      {"id": "d", "text": "the best", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'the better' เพราะโครงสร้าง 'The + comparative, the + comparative' หมายถึง ยิ่ง...ยิ่ง... เช่น The more you eat, the fatter you get."
+  },
+  {
+    "id": "gr-011",
+    "type": "multiple-choice",
+    "sentence": "She ____ for the company since 2018.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "works", "correct": false},
+      {"id": "b", "text": "worked", "correct": false},
+      {"id": "c", "text": "has worked", "correct": true},
+      {"id": "d", "text": "had worked", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'has worked' เพราะมีคำว่า 'since 2018' บ่งบอกว่าเหตุการณ์เริ่มในอดีตและยังดำเนินอยู่ถึงปัจจุบัน ใช้ Present Perfect Tense (have/has + V3)"
+  },
+  {
+    "id": "gr-012",
+    "type": "multiple-choice",
+    "sentence": "You should ____ your doctor before taking any medication.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "consult", "correct": true},
+      {"id": "b", "text": "to consult", "correct": false},
+      {"id": "c", "text": "consulting", "correct": false},
+      {"id": "d", "text": "consulted", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'consult' เพราะ Modal verbs (should, must, can, will, may) ตามด้วย V1 (infinitive without to) เสมอ เช่น You must go, She can swim"
+  },
+  {
+    "id": "gr-013",
+    "type": "multiple-choice",
+    "sentence": "Despite ____ hard, he failed the exam.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "study", "correct": false},
+      {"id": "b", "text": "studied", "correct": false},
+      {"id": "c", "text": "studying", "correct": true},
+      {"id": "d", "text": "to study", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'studying' เพราะ Despite/In spite of ตามด้วย Gerund (V-ing) หรือ noun เสมอ เช่น Despite being tired, she continued working."
+  },
+  {
+    "id": "gr-014",
+    "type": "multiple-choice",
+    "sentence": "The email ____ to all staff members by noon.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "will send", "correct": false},
+      {"id": "b", "text": "will be sent", "correct": true},
+      {"id": "c", "text": "sends", "correct": false},
+      {"id": "d", "text": "is sending", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'will be sent' เพราะเป็น Future Passive Voice อีเมลถูกส่ง (ไม่ได้ส่งเอง) โครงสร้าง: will be + V3 เช่น The meeting will be held tomorrow."
+  },
+  {
+    "id": "gr-015",
+    "type": "multiple-choice",
+    "sentence": "I would rather you ____ me the truth.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "tell", "correct": false},
+      {"id": "b", "text": "told", "correct": true},
+      {"id": "c", "text": "to tell", "correct": false},
+      {"id": "d", "text": "telling", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'told' เพราะโครงสร้าง 'would rather + someone + Past Simple' ใช้เมื่อต้องการให้คนอื่นทำสิ่งใดสิ่งหนึ่ง เช่น I'd rather you stayed home."
+  },
+  {
+    "id": "gr-016",
+    "type": "multiple-choice",
+    "sentence": "Not only ____ late, but he also forgot to bring his report.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "he was", "correct": false},
+      {"id": "b", "text": "was he", "correct": true},
+      {"id": "c", "text": "he is", "correct": false},
+      {"id": "d", "text": "is he", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'was he' เพราะเมื่อ 'Not only' อยู่ต้นประโยค ต้องทำ Subject-Auxiliary Inversion (สลับกริยาช่วยกับประธาน) เหมือน Negative inversion เช่น Never had I seen such a sight."
+  },
+  {
+    "id": "gr-017",
+    "type": "multiple-choice",
+    "sentence": "The staff ____ asked to work overtime this weekend.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "have been", "correct": true},
+      {"id": "b", "text": "has been", "correct": false},
+      {"id": "c", "text": "was", "correct": false},
+      {"id": "d", "text": "is", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'have been' เพราะ 'staff' ในภาษาอังกฤษถือเป็นนามรวม (collective noun) ที่มักใช้กับกริยาพหูพจน์ในบริบทที่หมายถึงหลายคน"
+  },
+  {
+    "id": "gr-018",
+    "type": "multiple-choice",
+    "sentence": "She is used to ____ in a busy office environment.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "work", "correct": false},
+      {"id": "b", "text": "worked", "correct": false},
+      {"id": "c", "text": "working", "correct": true},
+      {"id": "d", "text": "to work", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'working' เพราะ 'be used to' + Gerund (V-ing) หมายถึง คุ้นเคยกับ ต่างจาก 'used to' + V1 ที่หมายถึง เคย(ทำ)ในอดีต"
+  },
+  {
+    "id": "gr-019",
+    "type": "multiple-choice",
+    "sentence": "The presentation was so ____ that everyone fell asleep.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "bored", "correct": false},
+      {"id": "b", "text": "boring", "correct": true},
+      {"id": "c", "text": "bore", "correct": false},
+      {"id": "d", "text": "boredom", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'boring' เพราะ -ing adjectives อธิบายลักษณะของสิ่งของหรือสถานการณ์ ส่วน -ed adjectives อธิบายความรู้สึกของคน เช่น The movie was boring. / I was bored."
+  },
+  {
+    "id": "gr-020",
+    "type": "multiple-choice",
+    "sentence": "It is essential that every employee ____ the safety regulations.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "follows", "correct": false},
+      {"id": "b", "text": "follow", "correct": true},
+      {"id": "c", "text": "followed", "correct": false},
+      {"id": "d", "text": "following", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'follow' เพราะเป็น Subjunctive mood หลัง It is essential/important/necessary that... ต้องใช้ V1 ไม่เติม -s แม้ประธานจะเป็นเอกพจน์"
+  },
+  {
+    "id": "gr-021",
+    "type": "multiple-choice",
+    "sentence": "He ____ the project if they had given him more resources.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "would complete", "correct": false},
+      {"id": "b", "text": "would have completed", "correct": true},
+      {"id": "c", "text": "had completed", "correct": false},
+      {"id": "d", "text": "will complete", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'would have completed' เพราะเป็น Third Conditional สมมติเหตุการณ์ที่ไม่เกิดขึ้นในอดีต โครงสร้าง: If + Past Perfect, would have + V3"
+  },
+  {
+    "id": "gr-022",
+    "type": "multiple-choice",
+    "sentence": "He asked me where ____ the previous night.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "had I been", "correct": false},
+      {"id": "b", "text": "I had been", "correct": true},
+      {"id": "c", "text": "was I", "correct": false},
+      {"id": "d", "text": "I was", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'I had been' เพราะเป็น Reported Question (Indirect Speech) ลำดับคำในประโยคคำถามทางอ้อมจะเป็น Subject + Verb เหมือนประโยคบอกเล่า ไม่มีการ inversion"
+  },
+  {
+    "id": "gr-023",
+    "type": "multiple-choice",
+    "sentence": "The company provided its employees ____ health insurance.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "to", "correct": false},
+      {"id": "b", "text": "for", "correct": false},
+      {"id": "c", "text": "with", "correct": true},
+      {"id": "d", "text": "by", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'with' เพราะโครงสร้าง 'provide someone with something' หมายถึง จัดหา/มอบให้ เช่น The government provides citizens with education."
+  },
+  {
+    "id": "gr-024",
+    "type": "multiple-choice",
+    "sentence": "____ the bad weather, the event was a great success.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "Although", "correct": false},
+      {"id": "b", "text": "Despite", "correct": true},
+      {"id": "c", "text": "However", "correct": false},
+      {"id": "d", "text": "Even though", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'Despite' เพราะ Despite/In spite of ตามด้วย noun/noun phrase หรือ Gerund แต่ Although/Even though ตามด้วย clause (ประธาน + กริยา)"
+  },
+  {
+    "id": "gr-025",
+    "type": "multiple-choice",
+    "sentence": "The new policy ____ into effect next Monday.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "comes", "correct": false},
+      {"id": "b", "text": "will come", "correct": true},
+      {"id": "c", "text": "came", "correct": false},
+      {"id": "d", "text": "has come", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'will come' เพราะมีคำว่า 'next Monday' บ่งบอกเหตุการณ์ในอนาคต ใช้ Future Simple (will + V1) หรือ Present Simple กับกำหนดการที่แน่นอน"
+  }
+]

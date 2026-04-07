@@ -1,0 +1,197 @@
+[
+  {
+    "id": "toeic-r-001",
+    "type": "multiple-choice",
+    "sentence": "The board of directors ____ the merger proposal at yesterday's meeting.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "approve", "correct": false},
+      {"id": "b", "text": "approved", "correct": true},
+      {"id": "c", "text": "approving", "correct": false},
+      {"id": "d", "text": "will approve", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'approved' เพราะมีคำว่า 'yesterday' บ่งบอกเวลาอดีต ใช้ Past Simple Tense (V2)"
+  },
+  {
+    "id": "toeic-r-002",
+    "type": "multiple-choice",
+    "sentence": "All employees are required to submit their ____ reports by Friday.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "expense", "correct": false},
+      {"id": "b", "text": "expend", "correct": false},
+      {"id": "c", "text": "expensive", "correct": false},
+      {"id": "d", "text": "expenditure", "correct": true}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'expenditure' เพราะต้องการ noun มาขยาย 'reports' และมีความหมายว่า 'การใช้จ่าย' ซึ่งเหมาะสมกับบริบท"
+  },
+  {
+    "id": "toeic-r-003",
+    "type": "multiple-choice",
+    "sentence": "The new software ____ significant improvements in data processing speed.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "resulted", "correct": false},
+      {"id": "b", "text": "has resulted in", "correct": true},
+      {"id": "c", "text": "resulted to", "correct": false},
+      {"id": "d", "text": "results from", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'has resulted in' เพราะ 'result in' หมายถึง 'ทำให้เกิด' และใช้ Present Perfect เพราะผลยังคงมีอยู่ในปัจจุบัน"
+  },
+  {
+    "id": "toeic-r-004",
+    "type": "multiple-choice",
+    "sentence": "Customers who purchase three or more items will receive a ____ discount.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "ten-percent", "correct": true},
+      {"id": "b", "text": "tens-percent", "correct": false},
+      {"id": "c", "text": "ten percents", "correct": false},
+      {"id": "d", "text": "tens percent", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'ten-percent' เพราะเมื่อใช้ตัวเลข+หน่วยเป็น compound adjective ขยายนาม ต้องใช้ hyphen และไม่เติม -s เช่น a five-year contract, a two-hour meeting"
+  },
+  {
+    "id": "toeic-r-005",
+    "type": "multiple-choice",
+    "sentence": "The conference room is available ____ reservation through the online booking system.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "in", "correct": false},
+      {"id": "b", "text": "by", "correct": false},
+      {"id": "c", "text": "for", "correct": true},
+      {"id": "d", "text": "at", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'for' เพราะ 'available for reservation' หมายถึง 'สามารถจองได้' การใช้ for แสดงวัตถุประสงค์"
+  },
+  {
+    "id": "toeic-r-006",
+    "type": "reading",
+    "passage": "TO: All Staff\nFROM: Human Resources Department\nDATE: March 15\nSUBJECT: Annual Performance Reviews\n\nPlease be advised that annual performance reviews will take place from April 3–14. All employees should schedule a 30-minute meeting with their direct supervisor using the online calendar system. Review forms must be completed and submitted to HR no later than March 29. Employees who do not submit forms by the deadline may have their reviews postponed to the following quarter.",
+    "question": "What will happen to employees who miss the March 29 deadline?",
+    "options": [
+      {"id": "a", "text": "They will be dismissed from the company.", "correct": false},
+      {"id": "b", "text": "Their reviews will be moved to the next quarter.", "correct": true},
+      {"id": "c", "text": "They must meet with HR directly.", "correct": false},
+      {"id": "d", "text": "They will receive a written warning.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'Employees who do not submit forms by the deadline may have their reviews postponed to the following quarter' แปลว่า อาจถูกเลื่อนไปไตรมาสถัดไป"
+  },
+  {
+    "id": "toeic-r-007",
+    "type": "reading",
+    "passage": "Riverside Hotel is pleased to announce the grand opening of its newly renovated fitness center. The state-of-the-art facility features 50 new cardio machines, a 25-meter lap pool, and group fitness classes including yoga and spinning. Hotel guests can use the fitness center free of charge, while local residents may purchase monthly memberships starting at $45. The center is open daily from 6:00 AM to 11:00 PM.",
+    "question": "How much does it cost for hotel guests to use the fitness center?",
+    "options": [
+      {"id": "a", "text": "$45 per month", "correct": false},
+      {"id": "b", "text": "$45 per visit", "correct": false},
+      {"id": "c", "text": "Nothing — it is free", "correct": true},
+      {"id": "d", "text": "The price is not mentioned.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'Hotel guests can use the fitness center free of charge' หมายถึงใช้ได้ฟรี ส่วน $45 สำหรับชาวบ้านในพื้นที่เท่านั้น"
+  },
+  {
+    "id": "toeic-r-008",
+    "type": "reading",
+    "passage": "Northgate Electronics is currently accepting applications for the position of Senior Software Engineer. Candidates must have a minimum of five years of experience in backend development and proficiency in Python or Java. A bachelor's degree in Computer Science or a related field is required. The successful candidate will be responsible for designing scalable systems and mentoring junior developers. Competitive salary and benefits package offered. To apply, send your resume to careers@northgate.com by April 30.",
+    "question": "What is one of the job requirements mentioned in the advertisement?",
+    "options": [
+      {"id": "a", "text": "A master's degree in Engineering", "correct": false},
+      {"id": "b", "text": "Ten years of software development experience", "correct": false},
+      {"id": "c", "text": "Knowledge of Python or Java", "correct": true},
+      {"id": "d", "text": "Experience managing a team of 10 or more", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'proficiency in Python or Java' ซึ่งหมายถึงต้องมีความสามารถด้าน Python หรือ Java ส่วนตัวเลือกอื่นไม่ตรงกับข้อความในประกาศ"
+  },
+  {
+    "id": "toeic-r-009",
+    "type": "multiple-choice",
+    "sentence": "The marketing team worked ____ to meet the tight deadline for the product launch.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "tirelessly", "correct": true},
+      {"id": "b", "text": "tireless", "correct": false},
+      {"id": "c", "text": "tire", "correct": false},
+      {"id": "d", "text": "tiring", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'tirelessly' เพราะต้องการ adverb มาขยายกริยา 'worked' คำลงท้าย -ly มักเป็น adverb เช่น quickly, carefully, efficiently"
+  },
+  {
+    "id": "toeic-r-010",
+    "type": "multiple-choice",
+    "sentence": "Please ensure that all invoices are ____ before processing payments.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "verify", "correct": false},
+      {"id": "b", "text": "verifying", "correct": false},
+      {"id": "c", "text": "verified", "correct": true},
+      {"id": "d", "text": "verification", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'verified' เพราะโครงสร้าง 'be + V3' เป็น Passive Voice ใบแจ้งหนี้ถูกตรวจสอบ (ไม่ได้ตรวจสอบเอง)"
+  },
+  {
+    "id": "toeic-r-011",
+    "type": "reading",
+    "passage": "MEMO\nTO: Sales Department\nFROM: David Chen, Sales Director\nRE: Q3 Sales Performance\n\nI am pleased to report that our Q3 sales figures have exceeded our targets by 18%. This achievement is the result of the team's outstanding dedication and the successful rollout of our new CRM system. As a token of appreciation, all sales staff will receive a bonus equivalent to 5% of their monthly salary, to be paid with the October payroll. Additionally, the top three performers will be invited to the annual leadership retreat in Phuket.",
+    "question": "What is the purpose of this memo?",
+    "options": [
+      {"id": "a", "text": "To introduce a new CRM system to the team", "correct": false},
+      {"id": "b", "text": "To announce sales results and rewards for staff", "correct": true},
+      {"id": "c", "text": "To remind staff about the October payroll schedule", "correct": false},
+      {"id": "d", "text": "To announce a leadership retreat in Phuket", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ memo นี้แจ้งผลการขาย Q3 และรางวัลที่พนักงานจะได้รับ ตัวเลือกอื่นๆ เป็นเพียงรายละเอียดส่วนหนึ่ง ไม่ใช่วัตถุประสงค์หลัก"
+  },
+  {
+    "id": "toeic-r-012",
+    "type": "multiple-choice",
+    "sentence": "The CEO gave a ____ speech that motivated all employees.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "motivate", "correct": false},
+      {"id": "b", "text": "motivated", "correct": false},
+      {"id": "c", "text": "motivating", "correct": true},
+      {"id": "d", "text": "motivation", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'motivating' เพราะต้องการ adjective มาขยาย speech และ -ing adjective ใช้อธิบายสิ่งที่ทำให้รู้สึก (speech ทำให้คนรู้สึกมีแรงจูงใจ)"
+  },
+  {
+    "id": "toeic-r-013",
+    "type": "reading",
+    "passage": "BlueWave Logistics is expanding its operations and seeking experienced truck drivers. Requirements: valid commercial driver's license (Class A), minimum 3 years of long-haul driving experience, clean driving record, and willingness to travel regionally. We offer competitive pay ($28–$35/hour depending on experience), full health benefits, paid vacation, and a signing bonus of $2,000 for qualified candidates. Shifts are Monday through Friday. Interested applicants should contact our HR office at 1-800-555-0192.",
+    "question": "Which of the following is NOT mentioned as a job requirement?",
+    "options": [
+      {"id": "a", "text": "A valid commercial driver's license", "correct": false},
+      {"id": "b", "text": "A clean driving record", "correct": false},
+      {"id": "c", "text": "Experience driving internationally", "correct": true},
+      {"id": "d", "text": "At least 3 years of long-haul experience", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะประกาศระบุ 'travel regionally' ไม่ใช่ internationally ตัวเลือก A, B, D ล้วนระบุไว้ในประกาศอย่างชัดเจน"
+  },
+  {
+    "id": "toeic-r-014",
+    "type": "multiple-choice",
+    "sentence": "Management has decided to ____ the office renovation until next fiscal year.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "postpone", "correct": true},
+      {"id": "b", "text": "propose", "correct": false},
+      {"id": "c", "text": "promote", "correct": false},
+      {"id": "d", "text": "proceed", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'postpone' เพราะหมายถึง 'เลื่อน' ซึ่งสอดคล้องกับ 'until next fiscal year' ตัวเลือกอื่นมีความหมายต่างออกไป: propose = เสนอ, promote = เลื่อนตำแหน่ง/โปรโมท, proceed = ดำเนินต่อ"
+  },
+  {
+    "id": "toeic-r-015",
+    "type": "multiple-choice",
+    "sentence": "The quarterly figures show that revenue ____ by 12% compared to last year.",
+    "question": "Choose the correct answer:",
+    "options": [
+      {"id": "a", "text": "grew", "correct": false},
+      {"id": "b", "text": "has grown", "correct": true},
+      {"id": "c", "text": "was grown", "correct": false},
+      {"id": "d", "text": "is grown", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ 'has grown' เพราะการเปรียบเทียบกับปีที่แล้วแสดงถึงการเปลี่ยนแปลงที่ต่อเนื่องมาจนปัจจุบัน ใช้ Present Perfect และ 'grow' เป็น intransitive verb จึงไม่ใช้ Passive"
+  }
+]

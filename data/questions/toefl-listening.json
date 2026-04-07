@@ -1,0 +1,114 @@
+[
+  {
+    "id": "toefl-l-001",
+    "type": "listening",
+    "part": "Conversation",
+    "audioText": "Student: Hi, Professor Chen. Do you have a few minutes? I wanted to ask about the research paper assignment. Professor: Of course, come in. What's on your mind? Student: I'm not sure I understand the difference between an annotated bibliography and a literature review. Do we need both? Professor: Good question. For this assignment, I only want the literature review — that's where you synthesize the sources and explain how they relate to your argument. An annotated bibliography is just a list with summaries. Student: Oh, I see. So the literature review should explain why each source matters to my thesis? Professor: Exactly. And try to group sources thematically rather than just listing them one by one.",
+    "question": "What does the professor say about the literature review?",
+    "options": [
+      {"id": "a", "text": "It should be submitted along with an annotated bibliography.", "correct": false},
+      {"id": "b", "text": "It should synthesize sources and relate them to the student's argument.", "correct": true},
+      {"id": "c", "text": "It should summarize each source individually.", "correct": false},
+      {"id": "d", "text": "It is optional for this assignment.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'that's where you synthesize the sources and explain how they relate to your argument'"
+  },
+  {
+    "id": "toefl-l-002",
+    "type": "listening",
+    "part": "Conversation",
+    "audioText": "Student: Hi, Professor Chen. Do you have a few minutes? I wanted to ask about the research paper assignment. Professor: Of course, come in. What's on your mind? Student: I'm not sure I understand the difference between an annotated bibliography and a literature review. Do we need both? Professor: Good question. For this assignment, I only want the literature review — that's where you synthesize the sources and explain how they relate to your argument. An annotated bibliography is just a list with summaries. Student: Oh, I see. So the literature review should explain why each source matters to my thesis? Professor: Exactly. And try to group sources thematically rather than just listing them one by one.",
+    "question": "What advice does the professor give about organising the literature review?",
+    "options": [
+      {"id": "a", "text": "Arrange sources in chronological order.", "correct": false},
+      {"id": "b", "text": "List sources alphabetically.", "correct": false},
+      {"id": "c", "text": "Group sources by theme rather than listing individually.", "correct": true},
+      {"id": "d", "text": "Limit to five sources per paragraph.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'try to group sources thematically rather than just listing them one by one'"
+  },
+  {
+    "id": "toefl-l-003",
+    "type": "listening",
+    "part": "Lecture",
+    "audioText": "Today we're going to look at a fascinating topic in animal behaviour — tool use. For a long time, tool use was considered a uniquely human trait. That changed dramatically in 1960 when Jane Goodall observed chimpanzees in Gombe stripping leaves from twigs to fish termites from mounds — a clear example of tool manufacture, not just tool use. Since then, tool use has been documented in a wide range of species: crows, dolphins, elephants, and even some insects. New Caledonian crows are particularly impressive — they not only use tools but make hooks from plant stems to retrieve food from crevices. What makes this significant is what it tells us about cognitive complexity: tool use requires the ability to understand cause-and-effect relationships and to mentally represent a future goal.",
+    "question": "According to the lecture, what is significant about New Caledonian crows?",
+    "options": [
+      {"id": "a", "text": "They were the first non-human animals observed using tools.", "correct": false},
+      {"id": "b", "text": "They manufacture hooks from plant materials to retrieve food.", "correct": true},
+      {"id": "c", "text": "They use tools to communicate with other crows.", "correct": false},
+      {"id": "d", "text": "They learned tool use by observing chimpanzees.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'they not only use tools but make hooks from plant stems to retrieve food from crevices'"
+  },
+  {
+    "id": "toefl-l-004",
+    "type": "listening",
+    "part": "Lecture",
+    "audioText": "Today we're going to look at a fascinating topic in animal behaviour — tool use. For a long time, tool use was considered a uniquely human trait. That changed dramatically in 1960 when Jane Goodall observed chimpanzees in Gombe stripping leaves from twigs to fish termites from mounds — a clear example of tool manufacture, not just tool use. Since then, tool use has been documented in a wide range of species: crows, dolphins, elephants, and even some insects. New Caledonian crows are particularly impressive — they not only use tools but make hooks from plant stems to retrieve food from crevices. What makes this significant is what it tells us about cognitive complexity: tool use requires the ability to understand cause-and-effect relationships and to mentally represent a future goal.",
+    "question": "Why does the professor mention Jane Goodall's 1960 observation?",
+    "options": [
+      {"id": "a", "text": "To introduce the study of animal intelligence as a new field", "correct": false},
+      {"id": "b", "text": "To illustrate how tool manufacture challenges the idea of human uniqueness", "correct": true},
+      {"id": "c", "text": "To explain how termite fishing became a common chimpanzee behaviour", "correct": false},
+      {"id": "d", "text": "To compare chimpanzee and crow intelligence", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะการสังเกตนี้เป็นหลักฐานแรกที่เปลี่ยนความเชื่อว่าการใช้เครื่องมือเป็นสิ่งเฉพาะของมนุษย์"
+  },
+  {
+    "id": "toefl-l-005",
+    "type": "listening",
+    "part": "Lecture",
+    "audioText": "Let's talk about the water cycle — or hydrological cycle — which describes the continuous movement of water on, above, and below Earth's surface. The cycle has four main stages. First, evaporation: solar energy heats surface water in oceans, lakes, and rivers, converting it to water vapour that rises into the atmosphere. Second, condensation: as water vapour rises and cools, it condenses around tiny particles to form clouds. Third, precipitation: when water droplets in clouds combine and become heavy enough, they fall as rain, snow, sleet, or hail. Finally, collection: precipitation collects in oceans, lakes, rivers, and groundwater systems, where the cycle begins again. Human activity has disrupted parts of this cycle — deforestation reduces transpiration, urbanisation increases surface runoff, and climate change alters precipitation patterns globally.",
+    "question": "According to the lecture, what happens during the condensation stage of the water cycle?",
+    "options": [
+      {"id": "a", "text": "Solar energy converts surface water to vapour.", "correct": false},
+      {"id": "b", "text": "Water droplets fall from clouds as precipitation.", "correct": false},
+      {"id": "c", "text": "Water vapour cools and condenses to form clouds.", "correct": true},
+      {"id": "d", "text": "Water collects in oceans and groundwater systems.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'as water vapour rises and cools, it condenses around tiny particles to form clouds'"
+  },
+  {
+    "id": "toefl-l-006",
+    "type": "listening",
+    "part": "Lecture",
+    "audioText": "Let's talk about the water cycle — or hydrological cycle — which describes the continuous movement of water on, above, and below Earth's surface. The cycle has four main stages. First, evaporation: solar energy heats surface water in oceans, lakes, and rivers, converting it to water vapour that rises into the atmosphere. Second, condensation: as water vapour rises and cools, it condenses around tiny particles to form clouds. Third, precipitation: when water droplets in clouds combine and become heavy enough, they fall as rain, snow, sleet, or hail. Finally, collection: precipitation collects in oceans, lakes, rivers, and groundwater systems, where the cycle begins again. Human activity has disrupted parts of this cycle — deforestation reduces transpiration, urbanisation increases surface runoff, and climate change alters precipitation patterns globally.",
+    "question": "How does the professor say deforestation affects the water cycle?",
+    "options": [
+      {"id": "a", "text": "It increases evaporation from the soil.", "correct": false},
+      {"id": "b", "text": "It reduces the amount of transpiration.", "correct": true},
+      {"id": "c", "text": "It causes more frequent precipitation.", "correct": false},
+      {"id": "d", "text": "It raises the temperature of surface water.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'deforestation reduces transpiration'"
+  },
+  {
+    "id": "toefl-l-007",
+    "type": "listening",
+    "part": "Conversation",
+    "audioText": "Student: Excuse me, I'm trying to find the Writing Center. Is it still in Hartley Hall? Staff member: No, they moved last semester. It's now in the Student Services Building, Room 204. Student: Oh, thanks. Do I need an appointment, or can I just walk in? Staff member: You can walk in during open hours — Monday to Thursday, 10 AM to 6 PM. But if you want to work with a specific tutor, you should book online at least 24 hours in advance. Student: Great. I have a draft due Friday, so I'll try to go tomorrow. Staff member: Good idea. They get very busy toward the end of the week.",
+    "question": "What does the staff member recommend the student do?",
+    "options": [
+      {"id": "a", "text": "Email the Writing Center before visiting", "correct": false},
+      {"id": "b", "text": "Visit on Thursday rather than Friday", "correct": false},
+      {"id": "c", "text": "Go the next day rather than waiting until later in the week", "correct": true},
+      {"id": "d", "text": "Submit the draft online instead of visiting in person", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'They get very busy toward the end of the week' — แนะนำให้ไปก่อนสิ้นสัปดาห์"
+  },
+  {
+    "id": "toefl-l-008",
+    "type": "listening",
+    "part": "Lecture",
+    "audioText": "The concept of cognitive dissonance was introduced by psychologist Leon Festinger in 1957. It refers to the mental discomfort experienced when a person holds two or more contradictory beliefs simultaneously, or when their actions conflict with their beliefs. According to Festinger, people are motivated to reduce this discomfort in one of three ways: by changing one of their beliefs to make them consistent, by acquiring new information that supports one of the beliefs, or by reducing the importance of one of the conflicting beliefs. A classic example is a smoker who knows that smoking is harmful. The dissonance between the behaviour and the knowledge can be resolved by quitting smoking, by seeking out information that downplays the health risks, or by convincing oneself that the pleasure of smoking outweighs the risks.",
+    "question": "According to the lecture, which of the following is NOT mentioned as a way to reduce cognitive dissonance?",
+    "options": [
+      {"id": "a", "text": "Changing one of the conflicting beliefs", "correct": false},
+      {"id": "b", "text": "Seeking information that supports one belief", "correct": false},
+      {"id": "c", "text": "Discussing the conflict with others", "correct": true},
+      {"id": "d", "text": "Minimising the importance of one of the beliefs", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะบรรยายระบุ 3 วิธีในการลด cognitive dissonance แต่ไม่รวม 'การพูดคุยกับผู้อื่น'"
+  }
+]

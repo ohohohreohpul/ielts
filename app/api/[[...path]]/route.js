@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
+import fs from 'fs'
+import path from 'path'
 import {
   supabaseServer,
   getAdminConfig,
@@ -777,200 +779,89 @@ async function handleRoute(request, context) {
       }))
     }
 
-    // Generate AI questions using LLM
+    // Serve questions from static JSON banks
     if (route === '/ai/generate-questions' && method === 'POST') {
       const body = await request.json()
-      const { examType, section, count = 5 } = body
+      const { examType, section, count = 15 } = body
 
-      const llmProvider = await getAdminConfig('llmProvider') || 'gemini'
-      const geminiKey = await getAdminConfig('geminiKey')
-      const openAIKey = await getAdminConfig('openAIKey')
-      const openRouterKey = await getAdminConfig('openRouterKey')
-      const openRouterModel = await getAdminConfig('openRouterModel') || 'meta-llama/llama-4-maverick:free'
-      const emergentKey = process.env.EMERGENT_LLM_KEY
+      // Map examType + section to a JSON file
+      const et = (examType || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+      const sec = (section || '').toLowerCase()
 
-      let apiKey = null
-      let useProvider = llmProvider
-
-      if (llmProvider === 'openrouter' && openRouterKey) {
-        apiKey = openRouterKey
-        useProvider = 'openrouter'
-      } else if (llmProvider === 'openai' && openAIKey) {
-        apiKey = openAIKey
-        useProvider = 'openai'
-      } else if (llmProvider === 'gemini' && geminiKey) {
-        apiKey = geminiKey
-        useProvider = 'gemini'
-      } else if (openRouterKey) {
-        apiKey = openRouterKey
-        useProvider = 'openrouter'
-      } else if (openAIKey) {
-        apiKey = openAIKey
-        useProvider = 'openai'
-      } else if (geminiKey) {
-        apiKey = geminiKey
-        useProvider = 'gemini'
-      } else if (emergentKey) {
-        apiKey = emergentKey
-        useProvider = emergentKey.startsWith('sk-emergent-') ? 'emergent' : 'openai'
+      const fileMap = {
+        'ielts-reading': 'ielts-reading.json',
+        'ielts-listening': 'ielts-listening.json',
+        'ielts-writing': 'ielts-writing.json',
+        'ielts-speaking': 'ielts-speaking.json',
+        'toeic-reading': 'toeic-reading.json',
+        'toeic-listening': 'toeic-listening.json',
+        'toefl-reading': 'toefl-reading.json',
+        'toefl-listening': 'toefl-listening.json',
+        'toefl-writing': 'toefl-writing.json',
+        'toefl-speaking': 'toefl-speaking.json',
+        'cutep-reading': 'cutep-reading.json',
+        'cutep-listening': 'cutep-listening.json',
+        'cutep-structure': 'cutep-reading.json',
+        'cutep-vocabulary': 'cutep-reading.json',
+        'tuget-reading': 'tuget-reading.json',
+        'tuget-grammar': 'tuget-reading.json',
+        'tuget-vocabulary': 'tuget-reading.json',
+        'onet-reading': 'onet-reading.json',
+        'onet-grammar': 'onet-reading.json',
+        'onet-vocabulary': 'onet-reading.json',
+        'grammar-grammar': 'grammar.json',
+        'grammar-reading': 'grammar.json',
+        'korpor-reading': 'ocsc-reading.json',
+        'korpor-grammar': 'ocsc-reading.json',
+        'ocsc-reading': 'ocsc-reading.json',
       }
 
-      if (!apiKey) {
+      const key = `${et}-${sec}`
+      let fileName = fileMap[key]
+
+      // Fallback: try matching by exam type only
+      if (!fileName) {
+        const fallbacks = {
+          'ielts': 'ielts-reading.json',
+          'toeic': 'toeic-reading.json',
+          'toefl': 'toefl-reading.json',
+          'cutep': 'cutep-reading.json',
+          'tuget': 'tuget-reading.json',
+          'onet': 'onet-reading.json',
+          'grammar': 'grammar.json',
+          'korpor': 'ocsc-reading.json',
+          'ocsc': 'ocsc-reading.json',
+        }
+        for (const [k, v] of Object.entries(fallbacks)) {
+          if (et.includes(k)) { fileName = v; break }
+        }
+      }
+
+      if (!fileName) {
         return handleCORS(NextResponse.json(
-          { error: "API key not configured. Please configure Gemini, OpenAI, or OpenRouter API key in Admin Console." },
-          { status: 400 }
+          { error: `No question bank found for examType="${examType}" section="${section}"` },
+          { status: 404 }
         ))
       }
 
       try {
-        const prompt = buildExamPrompt(examType, section, count)
-        let generatedText
+        const filePath = path.join(process.cwd(), 'data', 'questions', fileName)
+        const allQuestions = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
 
-        if (useProvider === 'openrouter') {
-          const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
-              'HTTP-Referer': 'https://mydemy-ai-exams-w77mqdkq.sites.blink.new',
-              'X-Title': 'Mydemy AI Exam App'
-            },
-            body: JSON.stringify({
-              model: openRouterModel,
-              messages: [{ role: 'user', content: prompt }],
-              temperature: 0.9,
-              max_tokens: 8192,
-            })
-          })
+        // Shuffle and return up to `count` questions
+        const shuffled = allQuestions.sort(() => Math.random() - 0.5)
+        const questions = shuffled.slice(0, Math.min(count, shuffled.length))
 
-          if (!aiResponse.ok) {
-            const errorData = await aiResponse.json()
-            throw new Error(errorData.error?.message || 'OpenRouter API request failed')
-          }
-
-          const aiData = await aiResponse.json()
-          generatedText = aiData.choices[0].message.content
-        } else if (useProvider === 'openai' || useProvider === 'emergent') {
-          const apiUrl = useProvider === 'emergent'
-            ? 'https://integrations.emergentagent.com/llm/chat/completions'
-            : 'https://api.openai.com/v1/chat/completions'
-
-          const aiResponse = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-              model: useProvider === 'emergent' ? 'gpt-4.1' : 'gpt-4o-mini',
-              messages: [{ role: 'user', content: prompt }],
-              temperature: 0.9,
-              max_tokens: 8192,
-            })
-          })
-
-          if (!aiResponse.ok) {
-            const errorData = await aiResponse.json()
-            throw new Error(errorData.error?.message || 'OpenAI API request failed')
-          }
-
-          const aiData = await aiResponse.json()
-          generatedText = aiData.choices[0].message.content
-        } else {
-          const geminiResponse = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.9, topK: 40, topP: 0.95, maxOutputTokens: 8192 }
-              })
-            }
-          )
-
-          if (!geminiResponse.ok) {
-            const errorData = await geminiResponse.json()
-            throw new Error(errorData.error?.message || 'Gemini API request failed')
-          }
-
-          const geminiData = await geminiResponse.json()
-          generatedText = geminiData.candidates[0].content.parts[0].text
-        }
-
-        let questions
-        try {
-          const codeBlockMatch = generatedText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/)
-          if (codeBlockMatch) {
-            questions = JSON.parse(codeBlockMatch[1].trim())
-          } else {
-            const arrStart = generatedText.indexOf('[')
-            const objStart = generatedText.indexOf('{')
-
-            if (arrStart !== -1 && (objStart === -1 || arrStart < objStart)) {
-              let depth = 0, endIdx = -1
-              for (let i = arrStart; i < generatedText.length; i++) {
-                if (generatedText[i] === '[') depth++
-                else if (generatedText[i] === ']') { depth--; if (depth === 0) { endIdx = i; break; } }
-              }
-              if (endIdx !== -1) {
-                questions = JSON.parse(generatedText.substring(arrStart, endIdx + 1))
-              }
-            } else if (objStart !== -1) {
-              let depth = 0, endIdx = -1
-              for (let i = objStart; i < generatedText.length; i++) {
-                if (generatedText[i] === '{') depth++
-                else if (generatedText[i] === '}') { depth--; if (depth === 0) { endIdx = i; break; } }
-              }
-              if (endIdx !== -1) {
-                questions = JSON.parse(generatedText.substring(objStart, endIdx + 1))
-              }
-            }
-
-            if (!questions) {
-              questions = JSON.parse(generatedText)
-            }
-          }
-        } catch (parseErr) {
-          console.error('JSON parse error')
-          throw new Error('Failed to parse AI response as JSON')
-        }
-
-        let questionsArray
-        if (Array.isArray(questions)) {
-          questionsArray = questions
-        } else if (questions && typeof questions === 'object') {
-          if (questions.id || questions.type || questions.question || questions.prompt) {
-            questionsArray = [questions]
-          } else if (questions.questions && Array.isArray(questions.questions)) {
-            questionsArray = questions.questions
-          } else if (questions.data && Array.isArray(questions.data)) {
-            questionsArray = questions.data
-          } else {
-            const vals = Object.values(questions)
-            if (vals.length > 0 && typeof vals[0] === 'object' && vals[0] !== null) {
-              questionsArray = vals
-            } else {
-              questionsArray = [questions]
-            }
-          }
-        } else {
-          questionsArray = []
-        }
-
-        return handleCORS(NextResponse.json({
-          examType,
-          section,
-          questions: questionsArray
-        }))
+        return handleCORS(NextResponse.json({ examType, section, questions }))
 
       } catch (error) {
-        console.error('AI generation error:', error)
+        console.error('Static question bank error:', error)
         return handleCORS(NextResponse.json(
-          { error: "Failed to generate questions: " + error.message },
+          { error: 'Failed to load question bank: ' + error.message },
           { status: 500 }
         ))
       }
+
     }
 
     // AI Scoring for Writing and Speaking

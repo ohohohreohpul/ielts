@@ -1,0 +1,132 @@
+[
+  {
+    "id": "cutep-r-001",
+    "type": "reading",
+    "section": "Structure",
+    "question": "_______ the committee members arrived, the meeting began immediately.",
+    "options": [
+      {"id": "a", "text": "Despite", "correct": false},
+      {"id": "b", "text": "Once", "correct": true},
+      {"id": "c", "text": "Although", "correct": false},
+      {"id": "d", "text": "Since when", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'Once' (เมื่อ/ทันทีที่) แสดงลำดับเวลาที่เหมาะสม — เมื่อสมาชิกมาถึง การประชุมก็เริ่มทันที"
+  },
+  {
+    "id": "cutep-r-002",
+    "type": "reading",
+    "section": "Structure",
+    "question": "Neither the manager nor the employees _______ aware of the new policy.",
+    "options": [
+      {"id": "a", "text": "was", "correct": false},
+      {"id": "b", "text": "were", "correct": true},
+      {"id": "c", "text": "has been", "correct": false},
+      {"id": "d", "text": "is", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะในโครงสร้าง 'Neither...nor' กริยาต้องสอดคล้องกับประธานตัวสุดท้าย ('employees' — พหูพจน์) จึงใช้ 'were'"
+  },
+  {
+    "id": "cutep-r-003",
+    "type": "reading",
+    "section": "Structure",
+    "question": "The report _______ by the time the director arrived at the office.",
+    "options": [
+      {"id": "a", "text": "has been completed", "correct": false},
+      {"id": "b", "text": "was completing", "correct": false},
+      {"id": "c", "text": "had already been completed", "correct": true},
+      {"id": "d", "text": "would complete", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะต้องใช้ Past Perfect Passive 'had already been completed' เพื่อแสดงว่ารายงานเสร็จก่อนที่ผู้อำนวยการจะมาถึง"
+  },
+  {
+    "id": "cutep-r-004",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The scientist's findings were so _______ that they overturned decades of accepted theory.",
+    "options": [
+      {"id": "a", "text": "mundane", "correct": false},
+      {"id": "b", "text": "contentious", "correct": false},
+      {"id": "c", "text": "revolutionary", "correct": true},
+      {"id": "d", "text": "ambiguous", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะ 'revolutionary' (ปฏิวัติ/เปลี่ยนแปลงขนานใหญ่) เหมาะสมที่สุดกับบริบทที่ทำให้ทฤษฎีเดิมหลายสิบปีต้องล้มเลิก"
+  },
+  {
+    "id": "cutep-r-005",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The new legislation _______ strict penalties for companies that violate environmental regulations.",
+    "options": [
+      {"id": "a", "text": "abolishes", "correct": false},
+      {"id": "b", "text": "imposes", "correct": true},
+      {"id": "c", "text": "exempts", "correct": false},
+      {"id": "d", "text": "waives", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'imposes' (บังคับใช้/กำหนด) เหมาะสมที่สุดในบริบทของกฎหมายที่กำหนดบทลงโทษ"
+  },
+  {
+    "id": "cutep-r-006",
+    "type": "reading",
+    "passage": "Thailand's tourism industry has undergone significant transformation over the past two decades. Once reliant almost exclusively on cultural and heritage tourism centred on historical temples and monuments, the sector has diversified to include medical tourism, ecotourism, and adventure travel. The country now attracts visitors seeking high-quality, affordable medical procedures — particularly in Bangkok, where internationally accredited hospitals offer treatments at a fraction of Western prices. Meanwhile, ecotourism initiatives in northern and southern regions attempt to balance revenue generation with environmental protection, though critics argue that inadequate regulation has allowed overtourism to damage fragile ecosystems.",
+    "question": "According to the passage, what has driven growth in medical tourism in Thailand?",
+    "options": [
+      {"id": "a", "text": "World-class hospitals that rank higher than those in Western countries", "correct": false},
+      {"id": "b", "text": "Internationally accredited facilities offering treatments at lower costs", "correct": true},
+      {"id": "c", "text": "Government subsidies for foreign patients receiving treatment", "correct": false},
+      {"id": "d", "text": "The opening of new hospitals specifically for international visitors", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'internationally accredited hospitals offer treatments at a fraction of Western prices'"
+  },
+  {
+    "id": "cutep-r-007",
+    "type": "reading",
+    "passage": "Thailand's tourism industry has undergone significant transformation over the past two decades. Once reliant almost exclusively on cultural and heritage tourism centred on historical temples and monuments, the sector has diversified to include medical tourism, ecotourism, and adventure travel. The country now attracts visitors seeking high-quality, affordable medical procedures — particularly in Bangkok, where internationally accredited hospitals offer treatments at a fraction of Western prices. Meanwhile, ecotourism initiatives in northern and southern regions attempt to balance revenue generation with environmental protection, though critics argue that inadequate regulation has allowed overtourism to damage fragile ecosystems.",
+    "question": "What concern do critics raise about ecotourism in Thailand?",
+    "options": [
+      {"id": "a", "text": "That it focuses only on southern regions", "correct": false},
+      {"id": "b", "text": "That it has failed to generate sufficient revenue", "correct": false},
+      {"id": "c", "text": "That insufficient regulation has led to environmental damage", "correct": true},
+      {"id": "d", "text": "That it has displaced cultural and heritage tourism", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'inadequate regulation has allowed overtourism to damage fragile ecosystems'"
+  },
+  {
+    "id": "cutep-r-008",
+    "type": "reading",
+    "passage": "The development of CRISPR-Cas9 gene editing technology has opened new possibilities in medicine, agriculture, and fundamental research. The technology, derived from a bacterial immune defence mechanism, allows scientists to make precise alterations to DNA sequences with unprecedented accuracy and at relatively low cost. In medicine, CRISPR holds promise for correcting the genetic mutations responsible for inherited diseases such as sickle cell anaemia and cystic fibrosis. In agriculture, it enables the development of crops that are more resistant to disease, drought, and pests without the introduction of foreign genes — a distinction that has led some regulatory bodies to treat CRISPR-edited crops differently from traditional genetically modified organisms (GMOs).",
+    "question": "According to the passage, how does CRISPR-based crop editing differ from traditional GMO methods?",
+    "options": [
+      {"id": "a", "text": "CRISPR crops require more regulatory approval than GMO crops.", "correct": false},
+      {"id": "b", "text": "CRISPR does not introduce genes from other organisms.", "correct": true},
+      {"id": "c", "text": "CRISPR is less precise but faster than traditional GMO techniques.", "correct": false},
+      {"id": "d", "text": "CRISPR is only applicable to disease resistance, not drought tolerance.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'without the introduction of foreign genes — a distinction that has led some regulatory bodies to treat CRISPR-edited crops differently'"
+  },
+  {
+    "id": "cutep-r-009",
+    "type": "reading",
+    "section": "Structure",
+    "question": "_______ is essential for students to develop critical thinking skills alongside subject knowledge.",
+    "options": [
+      {"id": "a", "text": "That", "correct": false},
+      {"id": "b", "text": "What", "correct": false},
+      {"id": "c", "text": "It", "correct": true},
+      {"id": "d", "text": "This", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะโครงสร้าง 'It is + adjective + for + noun + to + infinitive' ใช้ 'It' เป็น dummy subject"
+  },
+  {
+    "id": "cutep-r-010",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The professor's lecture was so _______ that several students fell asleep.",
+    "options": [
+      {"id": "a", "text": "riveting", "correct": false},
+      {"id": "b", "text": "succinct", "correct": false},
+      {"id": "c", "text": "monotonous", "correct": true},
+      {"id": "d", "text": "provocative", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะ 'monotonous' (น่าเบื่อ/ซ้ำซาก) สอดคล้องกับผลที่ทำให้นักเรียนหลับ"
+  }
+]

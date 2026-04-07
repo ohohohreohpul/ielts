@@ -1,0 +1,52 @@
+[
+  {
+    "id": "toefl-sp-001",
+    "type": "speaking",
+    "task": "Task 1 (Independent)",
+    "question": "What is one skill you would like to learn and why? Include details and examples in your response.",
+    "preparationTime": 15,
+    "speakingTime": 45,
+    "rubric": "Delivery, Language Use, Topic Development"
+  },
+  {
+    "id": "toefl-sp-002",
+    "type": "speaking",
+    "task": "Task 1 (Independent)",
+    "question": "Describe a person who has had a significant positive influence on your life. Explain why this person has been important to you.",
+    "preparationTime": 15,
+    "speakingTime": 45,
+    "rubric": "Delivery, Language Use, Topic Development"
+  },
+  {
+    "id": "toefl-sp-003",
+    "type": "speaking",
+    "task": "Task 2 (Campus Situation)",
+    "readingPassage": "The university is considering eliminating its on-campus printing services to reduce costs. The administration argues that most students now submit assignments electronically and that the printing facilities are underused. Students would instead be directed to use off-campus commercial print shops.",
+    "conversation": "Woman: Did you see the announcement about shutting down the campus printers? Man: I did. I'm actually in favour of it. I haven't printed anything here in over a year — I submit everything online. Woman: Really? I use them all the time for studying. I find it much easier to annotate physical copies. Man: I suppose, but the cost savings could go to something more useful, like upgrading the computer labs. The off-campus shops aren't that far away anyway.",
+    "question": "The man expresses his opinion about the university's proposal. State his opinion and explain the reasons he gives for holding that opinion.",
+    "preparationTime": 30,
+    "speakingTime": 60,
+    "rubric": "Delivery, Language Use, Topic Development"
+  },
+  {
+    "id": "toefl-sp-004",
+    "type": "speaking",
+    "task": "Task 3 (Academic Course)",
+    "readingPassage": "In biology, the term 'mimicry' refers to a situation where one organism closely resembles another in appearance, behaviour, or sound to gain an advantage. Batesian mimicry occurs when a harmless species resembles a dangerous or unpalatable species to deter predators. Müllerian mimicry, by contrast, involves two or more genuinely unpalatable species that share similar warning signals, reinforcing the avoidance behaviour of predators.",
+    "lectureAudio": "The professor discusses the hoverfly as an example of Batesian mimicry — it resembles a bee or wasp in appearance but is entirely harmless and does not sting. Birds that have been stung by wasps learn to avoid yellow-and-black striped insects, and hoverflies benefit from this learned avoidance. The professor then describes monarch and viceroy butterflies as an example of Müllerian mimicry: both taste unpleasant to birds, and their similar orange-and-black patterns serve as a shared warning signal that benefits both species.",
+    "question": "Using the examples from the lecture, explain the difference between Batesian and Müllerian mimicry as described in the reading passage.",
+    "preparationTime": 30,
+    "speakingTime": 60,
+    "rubric": "Delivery, Language Use, Topic Development"
+  },
+  {
+    "id": "toefl-sp-005",
+    "type": "speaking",
+    "task": "Task 4 (Academic Lecture)",
+    "lectureAudio": "Today I want to discuss confirmation bias — the tendency for people to favour information that confirms their existing beliefs while ignoring or discounting information that contradicts them. For example, a person who believes a particular diet is effective will tend to notice and remember success stories while overlooking failures. This bias operates in both how we seek out information and how we interpret it. In scientific research, confirmation bias can lead investigators to design experiments that are likely to confirm their hypothesis, and to interpret ambiguous results in a favourable way. Peer review and replication are among the key mechanisms science uses to counteract this bias.",
+    "question": "Using points from the lecture, explain what confirmation bias is and describe the problems it can cause, particularly in scientific research.",
+    "preparationTime": 20,
+    "speakingTime": 60,
+    "rubric": "Delivery, Language Use, Topic Development"
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "id": "cutep-l-001",
+    "type": "listening",
+    "part": "Short Conversation",
+    "audioText": "Man: I've been trying to reach Professor Williams all morning. Do you know if she's in? Woman: She's teaching a seminar until noon, but she has office hours from 1 to 3 PM. Man: Perfect. I'll come back after lunch then.",
+    "question": "When will the man most likely return to see Professor Williams?",
+    "options": [
+      {"id": "a", "text": "Before noon", "correct": false},
+      {"id": "b", "text": "At noon", "correct": false},
+      {"id": "c", "text": "In the afternoon", "correct": true},
+      {"id": "d", "text": "The following morning", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะผู้ชายบอกว่า 'I'll come back after lunch' และ office hours คือ 1-3 PM"
+  },
+  {
+    "id": "cutep-l-002",
+    "type": "listening",
+    "part": "Short Conversation",
+    "audioText": "Woman: This traffic is unbelievable. We've been stuck here for 45 minutes. Man: I knew we should have taken the expressway. Woman: The radio said there's an accident near the city centre — it could be another hour. Man: In that case, let's take the next exit and find an alternative route.",
+    "question": "What does the man suggest they do?",
+    "options": [
+      {"id": "a", "text": "Wait for the traffic to clear", "correct": false},
+      {"id": "b", "text": "Listen to the radio for more updates", "correct": false},
+      {"id": "c", "text": "Take a different route", "correct": true},
+      {"id": "d", "text": "Return home and reschedule", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'let's take the next exit and find an alternative route'"
+  },
+  {
+    "id": "cutep-l-003",
+    "type": "listening",
+    "part": "Short Conversation",
+    "audioText": "Man: Did you get a chance to read the proposal I sent last night? Woman: I skimmed it this morning, but I haven't had time for a thorough read. The executive summary looks promising though. Man: The detailed financial projections are in the appendix. I think that's the critical part. Woman: I'll read through it properly before our 3 o'clock meeting.",
+    "question": "What does the woman plan to do before the meeting?",
+    "options": [
+      {"id": "a", "text": "Revise the financial projections", "correct": false},
+      {"id": "b", "text": "Read the proposal carefully", "correct": true},
+      {"id": "c", "text": "Write a summary of the proposal", "correct": false},
+      {"id": "d", "text": "Send her comments to the man", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'I'll read through it properly before our 3 o'clock meeting'"
+  },
+  {
+    "id": "cutep-l-004",
+    "type": "listening",
+    "part": "Long Talk",
+    "audioText": "Good afternoon, and welcome to the Institute of International Studies. My name is Dr. Pattaraporn Srisuk, and I'll be your orientation coordinator for today. Over the next two hours, we'll cover several key areas. First, I'll introduce you to the academic structure of our programmes and the credit requirements for graduation. Then we'll take a brief tour of the main campus facilities, including the library, the language labs, and the student support centre. After that, representatives from various student clubs and societies will have a chance to introduce their organisations. We'll wrap up with a Q&A session. Please feel free to ask questions at any point — we want today to be as informative and welcoming as possible.",
+    "question": "What will happen IMMEDIATELY after the campus tour?",
+    "options": [
+      {"id": "a", "text": "A Q&A session with faculty", "correct": false},
+      {"id": "b", "text": "An introduction to the credit system", "correct": false},
+      {"id": "c", "text": "Student clubs and societies will introduce themselves.", "correct": true},
+      {"id": "d", "text": "Students will be shown to their dormitories.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากการเรียงลำดับ: แนะนำโปรแกรม → ทัวร์วิทยาเขต → ชมรมนักศึกษาแนะนำตัว → Q&A"
+  },
+  {
+    "id": "cutep-l-005",
+    "type": "listening",
+    "part": "Long Talk",
+    "audioText": "Good afternoon, and welcome to the Institute of International Studies. My name is Dr. Pattaraporn Srisuk, and I'll be your orientation coordinator for today. Over the next two hours, we'll cover several key areas. First, I'll introduce you to the academic structure of our programmes and the credit requirements for graduation. Then we'll take a brief tour of the main campus facilities, including the library, the language labs, and the student support centre. After that, representatives from various student clubs and societies will have a chance to introduce their organisations. We'll wrap up with a Q&A session. Please feel free to ask questions at any point — we want today to be as informative and welcoming as possible.",
+    "question": "Which campus facility is NOT specifically mentioned in the talk?",
+    "options": [
+      {"id": "a", "text": "The library", "correct": false},
+      {"id": "b", "text": "The sports complex", "correct": true},
+      {"id": "c", "text": "The language labs", "correct": false},
+      {"id": "d", "text": "The student support centre", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะระบุแค่ library, language labs, student support centre ไม่มีการกล่าวถึง sports complex"
+  },
+  {
+    "id": "cutep-l-006",
+    "type": "listening",
+    "part": "Long Talk",
+    "audioText": "Thank you for calling AirMax Customer Service. I'm calling on behalf of passenger reference PNR code BK4721. Your flight from Bangkok to Singapore on the 14th has been rescheduled due to operational requirements. Your new departure time is 09:45 instead of the original 07:00. Your seat assignment and baggage allowance remain unchanged. If this change is not acceptable, you are entitled to a full refund without any cancellation fee. To confirm your acceptance of the new schedule or to request a refund, please call our hotline at 02-888-9000 or visit our website within 48 hours.",
+    "question": "What are passengers asked to do within 48 hours?",
+    "options": [
+      {"id": "a", "text": "Check in for the new flight online", "correct": false},
+      {"id": "b", "text": "Confirm acceptance or request a refund", "correct": true},
+      {"id": "c", "text": "Choose a new seat assignment", "correct": false},
+      {"id": "d", "text": "Print a new boarding pass at the airport", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'To confirm your acceptance of the new schedule or to request a refund...within 48 hours'"
+  },
+  {
+    "id": "cutep-l-007",
+    "type": "listening",
+    "part": "Short Conversation",
+    "audioText": "Woman: I heard the faculty is planning to change the thesis submission deadline. Man: Yes, it's been moved forward by two weeks. It used to be the last Friday of November, but now it's the 10th. Woman: That's going to be tight for a lot of students. Man: Apparently there were complaints that the old deadline was too close to the exam period.",
+    "question": "Why was the thesis deadline changed?",
+    "options": [
+      {"id": "a", "text": "To give faculty more time to grade theses", "correct": false},
+      {"id": "b", "text": "Because it clashed with the examination period", "correct": true},
+      {"id": "c", "text": "Because students requested an earlier deadline", "correct": false},
+      {"id": "d", "text": "To align with the academic calendar changes", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'the old deadline was too close to the exam period'"
+  },
+  {
+    "id": "cutep-l-008",
+    "type": "listening",
+    "part": "Long Talk",
+    "audioText": "Good morning. Today I'd like to present the findings from our three-month pilot programme on flexible working arrangements. Overall, the results are encouraging. Productivity, as measured by project completion rates, increased by an average of 12% across the participating teams. Employee satisfaction scores rose by 18 points on a 100-point scale. However, we did observe some challenges: teams working across different schedules reported difficulties in real-time collaboration, and some managers expressed concern about their ability to monitor team performance effectively. Based on these findings, we recommend expanding the programme to all departments while introducing clear communication protocols to address the collaboration challenges.",
+    "question": "What was identified as a challenge in the flexible working pilot?",
+    "options": [
+      {"id": "a", "text": "Decreased individual productivity", "correct": false},
+      {"id": "b", "text": "Difficulty collaborating across different schedules", "correct": true},
+      {"id": "c", "text": "Lower employee satisfaction than expected", "correct": false},
+      {"id": "d", "text": "Resistance from employees to new working hours", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'teams working across different schedules reported difficulties in real-time collaboration'"
+  }
+]

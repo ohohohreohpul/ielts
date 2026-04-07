@@ -1,0 +1,132 @@
+[
+  {
+    "id": "tuget-r-001",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "If the government _______ more investment in public transport, traffic congestion would have been reduced significantly.",
+    "options": [
+      {"id": "a", "text": "encouraged", "correct": false},
+      {"id": "b", "text": "had encouraged", "correct": true},
+      {"id": "c", "text": "would encourage", "correct": false},
+      {"id": "d", "text": "has encouraged", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะเป็น Third Conditional (สมมติเหตุการณ์ที่ไม่ได้เกิดขึ้นในอดีต) ใช้ 'had + V3' ใน if-clause"
+  },
+  {
+    "id": "tuget-r-002",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "The researchers emphasized the importance of _______ the experiment under controlled conditions.",
+    "options": [
+      {"id": "a", "text": "conduct", "correct": false},
+      {"id": "b", "text": "conducted", "correct": false},
+      {"id": "c", "text": "conducting", "correct": true},
+      {"id": "d", "text": "to conduct", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะหลัง preposition 'of' ต้องใช้ gerund (-ing form)"
+  },
+  {
+    "id": "tuget-r-003",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The committee finally reached a _______ after hours of heated debate.",
+    "options": [
+      {"id": "a", "text": "consensus", "correct": true},
+      {"id": "b", "text": "controversy", "correct": false},
+      {"id": "c", "text": "dilemma", "correct": false},
+      {"id": "d", "text": "confrontation", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะ 'consensus' (ฉันทามติ/ความเห็นพ้องต้องกัน) เหมาะสมที่สุดหลังการถกเถียง"
+  },
+  {
+    "id": "tuget-r-004",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "Despite repeated warnings, the company continued to _______ safety regulations.",
+    "options": [
+      {"id": "a", "text": "adhere to", "correct": false},
+      {"id": "b", "text": "comply with", "correct": false},
+      {"id": "c", "text": "flout", "correct": true},
+      {"id": "d", "text": "enforce", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะ 'flout' (ละเมิด/ไม่สนใจ) สอดคล้องกับบริบทที่ฝ่าฝืนข้อบังคับแม้จะได้รับคำเตือน"
+  },
+  {
+    "id": "tuget-r-005",
+    "type": "reading",
+    "passage": "The concept of 'nudge theory', popularised by behavioural economists Richard Thaler and Cass Sunstein, proposes that subtle changes to the environment in which choices are made can significantly influence human behaviour without restricting freedom of choice. Unlike traditional economic incentives such as taxes or subsidies, nudges work by altering the default option or changing how choices are presented. A classic example is the placement of healthy foods at eye level in canteens, which increases their selection without banning unhealthy alternatives. Governments have increasingly adopted nudge-based approaches in areas ranging from pension enrolment to energy conservation. In the UK, the Behavioural Insights Team — sometimes called the 'Nudge Unit' — has applied these principles to improve public health outcomes and increase tax compliance.",
+    "question": "According to the passage, what distinguishes nudges from traditional economic incentives?",
+    "options": [
+      {"id": "a", "text": "Nudges restrict freedom of choice to ensure better outcomes.", "correct": false},
+      {"id": "b", "text": "Nudges influence behaviour by changing how options are presented, not by imposing costs.", "correct": true},
+      {"id": "c", "text": "Nudges are more expensive to implement than taxes or subsidies.", "correct": false},
+      {"id": "d", "text": "Nudges are only effective in food-related contexts.", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'Unlike traditional economic incentives such as taxes or subsidies, nudges work by altering the default option or changing how choices are presented'"
+  },
+  {
+    "id": "tuget-r-006",
+    "type": "reading",
+    "passage": "The concept of 'nudge theory', popularised by behavioural economists Richard Thaler and Cass Sunstein, proposes that subtle changes to the environment in which choices are made can significantly influence human behaviour without restricting freedom of choice. Unlike traditional economic incentives such as taxes or subsidies, nudges work by altering the default option or changing how choices are presented. A classic example is the placement of healthy foods at eye level in canteens, which increases their selection without banning unhealthy alternatives. Governments have increasingly adopted nudge-based approaches in areas ranging from pension enrolment to energy conservation. In the UK, the Behavioural Insights Team — sometimes called the 'Nudge Unit' — has applied these principles to improve public health outcomes and increase tax compliance.",
+    "question": "The word 'default' in the passage is closest in meaning to:",
+    "options": [
+      {"id": "a", "text": "hidden", "correct": false},
+      {"id": "b", "text": "pre-set standard", "correct": true},
+      {"id": "c", "text": "mandatory requirement", "correct": false},
+      {"id": "d", "text": "financial penalty", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'default option' หมายถึงตัวเลือกที่ถูกกำหนดไว้ล่วงหน้าหรือเป็นค่าเริ่มต้น"
+  },
+  {
+    "id": "tuget-r-007",
+    "type": "reading",
+    "passage": "Water scarcity is projected to affect more than half the world's population by 2050, driven by climate change, population growth, and inefficient agricultural practices. Agriculture currently accounts for approximately 70% of global freshwater withdrawals, making it the single largest consumer of water resources. Improving agricultural water efficiency — through drip irrigation, drought-resistant crop varieties, and precision farming technologies — could substantially reduce consumption. However, addressing water scarcity requires not only technological solutions but also governance reforms. Many water-stressed regions lack transparent pricing mechanisms, leading to overextraction and wasteful practices. Economist argue that properly pricing water — while ensuring access for basic human needs — is essential for promoting sustainable use.",
+    "question": "According to the passage, what is the primary cause of agricultural water overuse?",
+    "options": [
+      {"id": "a", "text": "Lack of irrigation technology", "correct": false},
+      {"id": "b", "text": "Inadequate rainfall in farming regions", "correct": false},
+      {"id": "c", "text": "Absence of transparent water pricing", "correct": true},
+      {"id": "d", "text": "Growing global demand for food exports", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C จากประโยค 'many water-stressed regions lack transparent pricing mechanisms, leading to overextraction and wasteful practices'"
+  },
+  {
+    "id": "tuget-r-008",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "Not until the final audit was completed _______ the extent of the financial irregularities.",
+    "options": [
+      {"id": "a", "text": "the board knew", "correct": false},
+      {"id": "b", "text": "did the board know", "correct": true},
+      {"id": "c", "text": "the board has known", "correct": false},
+      {"id": "d", "text": "had the board know", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะหลัง 'Not until...' ที่ขึ้นต้นประโยค ต้องใช้ Subject-Auxiliary Inversion: 'did the board know'"
+  },
+  {
+    "id": "tuget-r-009",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The diplomat's remarks were carefully worded to avoid _______ any diplomatic incident.",
+    "options": [
+      {"id": "a", "text": "provoking", "correct": true},
+      {"id": "b", "text": "resolving", "correct": false},
+      {"id": "c", "text": "prolonging", "correct": false},
+      {"id": "d", "text": "mediating", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะ 'provoking' (กระตุ้นให้เกิด/ยั่วยุ) สอดคล้องกับบริบทที่ต้องการหลีกเลี่ยงเหตุการณ์ทางการทูต"
+  },
+  {
+    "id": "tuget-r-010",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "_______ he had studied harder, he might have passed the entrance examination.",
+    "options": [
+      {"id": "a", "text": "If", "correct": false},
+      {"id": "b", "text": "Unless", "correct": false},
+      {"id": "c", "text": "Had", "correct": true},
+      {"id": "d", "text": "Were", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะนี่คือ Inversion ของ Third Conditional — 'Had he studied harder' = 'If he had studied harder'"
+  }
+]

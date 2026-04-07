@@ -1,0 +1,132 @@
+[
+  {
+    "id": "onet-r-001",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "She _______ in this company for ten years before she decided to start her own business.",
+    "options": [
+      {"id": "a", "text": "works", "correct": false},
+      {"id": "b", "text": "worked", "correct": false},
+      {"id": "c", "text": "had worked", "correct": true},
+      {"id": "d", "text": "has worked", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะต้องใช้ Past Perfect 'had worked' เพื่อแสดงว่าการทำงานเกิดขึ้นก่อนเหตุการณ์อื่นในอดีต (before she decided)"
+  },
+  {
+    "id": "onet-r-002",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "The new shopping mall _______ at the end of this year.",
+    "options": [
+      {"id": "a", "text": "will be opened", "correct": true},
+      {"id": "b", "text": "will open", "correct": false},
+      {"id": "c", "text": "is opening", "correct": false},
+      {"id": "d", "text": "opens", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะเป็น Future Passive 'will be opened' — ห้างสรรพสินค้าถูกเปิด (ไม่ได้เปิดเอง) และยังอยู่ในอนาคต"
+  },
+  {
+    "id": "onet-r-003",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The athlete's _______ determination helped her overcome numerous injuries throughout her career.",
+    "options": [
+      {"id": "a", "text": "feeble", "correct": false},
+      {"id": "b", "text": "unwavering", "correct": true},
+      {"id": "c", "text": "reluctant", "correct": false},
+      {"id": "d", "text": "fleeting", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'unwavering' (ไม่สั่นคลอน/มั่นคง) เหมาะสมที่สุดกับความมุ่งมั่นที่ช่วยให้ผ่านอุปสรรค"
+  },
+  {
+    "id": "onet-r-004",
+    "type": "reading",
+    "passage": "The internet has transformed the way people access information, communicate, and conduct business. In Thailand, internet penetration has grown dramatically over the past decade, reaching over 85% of the population by 2023. Social media platforms, in particular, have become central to daily life, with Thailand consistently ranking among the top countries globally for social media usage per capita. However, this rapid digital adoption has brought challenges: misinformation spreads rapidly across social platforms, and digital literacy — the ability to critically evaluate online content — remains uneven, particularly among older adults and rural populations. The government has responded with digital literacy programmes and regulations targeting online content, though critics argue that some of these measures risk infringing on freedom of expression.",
+    "question": "According to the passage, what is a concern related to Thailand's high social media usage?",
+    "options": [
+      {"id": "a", "text": "Decreased economic productivity", "correct": false},
+      {"id": "b", "text": "Rapid spread of misinformation", "correct": true},
+      {"id": "c", "text": "Declining use of traditional media", "correct": false},
+      {"id": "d", "text": "High costs of internet access", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'misinformation spreads rapidly across social platforms'"
+  },
+  {
+    "id": "onet-r-005",
+    "type": "reading",
+    "passage": "The internet has transformed the way people access information, communicate, and conduct business. In Thailand, internet penetration has grown dramatically over the past decade, reaching over 85% of the population by 2023. Social media platforms, in particular, have become central to daily life, with Thailand consistently ranking among the top countries globally for social media usage per capita. However, this rapid digital adoption has brought challenges: misinformation spreads rapidly across social platforms, and digital literacy — the ability to critically evaluate online content — remains uneven, particularly among older adults and rural populations. The government has responded with digital literacy programmes and regulations targeting online content, though critics argue that some of these measures risk infringing on freedom of expression.",
+    "question": "What does the term 'digital literacy' mean as used in the passage?",
+    "options": [
+      {"id": "a", "text": "The ability to read and write using digital devices", "correct": false},
+      {"id": "b", "text": "Access to high-speed internet connections", "correct": false},
+      {"id": "c", "text": "The skill to critically assess content found online", "correct": true},
+      {"id": "d", "text": "Knowledge of programming and software development", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ C เพราะข้อความในวงเล็บนิยามไว้ว่า 'the ability to critically evaluate online content'"
+  },
+  {
+    "id": "onet-r-006",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "It is important that every student _______ the examination hall by 8:30 AM.",
+    "options": [
+      {"id": "a", "text": "enters", "correct": false},
+      {"id": "b", "text": "enter", "correct": true},
+      {"id": "c", "text": "will enter", "correct": false},
+      {"id": "d", "text": "has entered", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะหลัง 'It is important that...' ต้องใช้ Subjunctive Mood — กริยาอยู่ในรูปฐาน (base form) ไม่เติม -s"
+  },
+  {
+    "id": "onet-r-007",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The charity organisation relies heavily on _______ from individuals and corporations to fund its programmes.",
+    "options": [
+      {"id": "a", "text": "donations", "correct": true},
+      {"id": "b", "text": "expenditures", "correct": false},
+      {"id": "c", "text": "investments", "correct": false},
+      {"id": "d", "text": "acquisitions", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะ 'donations' (การบริจาค) เหมาะสมที่สุดสำหรับองค์กรการกุศลที่ต้องการเงินทุน"
+  },
+  {
+    "id": "onet-r-008",
+    "type": "reading",
+    "passage": "Renewable energy sources — including solar, wind, hydropower, and geothermal — now account for more than 30% of global electricity generation, up from less than 20% a decade ago. The cost of solar photovoltaic technology has fallen by more than 90% since 2010, making it the cheapest source of new electricity generation in history in many parts of the world. Despite this progress, the transition to a fully renewable energy system faces significant challenges. Intermittency — the fact that solar and wind power only generate electricity when the sun shines or the wind blows — requires investment in energy storage or grid infrastructure. Additionally, the manufacturing of renewable energy equipment involves materials such as lithium, cobalt, and rare earth elements, the extraction of which carries its own environmental and ethical concerns.",
+    "question": "What does the passage identify as a major obstacle to full reliance on renewable energy?",
+    "options": [
+      {"id": "a", "text": "The high cost of solar technology", "correct": false},
+      {"id": "b", "text": "The intermittent nature of solar and wind power", "correct": true},
+      {"id": "c", "text": "The lack of government support for renewable projects", "correct": false},
+      {"id": "d", "text": "The decreasing efficiency of renewable energy systems", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B จากประโยค 'Intermittency — the fact that solar and wind power only generate electricity when the sun shines or the wind blows'"
+  },
+  {
+    "id": "onet-r-009",
+    "type": "reading",
+    "section": "Grammar",
+    "question": "The children were warned _______ near the edge of the cliff.",
+    "options": [
+      {"id": "a", "text": "not to go", "correct": true},
+      {"id": "b", "text": "to not go", "correct": false},
+      {"id": "c", "text": "not going", "correct": false},
+      {"id": "d", "text": "not go", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ A เพราะ 'warn + someone + not to + infinitive' เป็นโครงสร้างมาตรฐาน"
+  },
+  {
+    "id": "onet-r-010",
+    "type": "reading",
+    "section": "Vocabulary",
+    "question": "The company decided to _______ its operations in Southeast Asia after years of successful trading in the region.",
+    "options": [
+      {"id": "a", "text": "withdraw", "correct": false},
+      {"id": "b", "text": "expand", "correct": true},
+      {"id": "c", "text": "diminish", "correct": false},
+      {"id": "d", "text": "restrict", "correct": false}
+    ],
+    "explanation": "คำตอบที่ถูกคือ B เพราะ 'expand' (ขยาย) สอดคล้องกับบริบทหลังจากการค้าที่ประสบความสำเร็จ"
+  }
+]

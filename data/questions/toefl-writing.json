@@ -1,0 +1,44 @@
+[
+  {
+    "id": "toefl-w-001",
+    "type": "writing",
+    "task": "Integrated",
+    "prompt": "Read the passage and listen to the lecture. The reading passage discusses three potential benefits of genetically modified (GM) crops: increased crop yields, resistance to pests without chemical pesticides, and enhanced nutritional content. The lecture argues that each of these benefits is overstated or counterbalanced by significant drawbacks. Summarise the points made in the lecture, explaining how they challenge the specific claims in the reading passage.",
+    "readingPassage": "Genetically modified crops have been developed to address global food security challenges. First, GM varieties have demonstrated yield increases of 20–30% in field trials compared to conventional crops, which could be critical for feeding a growing global population. Second, crops engineered to express insecticidal proteins — such as Bt cotton — have allowed farmers to dramatically reduce pesticide application, lowering costs and reducing environmental contamination. Third, biofortified crops such as Golden Rice have been engineered to address nutritional deficiencies in developing countries by introducing vitamins absent from the standard diet.",
+    "wordLimit": 150,
+    "rubric": "Content, Organisation, Vocabulary, Grammar"
+  },
+  {
+    "id": "toefl-w-002",
+    "type": "writing",
+    "task": "Independent",
+    "prompt": "Do you agree or disagree with the following statement? Universities should require all students to take courses outside their major field of study. Use specific reasons and examples to support your answer.",
+    "wordLimit": 300,
+    "rubric": "Task Response, Organisation, Vocabulary, Grammar"
+  },
+  {
+    "id": "toefl-w-003",
+    "type": "writing",
+    "task": "Integrated",
+    "prompt": "The reading passage presents three arguments in favour of a four-day work week: improved employee well-being, increased productivity, and reduced environmental impact. The lecture challenges each of these claims. Summarise the points made in the lecture and explain how they cast doubt on the reading passage's claims.",
+    "readingPassage": "Several companies and governments have experimented with a four-day work week, and initial results appear promising. Employees working four days report significantly lower stress levels and higher job satisfaction. Productivity studies from Iceland and New Zealand suggest that output either remained the same or increased when hours were reduced, as workers concentrated their efforts more efficiently. Additionally, a shorter work week reduces commuting, which lowers carbon emissions and energy consumption — contributing to national sustainability goals.",
+    "wordLimit": 150,
+    "rubric": "Content, Organisation, Vocabulary, Grammar"
+  },
+  {
+    "id": "toefl-w-004",
+    "type": "writing",
+    "task": "Independent",
+    "prompt": "Some people believe that the most important qualities of a good teacher are knowledge of the subject and ability to explain it clearly. Others believe that enthusiasm and the ability to inspire students are more important. Which view do you agree with? Use specific reasons and examples to support your answer.",
+    "wordLimit": 300,
+    "rubric": "Task Response, Organisation, Vocabulary, Grammar"
+  },
+  {
+    "id": "toefl-w-005",
+    "type": "writing",
+    "task": "Independent",
+    "prompt": "Do you agree or disagree with the following statement? Young people today have more opportunities to succeed than their parents' generation did. Use specific reasons and examples to support your answer.",
+    "wordLimit": 300,
+    "rubric": "Task Response, Organisation, Vocabulary, Grammar"
+  }
+]
