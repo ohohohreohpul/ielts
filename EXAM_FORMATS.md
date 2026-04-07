@@ -14,7 +14,9 @@
 
 **Part 7: Reading Comprehension** (54 questions)
 - Single passages (29 questions)
-- Multiple passages (25 questions)
+
+- Multiple passages (25 questions) — includes double-passage and triple-passage sets
+
 - Tests: vocabulary, inference, main idea, writer's intent
 
 ### Listening Section (100 questions, 45 minutes)
@@ -63,7 +65,12 @@
    - Single answer
    - Multiple answers
 
-### Listening (30 minutes + 10 transfer, 40 questions)
+
+### Listening (30 minutes, 40 questions)
+Note: Paper-based test includes 10 minutes to transfer answers. Computer-delivered IELTS has no transfer time.
+### Listening (30 minutes, 40 questions)
+Note: Paper-based test includes 10 minutes to transfer answers. Computer-delivered IELTS has no transfer time.
+
 
 **Question Types:**
 - Multiple choice

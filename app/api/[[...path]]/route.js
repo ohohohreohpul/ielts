@@ -485,7 +485,8 @@ const generateMockQuestions = (examType = 'TOEIC', count = 10) => {
         options: [
           { id: 'a', text: 'Thailand', correct: false },
           { id: 'b', text: 'Singapore', correct: true },
-          { id: 'c', text: 'Malaysia', correct: false }
+          { id: 'c', text: 'Malaysia', correct: false },
+          { id: 'd', text: 'Indonesia', correct: false }
         ]
       })
     }

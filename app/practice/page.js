@@ -31,7 +31,9 @@ const EXAMS = [
     desc: 'International English Language Testing System',
     emoji: '🇬🇧',
     sections: [
-      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Academic & General Training' },
+
+      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Academic Texts (Science, History, Society)' },
+
       { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Conversations & Monologues' },
       { id: 'writing',   icon: PenTool,    label: 'Writing',    sub: 'Task 1 & 2 Essays' },
       { id: 'speaking',  icon: Mic,        label: 'Speaking',   sub: 'Part 1–3 Interview' },
@@ -44,7 +46,9 @@ const EXAMS = [
     sections: [
       { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Academic Passages' },
       { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Lectures & Conversations' },
-      { id: 'writing',   icon: PenTool,    label: 'Writing',    sub: 'Integrated & Independent' },
+
+      { id: 'writing',   icon: PenTool,    label: 'Writing',    sub: 'Integrated & Academic Discussion' },
+
       { id: 'speaking',  icon: Mic,        label: 'Speaking',   sub: 'Tasks 1–4' },
     ]
   },
@@ -53,7 +57,9 @@ const EXAMS = [
     desc: 'Chulalongkorn University Test of English Proficiency',
     emoji: '🏛️',
     sections: [
-      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Reading Comprehension' },
+
+      { id: 'reading',   icon: BookOpen,   label: 'Reading',   sub: 'Structure, Vocabulary & Comprehension' },
+
       { id: 'listening', icon: Headphones, label: 'Listening',  sub: 'Listening Comprehension' },
     ]
   },

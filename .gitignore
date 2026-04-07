@@ -106,3 +106,15 @@ node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gnu.node
 
 expo-env.d.ts
 # @end expo-cli
+
+# Sensitive setup files
+VERCEL_ENV_SETUP.txt
+
+# Personal shell/git config
+.gitconfig
+.bashrc
+.bash_logout
+.profile
+
+# Claude memory
+memory/
