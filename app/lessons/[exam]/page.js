@@ -143,7 +143,7 @@ export default function ExamLessonsPage() {
   const currentSection = selectedSection ? exam.sections[selectedSection] : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <div className={`bg-gradient-to-r ${exam.color} pt-14 pb-6 px-4`}>
         <div className="flex items-center gap-3 mb-4">
@@ -221,7 +221,7 @@ export default function ExamLessonsPage() {
                               ? 'bg-green-100 text-green-600' 
                               : isLocked
                                 ? 'bg-gray-100 text-gray-400'
-                                : 'bg-orange-100 text-orange-600'
+                                : 'bg-blue-100 text-[#152E5A]'
                           }`}>
                             {isCompleted ? (
                               <CheckCircle2 className="w-6 h-6" />
@@ -245,7 +245,7 @@ export default function ExamLessonsPage() {
                                 </span>
                               )}
                               {!lesson.free && (
-                                <span className="bg-orange-100 text-orange-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                                <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full">
                                   Premium
                                 </span>
                               )}

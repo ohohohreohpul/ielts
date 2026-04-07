@@ -40,7 +40,7 @@ export default function ProfilePage() {
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#1B3F7A] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -69,10 +69,10 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-12 pb-5 px-5 text-center">
+      <div className="bg-[#1B3F7A] pt-12 pb-5 px-5 text-center">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring' }} className="flex flex-col items-center">
           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-2 relative">
-            <span className="text-xl font-black text-orange-500">{initials}</span>
+            <span className="text-xl font-black text-[#1B3F7A]">{initials}</span>
             {isPremium && (
               <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white">
                 <Crown className="w-3 h-3 text-white" />
@@ -95,7 +95,7 @@ export default function ProfilePage() {
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="grid grid-cols-3 divide-x divide-gray-100">
               {[
-                { icon: Flame, val: '7',   label: 'วัน Streak', color: 'text-orange-500' },
+                { icon: Flame, val: '7',   label: 'วัน Streak', color: 'text-[#1B3F7A]' },
                 { icon: Star,  val: '350', label: 'XP รวม',     color: 'text-yellow-500' },
                 { icon: BookOpen, val: '12', label: 'บทเรียน',  color: 'text-gray-700' },
               ].map(({ icon: Icon, val, label, color }, i) => (
@@ -114,7 +114,7 @@ export default function ProfilePage() {
           <p className="font-black text-gray-900 mb-2">🏅 เหรียญรางวัล</p>
           <div className="grid grid-cols-4 gap-2">
             {badges.map((b, i) => (
-              <div key={i} className={`bg-white rounded-xl border p-2.5 text-center ${b.ok ? 'border-orange-100' : 'border-gray-100'}`}>
+              <div key={i} className={`bg-white rounded-xl border p-2.5 text-center ${b.ok ? 'border-blue-100' : 'border-gray-100'}`}>
                 <p className={`text-xl mb-0.5 ${!b.ok ? 'grayscale opacity-30' : ''}`}>{b.emoji}</p>
                 <p className={`text-[10px] font-semibold ${b.ok ? 'text-gray-700' : 'text-gray-300'}`}>{b.label}</p>
               </div>
@@ -130,13 +130,13 @@ export default function ProfilePage() {
               <button
                 key={i}
                 onClick={() => setActiveSheet(item.sheet)}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 transition-colors ${i < menu.length - 1 ? 'border-b border-gray-50' : ''} ${item.orange ? 'bg-orange-50' : ''}`}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 transition-colors ${i < menu.length - 1 ? 'border-b border-gray-50' : ''} ${item.orange ? 'bg-blue-50' : ''}`}
               >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${item.orange ? 'bg-orange-500' : 'bg-gray-100'}`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${item.orange ? 'bg-[#1B3F7A]' : 'bg-gray-100'}`}>
                   <item.icon className={`w-4 h-4 ${item.orange ? 'text-white' : 'text-gray-600'}`} />
                 </div>
                 <div className="flex-1 text-left">
-                  <p className={`text-sm font-bold ${item.orange ? 'text-orange-600' : 'text-gray-900'}`}>{item.label}</p>
+                  <p className={`text-sm font-bold ${item.orange ? 'text-[#152E5A]' : 'text-gray-900'}`}>{item.label}</p>
                   <p className="text-[11px] text-gray-400">{item.sub}</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
@@ -193,7 +193,7 @@ export default function ProfilePage() {
                         </div>
                         <button
                           onClick={() => setNotifications(!notifications)}
-                          className={`w-12 h-7 rounded-full transition-colors relative ${notifications ? 'bg-orange-500' : 'bg-gray-300'}`}
+                          className={`w-12 h-7 rounded-full transition-colors relative ${notifications ? 'bg-[#1B3F7A]' : 'bg-gray-300'}`}
                         >
                           <div className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-all shadow-sm ${notifications ? 'right-1' : 'left-1'}`} />
                         </button>
@@ -206,7 +206,7 @@ export default function ProfilePage() {
                           <p className="text-xs text-gray-400 mt-0.5">สรุปความก้าวหน้ารายสัปดาห์</p>
                         </div>
                         <button
-                          className="w-12 h-7 rounded-full bg-orange-500 relative"
+                          className="w-12 h-7 rounded-full bg-[#1B3F7A] relative"
                         >
                           <div className="w-5 h-5 bg-white rounded-full absolute top-1 right-1 shadow-sm" />
                         </button>
@@ -249,7 +249,7 @@ export default function ProfilePage() {
                             </div>
                           ))}
                         </div>
-                        <button className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl active:opacity-80 mt-4 text-lg">
+                        <button className="w-full bg-[#1B3F7A] text-white font-black py-4 rounded-2xl active:opacity-80 mt-4 text-lg">
                           ฿990/ปี (ประหยัด 45%)
                         </button>
                         <button className="w-full bg-white border-2 border-gray-200 text-gray-900 font-bold py-3.5 rounded-2xl active:opacity-80">
@@ -272,7 +272,7 @@ export default function ProfilePage() {
                     </div>
                     <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
                       <p className="font-bold text-gray-900">การจัดการข้อมูล</p>
-                      <button className="w-full text-left py-3 border-b border-gray-50 text-sm text-gray-600 active:text-orange-500">ดาวน์โหลดข้อมูลของฉัน</button>
+                      <button className="w-full text-left py-3 border-b border-gray-50 text-sm text-gray-600 active:text-[#1B3F7A]">ดาวน์โหลดข้อมูลของฉัน</button>
                       <button className="w-full text-left py-3 text-sm text-red-500 active:opacity-70">ลบบัญชี</button>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-4">
@@ -303,7 +303,7 @@ export default function ProfilePage() {
                     ))}
                     <div className="text-center pt-4">
                       <p className="text-sm text-gray-400">มีคำถามเพิ่มเติม?</p>
-                      <p className="text-sm font-bold text-orange-500 mt-1">support@carrotschool.com</p>
+                      <p className="text-sm font-bold text-[#1B3F7A] mt-1">support@carrotschool.com</p>
                     </div>
                   </>
                 )}

@@ -52,7 +52,7 @@ const EXAMS = [
   },
   {
     id: 'cutep', name: 'CU-TEP', free: false, emoji: '🏛️',
-    difficulty: 'กลาง-ยาก', diffColor: 'text-orange-500',
+    difficulty: 'กลาง-ยาก', diffColor: 'text-[#1B3F7A]',
     desc: 'สอบเข้าจุฬาลงกรณ์มหาวิทยาลัย',
     detail: 'ใช้สมัครเรียนต่อ ป.โท/เอก จุฬาฯ\nListening + Reading + Writing',
     sections: [
@@ -62,7 +62,7 @@ const EXAMS = [
   },
   {
     id: 'tuget', name: 'TU-GET', free: false, emoji: '🎓',
-    difficulty: 'กลาง-ยาก', diffColor: 'text-orange-500',
+    difficulty: 'กลาง-ยาก', diffColor: 'text-[#1B3F7A]',
     desc: 'สอบเข้ามหาวิทยาลัยธรรมศาสตร์',
     detail: 'ใช้สมัครเรียนต่อ ป.โท/เอก ธรรมศาสตร์\nGrammar + Vocabulary + Reading',
     sections: [
@@ -136,7 +136,7 @@ export default function DashboardPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#1B3F7A] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -150,7 +150,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-12 pb-5 px-5">
+      <div className="bg-[#1B3F7A] pt-12 pb-5 px-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white/70 text-sm font-medium">สวัสดี 👋</p>
@@ -176,16 +176,16 @@ export default function DashboardPage() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
             <button
               onClick={() => router.push(`/?exam=${lastExam.examId}&section=${lastExam.section}`)}
-              className="w-full bg-white rounded-2xl border-2 border-orange-100 p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
+              className="w-full bg-white rounded-2xl border-2 border-blue-100 p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
             >
-              <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
                 <span className="text-xl">{lastExam.emoji || '📘'}</span>
               </div>
               <div className="flex-1 text-left">
-                <p className="text-xs font-bold text-orange-500">ฝึกต่อ</p>
+                <p className="text-xs font-bold text-[#1B3F7A]">ฝึกต่อ</p>
                 <p className="font-bold text-gray-900">{lastExam.name} - {lastExam.sectionLabel}</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-orange-500 flex-shrink-0" />
+              <ArrowRight className="w-5 h-5 text-[#1B3F7A] flex-shrink-0" />
             </button>
           </motion.div>
         )}
@@ -201,7 +201,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => setSelectedExam(exam)}
-                className="bg-white rounded-2xl border-2 border-gray-100 p-4 text-left active:border-orange-300 active:scale-95 transition-all"
+                className="bg-white rounded-2xl border-2 border-gray-100 p-4 text-left active:border-blue-300 active:scale-95 transition-all"
               >
                 <span className="text-3xl">{exam.emoji}</span>
                 <h3 className="font-black text-gray-900 mt-2">{exam.name}</h3>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
-            <button onClick={() => router.push('/practice')} className="text-xs font-bold text-orange-500">ดูทั้งหมด</button>
+            <button onClick={() => router.push('/practice')} className="text-xs font-bold text-[#1B3F7A]">ดูทั้งหมด</button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {premiumExams.map((exam, i) => {
@@ -259,7 +259,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           onClick={() => router.push('/practice')}
-          className="w-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl p-5 text-left active:opacity-80 transition-opacity"
+          className="w-full bg-gradient-to-r from-[#1B3F7A] to-[#2B5BA8] rounded-2xl p-5 text-left active:opacity-80 transition-opacity"
         >
           <div className="flex items-center gap-4">
             <span className="text-4xl">🥕</span>
@@ -284,7 +284,7 @@ export default function DashboardPage() {
           >
             <div className="h-full overflow-y-scroll" style={{ WebkitOverflowScrolling: 'touch' }}>
               {/* Header */}
-              <div className="bg-orange-50 px-5 pt-14 pb-5 relative">
+              <div className="bg-blue-50 px-5 pt-14 pb-5 relative">
                 <button
                   onClick={() => setSelectedExam(null)}
                   className="absolute top-12 right-4 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm z-10"
@@ -297,7 +297,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="text-2xl font-black text-gray-900">{selectedExam.name}</h2>
                       {!selectedExam.free && (
-                        <span className="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="bg-[#1B3F7A] text-white text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                           <Crown className="w-3 h-3" /> Plus
                         </span>
                       )}
@@ -346,15 +346,15 @@ export default function DashboardPage() {
                         }}
                         className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm active:opacity-70 transition-opacity"
                       >
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isExamAccessible(selectedExam) ? 'bg-orange-50' : 'bg-gray-100'}`}>
-                          <sec.icon className={`w-5 h-5 ${isExamAccessible(selectedExam) ? 'text-orange-500' : 'text-gray-400'}`} />
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isExamAccessible(selectedExam) ? 'bg-blue-50' : 'bg-gray-100'}`}>
+                          <sec.icon className={`w-5 h-5 ${isExamAccessible(selectedExam) ? 'text-[#1B3F7A]' : 'text-gray-400'}`} />
                         </div>
                         <div className="flex-1 text-left">
                           <p className={`font-bold ${isExamAccessible(selectedExam) ? 'text-gray-900' : 'text-gray-400'}`}>{sec.label}</p>
                           <p className="text-xs text-gray-400">{sec.sub}</p>
                         </div>
                         {isExamAccessible(selectedExam) ? (
-                          <div className="bg-orange-500 px-4 py-2.5 rounded-xl flex-shrink-0">
+                          <div className="bg-[#1B3F7A] px-4 py-2.5 rounded-xl flex-shrink-0">
                             <p className="text-white text-sm font-bold">เริ่ม</p>
                           </div>
                         ) : (
@@ -369,7 +369,7 @@ export default function DashboardPage() {
                 {!isExamAccessible(selectedExam) && (
                   <button
                     onClick={() => { router.push('/practice'); setSelectedExam(null) }}
-                    className="w-full bg-orange-500 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 active:opacity-80 text-lg"
+                    className="w-full bg-[#1B3F7A] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 active:opacity-80 text-lg"
                   >
                     <Crown className="w-5 h-5" />
                     ปลดล็อคด้วย kedikedi Plus

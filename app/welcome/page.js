@@ -57,8 +57,8 @@ export default function WelcomePage() {
                 transition={{ delay: 0.5 + i * 0.1 }}
                 className="flex items-center gap-4"
               >
-                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <f.icon className="w-6 h-6 text-orange-500" />
+                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <f.icon className="w-6 h-6 text-[#1B3F7A]" />
                 </div>
                 <div>
                   <p className="font-bold text-black">{f.text}</p>
@@ -77,7 +77,7 @@ export default function WelcomePage() {
         >
           <button
             onClick={() => router.push('/signup')}
-            className="w-full h-14 bg-orange-500 text-white text-lg font-bold rounded-2xl shadow-lg shadow-orange-200 active:opacity-80 transition-opacity"
+            className="w-full h-14 bg-[#1B3F7A] text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-200 active:opacity-80 transition-opacity"
           >
             เริ่มต้นใช้งานฟรี
           </button>

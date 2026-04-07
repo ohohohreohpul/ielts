@@ -38,9 +38,9 @@ export default function LessonsPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 pt-14 pb-8 px-6">
+      <div className="bg-gradient-to-r from-[#1B3F7A] to-amber-500 pt-14 pb-8 px-6">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

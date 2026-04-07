@@ -116,9 +116,9 @@ function PricingContent() {
 
   if (checkingPayment) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-[#1B3F7A] mx-auto mb-4" />
           <p className="text-gray-600">กำลังตรวจสอบการชำระเงิน...</p>
         </div>
       </div>
@@ -126,7 +126,7 @@ function PricingContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
@@ -147,7 +147,7 @@ function PricingContent() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-4 shadow-lg"
+            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-[#1B3F7A] rounded-full mb-4 shadow-lg"
           >
             <Crown className="w-10 h-10 text-white" />
           </motion.div>
@@ -164,9 +164,9 @@ function PricingContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
             >
-              <Card className={`relative overflow-hidden ${plan.popular ? 'border-orange-500 border-2' : ''}`}>
+              <Card className={`relative overflow-hidden ${plan.popular ? 'border-[#1B3F7A] border-2' : ''}`}>
                 {plan.popular && (
-                  <div className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-[#1B3F7A] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
                     ยอดนิยม
                   </div>
                 )}
@@ -178,7 +178,7 @@ function PricingContent() {
                 <CardContent className="p-6 pt-8">
                   <h3 className="text-lg font-bold mb-2">{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-4xl font-black text-orange-600">฿{plan.price}</span>
+                    <span className="text-4xl font-black text-[#152E5A]">฿{plan.price}</span>
                     <span className="text-gray-500">{plan.period}</span>
                   </div>
                   {plan.originalPrice && (
@@ -197,7 +197,7 @@ function PricingContent() {
                   <Button
                     onClick={() => handleSubscribe(plan.id)}
                     disabled={loading}
-                    className={`w-full h-12 font-bold ${plan.popular ? 'bg-orange-500 hover:bg-orange-600' : ''}`}
+                    className={`w-full h-12 font-bold ${plan.popular ? 'bg-[#1B3F7A] hover:bg-[#152E5A]' : ''}`}
                     variant={plan.popular ? 'default' : 'outline'}
                   >
                     {loading ? (

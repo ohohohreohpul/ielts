@@ -21,7 +21,7 @@ export default function PaymentSuccessPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -31,7 +31,7 @@ export default function PaymentSuccessPage() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', delay: 0.2 }}
-          className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-6 shadow-xl"
+          className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-yellow-400 to-[#1B3F7A] rounded-full mb-6 shadow-xl"
         >
           <Crown className="w-12 h-12 text-white" />
         </motion.div>
@@ -42,7 +42,7 @@ export default function PaymentSuccessPage() {
         <Card className="mb-6">
           <CardContent className="p-6">
             <h3 className="font-bold text-lg mb-4 flex items-center justify-center gap-2">
-              <Sparkles className="w-5 h-5 text-orange-500" />
+              <Sparkles className="w-5 h-5 text-[#1B3F7A]" />
               สิทธิพิเศษของคุณ
             </h3>
             <ul className="space-y-3 text-left">
@@ -72,7 +72,7 @@ export default function PaymentSuccessPage() {
 
         <Button
           onClick={() => router.push('/practice')}
-          className="w-full h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600"
+          className="w-full h-14 text-lg font-bold bg-[#1B3F7A] hover:bg-[#152E5A]"
         >
           เริ่มทำข้อสอบเลย! 🚀
         </Button>

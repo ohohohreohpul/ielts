@@ -142,14 +142,14 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1B3F7A]" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
@@ -246,7 +246,7 @@ export default function AdminPage() {
                       <select
                         value={config[field.key]}
                         onChange={(e) => setConfig(prev => ({ ...prev, [field.key]: e.target.value }))}
-                        className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3F7A]"
                       >
                         {field.options.map(opt => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -256,7 +256,7 @@ export default function AdminPage() {
                       <select
                         value={config[field.key]}
                         onChange={(e) => setConfig(prev => ({ ...prev, [field.key]: e.target.value }))}
-                        className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3F7A]"
                       >
                         {OPENROUTER_MODELS.map(m => (
                           <option key={m.value} value={m.value}>{m.label}</option>
@@ -291,7 +291,7 @@ export default function AdminPage() {
         <Button
           onClick={saveConfig}
           disabled={saving}
-          className="w-full h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600"
+          className="w-full h-14 text-lg font-bold bg-[#1B3F7A] hover:bg-[#152E5A]"
         >
           {saving ? (
             <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> กำลังบันทึก...</>

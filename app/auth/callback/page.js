@@ -74,9 +74,9 @@ export default function AuthCallbackPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
       <div className="text-center">
-        <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#1B3F7A] mx-auto mb-4" />
         <p className="text-gray-600">กำลังเข้าสู่ระบบ...</p>
       </div>
     </div>

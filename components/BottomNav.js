@@ -27,10 +27,10 @@ export default function BottomNav() {
               className="flex-1 flex flex-col items-center py-3 gap-1 active:scale-95 transition-transform touch-manipulation"
               aria-label={label}
             >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 ${active ? 'bg-orange-500 scale-110' : 'bg-transparent'}`}>
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 ${active ? 'bg-[#1B3F7A] scale-110' : 'bg-transparent'}`}>
                 <Icon className={`w-5 h-5 ${active ? 'text-white' : 'text-gray-500'}`} strokeWidth={active ? 2.5 : 2} />
               </div>
-              <span className={`text-[11px] font-medium transition-colors ${active ? 'text-orange-500' : 'text-gray-500'}`}>
+              <span className={`text-[11px] font-medium transition-colors ${active ? 'text-[#1B3F7A]' : 'text-gray-500'}`}>
                 {label}
               </span>
             </button>

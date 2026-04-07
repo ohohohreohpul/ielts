@@ -62,9 +62,9 @@ export default function LessonDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-orange-500 mx-auto mb-4" />
+          <Loader2 className="w-10 h-10 animate-spin text-[#1B3F7A] mx-auto mb-4" />
           <p className="text-gray-600">กำลังโหลดบทเรียน...</p>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default function LessonDetailPage() {
 
   if (error || !content) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
             <p className="text-red-500 mb-4">{error || 'ไม่พบเนื้อหาบทเรียน'}</p>
@@ -87,7 +87,7 @@ export default function LessonDetailPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 pt-14 pb-6 px-4 sticky top-0 z-10">
+      <div className="bg-gradient-to-r from-[#1B3F7A] to-amber-500 pt-14 pb-6 px-4 sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -158,7 +158,7 @@ export default function LessonDetailPage() {
                 <ul className="list-none space-y-2 mb-4">
                   {section.items?.map((item, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <span className="text-orange-500 font-bold">•</span>
+                      <span className="text-[#1B3F7A] font-bold">•</span>
                       <span className="text-gray-700">{item}</span>
                     </li>
                   ))}
@@ -191,7 +191,7 @@ export default function LessonDetailPage() {
           className={`w-full h-14 text-lg font-bold ${
             isCompleted 
               ? 'bg-green-500 hover:bg-green-500' 
-              : 'bg-orange-500 hover:bg-orange-600'
+              : 'bg-[#1B3F7A] hover:bg-[#152E5A]'
           }`}
         >
           {isCompleted ? (

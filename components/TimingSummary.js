@@ -34,18 +34,18 @@ export default function TimingSummary({ questionTimings, totalTime }) {
       className="space-y-4"
     >
       <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-        <Clock className="w-5 h-5 text-orange-500" />
+        <Clock className="w-5 h-5 text-[#1B3F7A]" />
         สรุปเวลา
       </h3>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card className="bg-gradient-to-br from-orange-50 to-white border-orange-100">
+        <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-4 h-4 text-orange-500" />
+              <Clock className="w-4 h-4 text-[#1B3F7A]" />
               <span className="text-xs text-gray-600 font-medium">เวลารวม</span>
             </div>
-            <div className="text-2xl font-black text-orange-600">
+            <div className="text-2xl font-black text-[#152E5A]">
               {formatTime(totalTime)}
             </div>
           </CardContent>

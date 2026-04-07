@@ -76,7 +76,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <div className="bg-orange-500 pt-14 pb-20 px-6">
+      <div className="bg-[#1B3F7A] pt-14 pb-20 px-6">
         <button onClick={() => router.back()} className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-6">
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
@@ -119,7 +119,7 @@ export default function SignupPage() {
             {fields.map(({ key, icon: Icon, label, placeholder, type, autoComplete }) => (
               <div key={key} className="space-y-2">
                 <label className="text-sm font-bold text-black">{label}</label>
-                <div className="flex items-center gap-3 border-2 border-gray-200 rounded-2xl h-14 px-4 bg-gray-50 focus-within:border-orange-400 transition-colors">
+                <div className="flex items-center gap-3 border-2 border-gray-200 rounded-2xl h-14 px-4 bg-gray-50 focus-within:border-[#2B5BA8] transition-colors">
                   <Icon className="w-5 h-5 text-gray-400 flex-shrink-0" />
                   <input
                     type={(key === 'password' || key === 'confirm') ? (showPass ? 'text' : 'password') : type}
@@ -141,7 +141,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-orange-500 text-white text-lg font-bold rounded-2xl shadow-lg shadow-orange-200 disabled:opacity-50 flex items-center justify-center gap-2 active:opacity-80 transition-opacity mt-2"
+              className="w-full h-14 bg-[#1B3F7A] text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-200 disabled:opacity-50 flex items-center justify-center gap-2 active:opacity-80 transition-opacity mt-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'สร้างบัญชี'}
             </button>
@@ -152,7 +152,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => router.push('/login')}
-              className="text-orange-500 font-bold"
+              className="text-[#1B3F7A] font-bold"
             >
               เข้าสู่ระบบ
             </button>

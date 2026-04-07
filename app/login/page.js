@@ -66,7 +66,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Orange header */}
-      <div className="bg-orange-500 pt-14 pb-20 px-6">
+      <div className="bg-[#1B3F7A] pt-14 pb-20 px-6">
         <button onClick={() => router.back()} className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-6">
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
@@ -109,7 +109,7 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
               <label className="text-sm font-bold text-black">อีเมล</label>
-              <div className="flex items-center gap-3 border-2 border-gray-200 rounded-2xl h-14 px-4 bg-gray-50 focus-within:border-orange-400 transition-colors">
+              <div className="flex items-center gap-3 border-2 border-gray-200 rounded-2xl h-14 px-4 bg-gray-50 focus-within:border-[#2B5BA8] transition-colors">
                 <Mail className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <input
                   type="email"
@@ -124,7 +124,7 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-black">รหัสผ่าน</label>
-              <div className="flex items-center gap-3 border-2 border-gray-200 rounded-2xl h-14 px-4 bg-gray-50 focus-within:border-orange-400 transition-colors">
+              <div className="flex items-center gap-3 border-2 border-gray-200 rounded-2xl h-14 px-4 bg-gray-50 focus-within:border-[#2B5BA8] transition-colors">
                 <Lock className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <input
                   type={showPass ? 'text' : 'password'}
@@ -143,7 +143,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-orange-500 text-white text-lg font-bold rounded-2xl shadow-lg shadow-orange-200 disabled:opacity-50 flex items-center justify-center gap-2 active:opacity-80 transition-opacity"
+              className="w-full h-14 bg-[#1B3F7A] text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-200 disabled:opacity-50 flex items-center justify-center gap-2 active:opacity-80 transition-opacity"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'เข้าสู่ระบบ'}
             </button>
@@ -154,7 +154,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => router.push('/signup')}
-              className="text-orange-500 font-bold"
+              className="text-[#1B3F7A] font-bold"
             >
               สร้างบัญชีใหม่
             </button>

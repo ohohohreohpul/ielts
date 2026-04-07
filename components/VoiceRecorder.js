@@ -97,7 +97,7 @@ export default function VoiceRecorder({ onRecordingComplete, hasRecording }) {
   }
 
   return (
-    <Card className="bg-orange-50 border-orange-200">
+    <Card className="bg-blue-50 border-blue-200">
       <CardContent className="p-6">
         <div className="text-center">
           <Button
@@ -105,7 +105,7 @@ export default function VoiceRecorder({ onRecordingComplete, hasRecording }) {
             className={`w-20 h-20 rounded-full mb-4 ${
               recording
                 ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                : 'bg-orange-500 hover:bg-orange-600'
+                : 'bg-[#1B3F7A] hover:bg-[#152E5A]'
             }`}
           >
             {recording ? (
@@ -117,23 +117,23 @@ export default function VoiceRecorder({ onRecordingComplete, hasRecording }) {
             )}
           </Button>
 
-          <div className="font-semibold text-lg text-orange-900 mb-1">
+          <div className="font-semibold text-lg text-blue-900 mb-1">
             {recording ? formatDuration(duration) : justRecorded || hasRecording ? 'บันทึกเสร็จแล้ว' : 'พร้อมบันทึก'}
           </div>
 
-          <p className="text-sm text-orange-700">
+          <p className="text-sm text-blue-700">
             {recording ? 'กดเพื่อหยุดบันทึก' : justRecorded || hasRecording ? 'กดอีกครั้งเพื่อบันทึกใหม่' : 'กดไมโครโฟนเพื่อเริ่มพูด'}
           </p>
 
           {(recording && transcript) && (
-            <div className="mt-4 p-3 bg-white rounded-lg text-left border border-orange-200">
+            <div className="mt-4 p-3 bg-white rounded-lg text-left border border-blue-200">
               <p className="text-xs text-gray-500 mb-1">Transcript (live):</p>
               <p className="text-sm text-gray-700 italic">{transcript}</p>
             </div>
           )}
 
           {(!recording && (justRecorded || hasRecording) && transcript) && (
-            <div className="mt-4 p-3 bg-white rounded-lg text-left border border-orange-200">
+            <div className="mt-4 p-3 bg-white rounded-lg text-left border border-blue-200">
               <p className="text-xs text-gray-500 mb-1">Transcript:</p>
               <p className="text-sm text-gray-700 italic">{transcript}</p>
             </div>

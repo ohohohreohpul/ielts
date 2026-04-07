@@ -132,7 +132,7 @@ export default function PracticePage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-12 pb-5 px-5">
+      <div className="bg-[#1B3F7A] pt-12 pb-5 px-5">
         <h1 className="text-2xl font-black text-white">เลือกข้อสอบ</h1>
         <p className="text-white/70 text-sm font-medium mt-1">ฝึกทีละพาร์ท ค่อยๆ เก่งขึ้น</p>
       </div>
@@ -148,7 +148,7 @@ export default function PracticePage() {
         {/* PREMIUM SECTION */}
         <div className="flex items-center justify-between pt-2">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{isPremium ? '📚 ข้อสอบเพิ่มเติม' : '👑 Premium'}</p>
-          {!isPremium && <button onClick={() => setShowPricing(true)} className="text-xs font-bold text-orange-500">ปลดล็อค</button>}
+          {!isPremium && <button onClick={() => setShowPricing(true)} className="text-xs font-bold text-[#1B3F7A]">ปลดล็อค</button>}
         </div>
         {premiumExams.map((exam, ei) => (
           isPremium ? (
@@ -182,7 +182,7 @@ export default function PracticePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl border-l-4 border-orange-500 p-4 flex gap-3"
+          className="bg-white rounded-2xl border-l-4 border-[#1B3F7A] p-4 flex gap-3"
         >
           <span className="text-2xl flex-shrink-0">💡</span>
           <div>
@@ -239,7 +239,7 @@ export default function PracticePage() {
               {/* Pricing Plans */}
               <div className="space-y-3 mb-6">
                 {/* Yearly - Recommended */}
-                <button className="w-full bg-orange-500 rounded-2xl p-4 text-left relative overflow-hidden active:opacity-80">
+                <button className="w-full bg-[#1B3F7A] rounded-2xl p-4 text-left relative overflow-hidden active:opacity-80">
                   <div className="absolute top-0 right-0 bg-yellow-400 px-3 py-0.5 rounded-bl-xl">
                     <span className="text-xs font-black text-black">ประหยัด 45%</span>
                   </div>
@@ -288,14 +288,14 @@ function ExamCard({ exam, expanded, onToggle, router }) {
       {/* Exam Header */}
       <button
         onClick={onToggle}
-        className={`w-full bg-white rounded-2xl border-2 p-4 flex items-center gap-4 transition-colors active:opacity-80 ${isOpen ? 'border-orange-500' : 'border-gray-100'}`}
+        className={`w-full bg-white rounded-2xl border-2 p-4 flex items-center gap-4 transition-colors active:opacity-80 ${isOpen ? 'border-[#1B3F7A]' : 'border-gray-100'}`}
       >
         <span className="text-2xl">{exam.emoji}</span>
         <div className="flex-1 text-left">
-          <span className={`font-bold ${isOpen ? 'text-orange-500' : 'text-gray-900'}`}>{exam.name}</span>
+          <span className={`font-bold ${isOpen ? 'text-[#1B3F7A]' : 'text-gray-900'}`}>{exam.name}</span>
           <p className="text-xs text-gray-400">{exam.desc}</p>
         </div>
-        {isOpen ? <ChevronUp className="w-5 h-5 text-orange-500" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+        {isOpen ? <ChevronUp className="w-5 h-5 text-[#1B3F7A]" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
       </button>
 
       {/* Sections */}
@@ -317,14 +317,14 @@ function ExamCard({ exam, expanded, onToggle, router }) {
                 onClick={() => router.push(`/?exam=${exam.id}&section=${sec.id}&v=${Date.now()}`)}
                 className="w-full bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 active:opacity-70 transition-opacity"
               >
-                <div className="w-11 h-11 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <sec.icon className="w-5 h-5 text-orange-500" />
+                <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <sec.icon className="w-5 h-5 text-[#1B3F7A]" />
                 </div>
                 <div className="flex-1 text-left">
                   <p className="font-bold text-gray-900">{sec.label}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{sec.sub}</p>
                 </div>
-                <div className="bg-orange-500 px-4 py-2 rounded-xl flex-shrink-0">
+                <div className="bg-[#1B3F7A] px-4 py-2 rounded-xl flex-shrink-0">
                   <p className="text-white text-sm font-bold">เริ่ม</p>
                 </div>
               </motion.button>

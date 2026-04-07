@@ -127,7 +127,7 @@ export default function ProgressPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#1B3F7A] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -135,7 +135,7 @@ export default function ProgressPage() {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 20px))' }}>
 
       {/* Header */}
-      <div className="bg-orange-500 pt-12 pb-5 px-5">
+      <div className="bg-[#1B3F7A] pt-12 pb-5 px-5">
         <h1 className="text-2xl font-black text-white">ความก้าวหน้า</h1>
         <p className="text-white/70 text-sm font-medium mt-1">ประวัติการฝึกสอบทั้งหมด</p>
       </div>
@@ -147,7 +147,7 @@ export default function ProgressPage() {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Trophy className="w-5 h-5 text-orange-500" />
+                <Trophy className="w-5 h-5 text-[#1B3F7A]" />
                 <span className="text-xs font-bold text-gray-400">ทำข้อสอบ</span>
               </div>
               <p className="text-3xl font-black text-gray-900">{totalExams}</p>
@@ -177,7 +177,7 @@ export default function ProgressPage() {
                 onClick={() => applyFilter(f.key, filterSection)}
                 className={`px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-colors flex-shrink-0 ${
                   filterExam === f.key
-                    ? 'bg-orange-500 text-white'
+                    ? 'bg-[#1B3F7A] text-white'
                     : 'bg-white text-gray-600 border border-gray-200'
                 }`}
               >
@@ -225,7 +225,7 @@ export default function ProgressPage() {
               <p className="text-sm text-gray-400 mb-4">เริ่มฝึกสอบเพื่อดูประวัติที่นี่</p>
               <button
                 onClick={() => router.push('/practice')}
-                className="bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm active:opacity-80"
+                className="bg-[#1B3F7A] text-white font-bold px-6 py-2.5 rounded-xl text-sm active:opacity-80"
               >
                 เริ่มฝึกสอบ
               </button>
@@ -247,7 +247,7 @@ export default function ProgressPage() {
                     {/* Summary Row */}
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                      className={`w-full bg-white rounded-2xl border-2 shadow-sm p-4 text-left transition-colors ${isExpanded ? 'border-orange-200' : 'border-gray-100'}`}
+                      className={`w-full bg-white rounded-2xl border-2 shadow-sm p-4 text-left transition-colors ${isExpanded ? 'border-blue-200' : 'border-gray-100'}`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${scoreBg(item.score)}`}>
@@ -305,7 +305,7 @@ export default function ProgressPage() {
                                     <div className="mt-2 bg-white rounded-lg p-2.5 border border-gray-100">
                                       <div className="flex items-center justify-between mb-1">
                                         <span className="text-xs font-bold text-gray-600">AI Score</span>
-                                        <span className="text-lg font-black text-orange-500">{q.aiScore.score}</span>
+                                        <span className="text-lg font-black text-[#1B3F7A]">{q.aiScore.score}</span>
                                       </div>
                                       {q.aiScore.feedback && (
                                         <p className="text-xs text-gray-600 leading-relaxed">{q.aiScore.feedback}</p>
@@ -320,7 +320,7 @@ export default function ProgressPage() {
                                       )}
                                       {q.aiScore.improvements?.length > 0 && (
                                         <div className="mt-1.5">
-                                          <p className="text-xs font-bold text-orange-600 mb-0.5">ควรปรับปรุง:</p>
+                                          <p className="text-xs font-bold text-[#152E5A] mb-0.5">ควรปรับปรุง:</p>
                                           {q.aiScore.improvements.map((imp, ii) => (
                                             <p key={ii} className="text-xs text-gray-600 ml-2">• {imp}</p>
                                           ))}
@@ -335,7 +335,7 @@ export default function ProgressPage() {
                             {/* Retry Button */}
                             <button
                               onClick={() => router.push(`/?exam=${item.examType.toLowerCase()}&section=${item.section}`)}
-                              className="w-full bg-orange-50 text-orange-600 font-bold py-3 rounded-xl text-sm active:opacity-70"
+                              className="w-full bg-blue-50 text-[#152E5A] font-bold py-3 rounded-xl text-sm active:opacity-70"
                             >
                               🔄 ฝึกอีกครั้ง
                             </button>
