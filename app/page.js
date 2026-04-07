@@ -118,16 +118,17 @@ function AppInner() {
         
         // Map goalId to proper examType
         const examTypeMap = {
-          'toeic': 'TOEIC',
-          'ielts': 'IELTS',
-          'grammar': 'Grammar',
-          'toefl': 'TOEFL',
-          'cutep': 'CU-TEP',
-          'tuget': 'TU-GET',
-          'onet': 'O-NET',
-          'gorpor': 'กพ.'
+          'toeic': 'toeic',
+          'ielts': 'ielts',
+          'grammar': 'grammar',
+          'toefl': 'toefl',
+          'cutep': 'cutep',
+          'tuget': 'tuget',
+          'onet': 'onet',
+          'ocsc': 'ocsc',
+          'gorpor': 'ocsc',
         }
-        const examType = examTypeMap[goalId] || goalId.toUpperCase()
+        const examType = examTypeMap[goalId] || goalId.toLowerCase()
         
         const response = await fetch('/api/ai/generate-questions', {
           method: 'POST',

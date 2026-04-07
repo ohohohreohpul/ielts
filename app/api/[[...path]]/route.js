@@ -1,8 +1,26 @@
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
-import fs from 'fs'
-import path from 'path'
+
+// Question banks — imported at build time so they work on Vercel (no fs needed)
+const questionBanks = {
+  'ielts-reading':    () => require('@/data/questions/ielts-reading.json'),
+  'ielts-listening':  () => require('@/data/questions/ielts-listening.json'),
+  'ielts-writing':    () => require('@/data/questions/ielts-writing.json'),
+  'ielts-speaking':   () => require('@/data/questions/ielts-speaking.json'),
+  'toeic-reading':    () => require('@/data/questions/toeic-reading.json'),
+  'toeic-listening':  () => require('@/data/questions/toeic-listening.json'),
+  'toefl-reading':    () => require('@/data/questions/toefl-reading.json'),
+  'toefl-listening':  () => require('@/data/questions/toefl-listening.json'),
+  'toefl-writing':    () => require('@/data/questions/toefl-writing.json'),
+  'toefl-speaking':   () => require('@/data/questions/toefl-speaking.json'),
+  'cutep-reading':    () => require('@/data/questions/cutep-reading.json'),
+  'cutep-listening':  () => require('@/data/questions/cutep-listening.json'),
+  'tuget-reading':    () => require('@/data/questions/tuget-reading.json'),
+  'onet-reading':     () => require('@/data/questions/onet-reading.json'),
+  'ocsc-reading':     () => require('@/data/questions/ocsc-reading.json'),
+  'grammar-grammar':  () => require('@/data/questions/grammar.json'),
+}
 import {
   supabaseServer,
   getAdminConfig,
@@ -784,60 +802,39 @@ async function handleRoute(request, context) {
       const body = await request.json()
       const { examType, section, count = 15 } = body
 
-      // Map examType + section to a JSON file
+      // Normalise: strip non-alphanumeric (handles Thai chars, hyphens, etc.)
       const et = (examType || '').toLowerCase().replace(/[^a-z0-9]/g, '')
-      const sec = (section || '').toLowerCase()
+      const sec = (section || '').toLowerCase().replace(/[^a-z0-9]/g, '')
 
-      const fileMap = {
-        'ielts-reading': 'ielts-reading.json',
-        'ielts-listening': 'ielts-listening.json',
-        'ielts-writing': 'ielts-writing.json',
-        'ielts-speaking': 'ielts-speaking.json',
-        'toeic-reading': 'toeic-reading.json',
-        'toeic-listening': 'toeic-listening.json',
-        'toefl-reading': 'toefl-reading.json',
-        'toefl-listening': 'toefl-listening.json',
-        'toefl-writing': 'toefl-writing.json',
-        'toefl-speaking': 'toefl-speaking.json',
-        'cutep-reading': 'cutep-reading.json',
-        'cutep-listening': 'cutep-listening.json',
-        'cutep-structure': 'cutep-reading.json',
-        'cutep-vocabulary': 'cutep-reading.json',
-        'tuget-reading': 'tuget-reading.json',
-        'tuget-grammar': 'tuget-reading.json',
-        'tuget-vocabulary': 'tuget-reading.json',
-        'onet-reading': 'onet-reading.json',
-        'onet-grammar': 'onet-reading.json',
-        'onet-vocabulary': 'onet-reading.json',
-        'grammar-grammar': 'grammar.json',
-        'grammar-reading': 'grammar.json',
-        'korpor-reading': 'ocsc-reading.json',
-        'korpor-grammar': 'ocsc-reading.json',
-        'ocsc-reading': 'ocsc-reading.json',
-      }
+      // Build lookup key, with aliases for section name variants
+      const sectionAlias = { structure: 'reading', vocabulary: 'reading', grammar: 'grammar', english: 'reading' }
+      const normSec = sectionAlias[sec] || sec
 
-      const key = `${et}-${sec}`
-      let fileName = fileMap[key]
+      // Try exact key first, then exam-type-only fallback
+      const key = `${et}-${normSec}`
+      const fallbackKey = `${et}-reading`
 
-      // Fallback: try matching by exam type only
-      if (!fileName) {
-        const fallbacks = {
-          'ielts': 'ielts-reading.json',
-          'toeic': 'toeic-reading.json',
-          'toefl': 'toefl-reading.json',
-          'cutep': 'cutep-reading.json',
-          'tuget': 'tuget-reading.json',
-          'onet': 'onet-reading.json',
-          'grammar': 'grammar.json',
-          'korpor': 'ocsc-reading.json',
-          'ocsc': 'ocsc-reading.json',
+      const loader = questionBanks[key] || questionBanks[fallbackKey]
+
+      // Exam type aliases (e.g. 'cutep' → 'cutep', 'กพ.' stripped to '' → 'ocsc')
+      let loaderFinal = loader
+      if (!loaderFinal) {
+        const aliasMap = {
+          'toeic': 'toeic-reading', 'ielts': 'ielts-reading', 'toefl': 'toefl-reading',
+          'cutep': 'cutep-reading', 'cutepp': 'cutep-reading',
+          'tuget': 'tuget-reading', 'onet': 'onet-reading',
+          'ocsc': 'ocsc-reading', 'korpor': 'ocsc-reading', 'korporpor': 'ocsc-reading',
+          'grammar': 'grammar-grammar',
         }
-        for (const [k, v] of Object.entries(fallbacks)) {
-          if (et.includes(k)) { fileName = v; break }
+        for (const [alias, bankKey] of Object.entries(aliasMap)) {
+          if (et.includes(alias) || alias.includes(et)) {
+            loaderFinal = questionBanks[bankKey]
+            if (loaderFinal) break
+          }
         }
       }
 
-      if (!fileName) {
+      if (!loaderFinal) {
         return handleCORS(NextResponse.json(
           { error: `No question bank found for examType="${examType}" section="${section}"` },
           { status: 404 }
@@ -845,17 +842,12 @@ async function handleRoute(request, context) {
       }
 
       try {
-        const filePath = path.join(process.cwd(), 'data', 'questions', fileName)
-        const allQuestions = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
-
-        // Shuffle and return up to `count` questions
-        const shuffled = allQuestions.sort(() => Math.random() - 0.5)
+        const allQuestions = loaderFinal()
+        const shuffled = [...allQuestions].sort(() => Math.random() - 0.5)
         const questions = shuffled.slice(0, Math.min(count, shuffled.length))
-
         return handleCORS(NextResponse.json({ examType, section, questions }))
-
       } catch (error) {
-        console.error('Static question bank error:', error)
+        console.error('Question bank load error:', error)
         return handleCORS(NextResponse.json(
           { error: 'Failed to load question bank: ' + error.message },
           { status: 500 }
