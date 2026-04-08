@@ -732,7 +732,7 @@ function AppInner() {
                 {currentQuestion.sentence && (
                   <Card className="bg-[#1B3F7A] border-blue-200">
                     <CardContent className="p-6">
-                      <p className="text-lg text-gray-800">{currentQuestion.sentence}</p>
+                      <p className="text-lg text-white">{currentQuestion.sentence}</p>
                     </CardContent>
                   </Card>
                 )}
@@ -852,7 +852,7 @@ function AppInner() {
                 {currentQuestion.sentence && (
                   <Card className="bg-[#1B3F7A] border-blue-200">
                     <CardContent className="p-6">
-                      <p className="text-lg text-gray-800 mb-4 whitespace-pre-wrap">{currentQuestion.sentence}</p>
+                      <p className="text-lg text-white mb-4 whitespace-pre-wrap">{currentQuestion.sentence}</p>
                     </CardContent>
                   </Card>
                 )}
@@ -899,7 +899,7 @@ function AppInner() {
                 
                 <Card className="bg-[#1B3F7A] border-gray-200">
                   <CardContent className="p-6">
-                    <p className="text-lg text-gray-800">{currentQuestion.statement}</p>
+                    <p className="text-lg text-white">{currentQuestion.statement}</p>
                   </CardContent>
                 </Card>
 
@@ -907,7 +907,7 @@ function AppInner() {
                   {['TRUE', 'FALSE', 'NOT GIVEN'].map((option) => (
                     <Card key={option} className={`cursor-pointer transition-all hover:shadow-lg ${selectedAnswer === option ? 'border-2 border-blue-200 bg-[#1B3F7A]' : 'border-2 border-transparent hover:border-gray-200'} ${showFeedback && option === currentQuestion.correctAnswer ? 'border-[#1B3F7A] bg-blue-50' : showFeedback && selectedAnswer === option && option !== currentQuestion.correctAnswer ? 'border-red-500 bg-red-50' : ''}`} onClick={() => !showFeedback && setSelectedAnswer(option)}>
                       <CardContent className="p-6 text-center">
-                        <span className="text-lg font-semibold">{option}</span>
+                        <span className={`text-lg font-semibold ${selectedAnswer === option && !showFeedback ? 'text-white' : showFeedback && option === currentQuestion.correctAnswer ? 'text-gray-800' : showFeedback && selectedAnswer === option && option !== currentQuestion.correctAnswer ? 'text-red-700' : 'text-gray-800'}`}>{option}</span>
                       </CardContent>
                     </Card>
                   ))}
