@@ -710,7 +710,7 @@ function AppInner() {
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-[#1B3F7A] text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-[#1B3F7A] text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
-                        <span className="text-lg">{option.text}</span>
+                        <span className={`text-lg ${selectedAnswer === option.id && !showFeedback ? 'text-white' : showFeedback && option.correct ? 'text-gray-800' : showFeedback && selectedAnswer === option.id && !option.correct ? 'text-red-700' : 'text-gray-800'}`}>{option.text}</span>
                       </CardContent>
                     </Card>
                   ))}
@@ -748,7 +748,7 @@ function AppInner() {
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-[#1B3F7A] text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-[#1B3F7A] text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
-                        <span className="text-lg">{option.text}</span>
+                        <span className={`text-lg ${selectedAnswer === option.id && !showFeedback ? 'text-white' : showFeedback && option.correct ? 'text-gray-800' : showFeedback && selectedAnswer === option.id && !option.correct ? 'text-red-700' : 'text-gray-800'}`}>{option.text}</span>
                       </CardContent>
                     </Card>
                   ))}
@@ -813,7 +813,7 @@ function AppInner() {
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mr-4 ${selectedAnswer === option.id ? 'bg-[#1B3F7A] text-white' : 'bg-gray-100 text-gray-600'} ${showFeedback && option.correct ? 'bg-[#1B3F7A] text-white' : showFeedback && selectedAnswer === option.id && !option.correct ? 'bg-red-500 text-white' : ''}`}>
                           {String.fromCharCode(65 + index)}
                         </div>
-                        <span className="text-lg">{option.text}</span>
+                        <span className={`text-lg ${selectedAnswer === option.id && !showFeedback ? 'text-white' : showFeedback && option.correct ? 'text-gray-800' : showFeedback && selectedAnswer === option.id && !option.correct ? 'text-red-700' : 'text-gray-800'}`}>{option.text}</span>
                       </CardContent>
                     </Card>
                   ))}
